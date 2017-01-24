@@ -22,6 +22,19 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Show a message
     ui->statusBar->showMessage("Application Started Successfully.", 3000);
+
+    // Create a data model for the robot list
+    QStringListModel *robotListModel = new QStringListModel();
+
+    // Create a string list of robots
+    QStringList robotList;
+    robotList.append("Robot 1");
+    robotList.append("Robot 2");
+    robotList.append("Robot 3");
+
+    // Apply the list to the model and the model to the view
+    robotListModel->setStringList(robotList);
+    ui->robotList->setModel(robotListModel);
 }
 
 /* Destructor.
@@ -81,4 +94,14 @@ void MainWindow::setVideo(bool enabled) {
     } else {
         ui->statusBar->showMessage("Video Disabled.", 3000);
     }
+}
+
+/* on_robotList_clicked
+ * A robot was selected from the list
+ */
+void MainWindow::on_robotList_clicked(const QModelIndex &index)
+{
+    // Display a message with the name of the robot selected
+    QStringListModel *model = (QStringListModel *)ui->robotList->model();
+    ui->statusBar->showMessage(model->stringList().at(index.row()), 3000);
 }

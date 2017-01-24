@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QStringListModel>
 
 namespace Ui {
 class MainWindow;
@@ -24,6 +25,8 @@ private slots:
     void on_actionEnable_Video_changed();
 
     void on_videoEnChbx_stateChanged();
+
+    void on_robotList_clicked(const QModelIndex &index);
 
 private:
     Ui::MainWindow *ui;
