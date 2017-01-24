@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     // Show some default text
-    ui->overviewText->appendPlainText("Overview info");
+    ui->overviewText->appendPlainText("Overview info:\n\nNo robot selected.");
 
     // Show a message
     ui->statusBar->showMessage("Application Started Successfully.", 3000);
@@ -101,7 +101,15 @@ void MainWindow::setVideo(bool enabled) {
  */
 void MainWindow::on_robotList_clicked(const QModelIndex &index)
 {
-    // Display a message with the name of the robot selected
+    // Get the name of the robot selected
     QStringListModel *model = (QStringListModel *)ui->robotList->model();
-    ui->statusBar->showMessage(model->stringList().at(index.row()), 3000);
+    QString robotName = model->stringList().at(index.row());
+
+    // Update the overview text
+    ui->overviewText->clear();
+    ui->overviewText->appendPlainText("Overview info:\n");
+    ui->overviewText->appendPlainText(robotName);
+
+    // Show a status bar message
+    ui->statusBar->showMessage(robotName, 3000);
 }
