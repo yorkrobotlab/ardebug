@@ -346,7 +346,7 @@
     <string>Enable Video</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+V</string>
+    <string>Ctrl+E</string>
    </property>
   </action>
  </widget>

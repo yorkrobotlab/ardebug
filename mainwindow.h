@@ -23,7 +23,7 @@ private slots:
 
     void on_actionEnable_Video_changed();
 
-    void on_videoEnChbx_stateChanged(int arg1);
+    void on_videoEnChbx_stateChanged();
 
 private:
     Ui::MainWindow *ui;
