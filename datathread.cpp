@@ -46,19 +46,22 @@ void DataThread::connectToServer() {
         return;
     }
 
+    QString str;
+
     // Read data from the socket into the buffer
-    bzero(buffer, 256);
-    n = read(sockfd, buffer, 255);
-    if (n < 0) {
-        fprintf(stderr, "Error reading from socket\n");
-        return;
-    }
+    do {
+        bzero(buffer, 256);
+        n = read(sockfd, buffer, 255);
+        if (n < 0) {
+            fprintf(stderr, "Error reading from socket\n");
+            return;
+        }
+
+        // Emit the data to the main thread for processing (Qt signals and slots)
+        str.sprintf("%s", buffer);
+        emit(dataFromThread(str));
+    } while (!strcmp(buffer, "Exit\n"));
 
     // Close the socket before finishing
     close(sockfd);
-
-    // Emit the data to the main thread for processing (Qt signals and slots)
-    QString str;
-    str.sprintf("%s", buffer);
-    emit(dataFromThread(str));
 }
