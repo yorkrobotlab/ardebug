@@ -7,6 +7,8 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "datathread.h"
+
 
 /* Constructor.
  * Do UI set up tasks.
@@ -112,4 +114,19 @@ void MainWindow::on_robotList_clicked(const QModelIndex &index)
 
     // Show a status bar message
     ui->statusBar->showMessage(robotName, 3000);
+}
+
+void MainWindow::on_connectButton_clicked()
+{
+    DataThread *dataThread = new DataThread;
+    connect(dataThread, SIGNAL(dataFromThread(QString)), SLOT(on_dataFromThread(QString)));
+    connect(dataThread, SIGNAL(finished()), dataThread, SLOT(deleteLater()));
+
+    dataThread->start();
+}
+
+void MainWindow::on_dataFromThread(QString data)
+{
+    ui->overviewText->clear();
+    ui->overviewText->appendPlainText(data);
 }
