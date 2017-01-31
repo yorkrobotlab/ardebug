@@ -37,6 +37,15 @@ MainWindow::MainWindow(QWidget *parent) :
     // Apply the list to the model and the model to the view
     robotListModel->setStringList(robotList);
     ui->robotList->setModel(robotListModel);
+
+    // Set up the data thread
+    DataThread *dataHandler = new DataThread;
+    dataHandler->moveToThread(&dataThread);
+    connect(&dataThread, SIGNAL(finished()), dataHandler, SLOT(deleteLater()));
+    connect(this, SIGNAL(connectToServer(QString)), dataHandler, SLOT(connectToServer(QString)));
+    connect(dataHandler, SIGNAL(dataFromThread(QString)), this, SLOT(on_dataFromThread(QString)));
+
+    dataThread.start();
 }
 
 /* Destructor.
@@ -45,6 +54,9 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+
+    dataThread.quit();
+    dataThread.wait();
 }
 
 /* on_testButton_clicked
@@ -116,17 +128,16 @@ void MainWindow::on_robotList_clicked(const QModelIndex &index)
     ui->statusBar->showMessage(robotName, 3000);
 }
 
+/* on_connectButton_clicked()
+ * Called when the connect button is clicked. Signals the data thread to
+ * initiate a connection to the given IP and port.
+ */
 void MainWindow::on_connectButton_clicked()
 {
-    DataThread *dataThread = new DataThread;
-    connect(dataThread, SIGNAL(dataFromThread(QString)), SLOT(on_dataFromThread(QString)));
-    connect(dataThread, SIGNAL(finished()), dataThread, SLOT(deleteLater()));
-
-    dataThread->start();
+    connectToServer("127.0.0.1:8001");
 }
 
 void MainWindow::on_dataFromThread(QString data)
 {
-    ui->overviewText->clear();
     ui->overviewText->appendPlainText(data);
 }

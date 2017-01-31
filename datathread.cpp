@@ -11,7 +11,7 @@
 
 #include "QString"
 
-void DataThread::connectToServer() {
+void DataThread::connectToServer(const QString &params) {
     int sockfd, n;
     struct sockaddr_in serv_addr;
     struct hostent *server;

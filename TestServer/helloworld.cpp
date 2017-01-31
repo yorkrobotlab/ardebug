@@ -15,6 +15,8 @@ int main(void) {
 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
+	//char buffer[256];
+
 	if (sockfd < 0) {
 		fprintf(stderr, "Error opening socket.\n");
 		exit(1);
@@ -42,7 +44,7 @@ int main(void) {
 	}
 
 	for (int i = 0; i < 100; i++) {
-		int n = write(newsockfd, "Test\n", 4);
+		int n = write(newsockfd, "A test phrase\n", 14);
 
 		if (n < 0) {
 			fprintf(stderr, "Error writing to socket.\n");

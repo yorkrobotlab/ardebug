@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QStringListModel>
+#include <QThread>
 
 namespace Ui {
 class MainWindow;
@@ -11,6 +12,7 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+    QThread dataThread;
 
 public slots:
     void on_dataFromThread(QString data);
@@ -18,6 +20,9 @@ public slots:
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+signals:
+    void connectToServer(const QString &params);
 
 private slots:
 

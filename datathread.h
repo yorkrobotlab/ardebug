@@ -3,19 +3,16 @@
 
 #include "QThread"
 
-class DataThread : public QThread
+class DataThread : public QObject
 {
     Q_OBJECT
+    QThread dataThread;
 
-    void run() {
-        connectToServer();
-    }
+public slots:
+    void connectToServer(const QString &params);
 
 signals:
     void dataFromThread(QString data);
-
-private:
-    void connectToServer();
 };
 
 #endif // DATATHREAD_H
