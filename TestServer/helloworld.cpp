@@ -15,7 +15,8 @@ int main(void) {
 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
-	//char buffer[256];
+	char buffer[256];
+	bzero(buffer, 256);
 
 	if (sockfd < 0) {
 		fprintf(stderr, "Error opening socket.\n");
@@ -43,13 +44,23 @@ int main(void) {
 		exit(1);
 	}
 
-	for (int i = 0; i < 100; i++) {
+	while (strcmp(buffer, "Exit\n") != 0) {
 		int n = write(newsockfd, "A test phrase\n", 14);
 
 		if (n < 0) {
 			fprintf(stderr, "Error writing to socket.\n");
 			exit(1);
 		}
+
+		bzero(buffer, 256);
+		n = read(newsockfd, buffer, 255);
+
+		if (n < 0) {
+			fprintf(stderr, "Error reading from socket.\n");
+			exit(1);
+		}
+
+		printf("%s", buffer);
 	}
 
 	int n = write(newsockfd, "Exit\n", 6);

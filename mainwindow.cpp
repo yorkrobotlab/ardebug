@@ -43,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent) :
     dataHandler->moveToThread(&dataThread);
     connect(&dataThread, SIGNAL(finished()), dataHandler, SLOT(deleteLater()));
     connect(this, SIGNAL(connectToServer(QString)), dataHandler, SLOT(connectToServer(QString)));
+    connect(this, SIGNAL(disconnectFromServer(void)), dataHandler, SLOT(disconnectFromServer(void)));
     connect(dataHandler, SIGNAL(dataFromThread(QString)), this, SLOT(on_dataFromThread(QString)));
 
     dataThread.start();
@@ -137,7 +138,12 @@ void MainWindow::on_connectButton_clicked()
     connectToServer("127.0.0.1:8001");
 }
 
-void MainWindow::on_dataFromThread(QString data)
+void MainWindow::on_dataFromThread(const QString data)
 {
     ui->overviewText->appendPlainText(data);
+}
+
+void MainWindow::on_disconnectButton_clicked()
+{
+    disconnectFromServer();
 }

@@ -11,12 +11,9 @@
 
 #include "QString"
 
-void DataThread::connectToServer(const QString &params) {
-    int sockfd, n;
+void DataThread::connectToServer(const QString param) {
     struct sockaddr_in serv_addr;
     struct hostent *server;
-
-    char buffer[256];
 
     // Create a socket
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -46,22 +43,52 @@ void DataThread::connectToServer(const QString &params) {
         return;
     }
 
+    // Start the data read timer
+    readTimer = new QTimer(this);
+    connect(readTimer, SIGNAL(timeout()), this, SLOT(readDataFromServer()));
+    readTimer->start(100);
+}
+
+void DataThread::readDataFromServer() {
     QString str;
+    char buffer[256];
+    int n;
+
+    readTimer->stop();
 
     // Read data from the socket into the buffer
-    do {
-        bzero(buffer, 256);
-        n = read(sockfd, buffer, 255);
-        if (n < 0) {
-            fprintf(stderr, "Error reading from socket\n");
-            return;
-        }
+    bzero(buffer, 256);
+    n = read(sockfd, buffer, 255);
+    if (n < 0) {
+        fprintf(stderr, "Error reading from socket\n");
+        return;
+    }
 
-        // Emit the data to the main thread for processing (Qt signals and slots)
+    // If an exit message is received, end the connection
+    if (strcmp(buffer, "Exit\n") == 0) {
+        // Close the socket, connection has ended
+        close(sockfd);
+        return;
+    } else {
+        // Otherwise pass the data to the main thread for processing
         str.sprintf("%s", buffer);
         emit(dataFromThread(str));
-    } while (!strcmp(buffer, "Exit\n"));
+    }
 
-    // Close the socket before finishing
-    close(sockfd);
+    // Send a response
+    if (disconnect) {
+        n = write(sockfd, "Exit\n", 6);
+    } else {
+        n = write(sockfd, "resp\n", 6);
+        readTimer->start(0.1);
+    }
+
+    if (n < 0) {
+        fprintf(stderr, "Error reading from socket\n");
+        return;
+    }
+}
+
+void DataThread::disconnectFromServer(void) {
+    disconnect = 1;
 }
