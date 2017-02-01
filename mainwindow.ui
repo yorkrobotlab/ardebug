@@ -22,9 +22,9 @@
       </property>
       <widget class="QSplitter" name="splitter">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
-         <verstretch>3</verstretch>
+         <verstretch>6</verstretch>
         </sizepolicy>
        </property>
        <property name="orientation">
@@ -33,9 +33,15 @@
        <widget class="QTabWidget" name="visualizerTabWidget">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>2</horstretch>
-          <verstretch>3</verstretch>
+          <horstretch>4</horstretch>
+          <verstretch>4</verstretch>
          </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>500</height>
+         </size>
         </property>
         <property name="currentIndex">
          <number>0</number>
@@ -233,8 +239,8 @@
        <widget class="QTabWidget" name="robotTabWidget">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>1</horstretch>
-          <verstretch>3</verstretch>
+          <horstretch>0</horstretch>
+          <verstretch>4</verstretch>
          </sizepolicy>
         </property>
         <property name="baseSize">

@@ -31,3 +31,13 @@ HEADERS  += mainwindow.h \
     datathread.h
 
 FORMS    += mainwindow.ui
+
+unix: CONFIG += link_pkgconfig
+unix: PKGCONFIG += opencv
+
+LIBS += -L/opt/cvb/lib/ -lCVCImg
+LIBS += -L/opt/cvb/lib/ -lCVCDriver
+LIBS += -L/opt/cvb/lib/ -lCVCUtilities
+
+INCLUDEPATH += /opt/cvb/include
+DEPENDPATH += /opt/cvb/include
