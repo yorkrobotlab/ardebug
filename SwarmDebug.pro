@@ -25,10 +25,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    datathread.cpp
+    datathread.cpp \
+    machinevision.cpp
 
 HEADERS  += mainwindow.h \
-    datathread.h
+    datathread.h \
+    machinevision.h
 
 FORMS    += mainwindow.ui
 

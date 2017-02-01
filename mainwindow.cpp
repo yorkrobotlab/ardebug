@@ -8,6 +8,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "datathread.h"
+#include "machinevision.h"
 
 
 /* Constructor.
@@ -66,6 +67,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_testButton_clicked()
 {
     ui->statusBar->showMessage("Test Button Pressed.", 3000);
+    displayFrame();
 }
 
 /* on_actionExit_triggered
