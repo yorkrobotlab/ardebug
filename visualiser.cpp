@@ -9,6 +9,10 @@
 #include "visualiser.h"
 #include "machinevision.h"
 
+#include <stdio.h>
+
+#include <QLayout>
+
 /* Constructor
  * Create a timer to poll for camera data.
  */
@@ -81,6 +85,7 @@ void Visualiser::getImageFromCamera() {
     int w = this->size().width();
     int h = this->size().height();
     int size = w < h ? w : h;
+    std::cout << "Size: " << w << " " << h << std::endl;
 
     cameraTimer->stop();
     this->showImage(getFrame(size));

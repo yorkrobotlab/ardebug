@@ -51,11 +51,12 @@ MainWindow::MainWindow(QWidget *parent) :
     dataThread.start();
 
     visualiser = new Visualiser();
+    visualiser->setMaximumSize(2000, 2000);
     visualiser->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QHBoxLayout* horizLayout = new QHBoxLayout();
+    horizLayout->addWidget(visualiser);
     ui->visualizerTab->setLayout(horizLayout);
-    ui->visualizerTab->layout()->addWidget(visualiser);
 }
 
 /* Destructor.
