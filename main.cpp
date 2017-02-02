@@ -1,3 +1,10 @@
+/* main.cpp
+ *
+ * Entry point of application.
+ *
+ * (C) Alistair Jewers Jan 2017
+ */
+
 #include "mainwindow.h"
 #include <QApplication>
 

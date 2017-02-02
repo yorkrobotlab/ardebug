@@ -10,6 +10,7 @@
 #include "datathread.h"
 #include "machinevision.h"
 
+#include <QLayout>
 
 /* Constructor.
  * Do UI set up tasks.
@@ -50,6 +51,10 @@ MainWindow::MainWindow(QWidget *parent) :
     dataThread.start();
 
     visualiser = new Visualiser();
+    visualiser->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    QHBoxLayout* horizLayout = new QHBoxLayout();
+    ui->visualizerTab->setLayout(horizLayout);
     ui->visualizerTab->layout()->addWidget(visualiser);
 }
 
@@ -70,7 +75,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_testButton_clicked()
 {
     ui->statusBar->showMessage("Test Button Pressed.", 3000);
-    visualiser->showImage(displayFrame());
+    visualiser->startVis();
 }
 
 /* on_actionExit_triggered

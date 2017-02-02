@@ -8,7 +8,7 @@ class DataThread : public QObject
 {
     Q_OBJECT
     QThread dataThread;
-    QTimer * readTimer;
+    QTimer* readTimer;
     int sockfd = 0;
 
 public:

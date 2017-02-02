@@ -140,15 +140,6 @@
          <attribute name="title">
           <string>Visualizer</string>
          </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_2">
-            <property name="sizeConstraint">
-             <enum>QLayout::SetNoConstraint</enum>
-            </property>
-           </layout>
-          </item>
-         </layout>
         </widget>
         <widget class="QWidget" name="visSettingsTab">
          <attribute name="title">

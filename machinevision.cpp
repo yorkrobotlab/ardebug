@@ -1,3 +1,12 @@
+/* machinevision.cpp
+ *
+ * Functions related to the machine vision camera. The CVB_CAMERA_PRESENT
+ * define is used to allow compilation on machines other than the tracking
+ * server, where the camera libraries and drivers are not present.
+ *
+ * (C) Alistair Jewers Feb 2017
+ */
+
 #include <machinevision.h>
 #include <appconfig.h>
 
@@ -5,9 +14,9 @@
 #include <iomanip>
 #include <vector>
 
-#ifdef CVB_CAMERA_PRESENT
-
 #include <opencv2/aruco.hpp>
+
+#ifdef CVB_CAMERA_PRESENT
 
 #include <iCVCDriver.h>
 #include <iCVCImg.h>
@@ -20,6 +29,10 @@ using namespace cv;
 
 static const size_t DRIVERPATHSIZE = 256;
 
+/* cvb_to_ocv_nocopy
+ * Taen from original tracking code. Gets the image from the CVB camera
+ * and converts it to an opencv image.
+ */
 Mat cvb_to_ocv_nocopy(IMG cvbImg)
 {
     // Construct an appropriate OpenCV image
@@ -33,6 +46,10 @@ Mat cvb_to_ocv_nocopy(IMG cvbImg)
     return image;
 }
 
+/* projectpoint_image_to_world
+ * Taken from original tracking code. Converts point in image space to a
+ * point in world space.
+ */
 void projectpoint_image_to_world(cv::Mat cameraMatrix, double world_z, cv::Point_<float> undistort_imgpoint, cv::Point_<float> &undistort_worldpoint)
 {
     double image_x = undistort_imgpoint.x;
@@ -64,7 +81,10 @@ void projectpoint_image_to_world(cv::Mat cameraMatrix, double world_z, cv::Point
     double world_y = (image_y - c_y * world_z) / f_y;*/
 }
 
-Mat displayFrame() {
+/* getFrame
+ * Gets the latest video frame.
+ */
+Mat getFrame(int size) {
     /*****Camera calibration parameters**********/
     /*****Done on 18/08/2016 02:40:21 PM*********/
     /*https://github.com/daneshtarapore/apriltags-cpp/blob/optimisation/out_camera_data.xml*/
@@ -114,7 +134,7 @@ Mat displayFrame() {
             Mat image;
             undistort(distorted_image, image, cameraMatrix, distCoeffs);
 
-            resize(image, image, Size(450, 450), 0, 0, INTER_CUBIC);
+            resize(image, image, Size(size, size), 0, 0, INTER_CUBIC);
         }
     }
 
@@ -127,15 +147,19 @@ Mat displayFrame() {
 
 using namespace cv;
 
-Mat displayFrame() {
+/* getFrame
+ * Gets the latest video frame.
+ */
+Mat getFrame(int size) {
     static int r = 0;
 
     r+=5;
     if(r>255) r=0;
 
     // Camera is not present, fake the frame
-    Mat image(450, 450, CV_8UC3, Scalar(128, 0, r));
+    Mat image(size, size, CV_8UC3, Scalar(128, 0, r));
 
+    // Return the frame as an image
     return image;
 }
 

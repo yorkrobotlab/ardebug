@@ -3,6 +3,6 @@
 
 #include <opencv2/opencv.hpp>
 
-cv::Mat displayFrame();
+cv::Mat getFrame(int size);
 
 #endif // MACHINEVISION_H
