@@ -1,6 +1,8 @@
 #ifndef MACHINEVISION_H
 #define MACHINEVISION_H
 
-void displayFrame();
+#include <opencv2/opencv.hpp>
+
+cv::Mat displayFrame();
 
 #endif // MACHINEVISION_H

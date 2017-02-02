@@ -1,11 +1,14 @@
 #include <machinevision.h>
-
-#include <opencv2/opencv.hpp>
-#include <opencv2/aruco.hpp>
+#include <appconfig.h>
 
 #include <iostream>
 #include <iomanip>
 #include <vector>
+
+#ifdef CVB_CAMERA_PRESENT
+
+#include <opencv2/aruco.hpp>
+
 #include <iCVCDriver.h>
 #include <iCVCImg.h>
 #include <iCVGenApi.h>
@@ -61,7 +64,7 @@ void projectpoint_image_to_world(cv::Mat cameraMatrix, double world_z, cv::Point
     double world_y = (image_y - c_y * world_z) / f_y;*/
 }
 
-void displayFrame() {
+Mat displayFrame() {
     /*****Camera calibration parameters**********/
     /*****Done on 18/08/2016 02:40:21 PM*********/
     /*https://github.com/daneshtarapore/apriltags-cpp/blob/optimisation/out_camera_data.xml*/
@@ -111,10 +114,29 @@ void displayFrame() {
             Mat image;
             undistort(distorted_image, image, cameraMatrix, distCoeffs);
 
-            resize(image, image, Size(image.cols * 0.3, image.rows * 0.3), 0, 0, INTER_CUBIC);
-            imshow("JAI GO-5000C-PGE", image);
+            resize(image, image, Size(450, 450), 0, 0, INTER_CUBIC);
         }
     }
 
     ReleaseObject(hCamera);
+
+    return image;
 }
+
+#else /* CVB_CAMERA_PRESENT */
+
+using namespace cv;
+
+Mat displayFrame() {
+    static int r = 0;
+
+    r+=5;
+    if(r>255) r=0;
+
+    // Camera is not present, fake the frame
+    Mat image(450, 450, CV_8UC3, Scalar(128, 0, r));
+
+    return image;
+}
+
+#endif /* CVB_CAMERA_PRESENT */

@@ -44,7 +44,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="connectTab">
          <attribute name="title">
@@ -146,9 +146,6 @@
             <property name="sizeConstraint">
              <enum>QLayout::SetNoConstraint</enum>
             </property>
-            <item>
-             <widget class="QGraphicsView" name="graphicsView"/>
-            </item>
            </layout>
           </item>
          </layout>

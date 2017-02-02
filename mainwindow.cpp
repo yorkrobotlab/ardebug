@@ -48,6 +48,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(dataHandler, SIGNAL(dataFromThread(QString)), this, SLOT(on_dataFromThread(QString)));
 
     dataThread.start();
+
+    visualiser = new Visualiser();
+    ui->visualizerTab->layout()->addWidget(visualiser);
 }
 
 /* Destructor.
@@ -67,7 +70,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_testButton_clicked()
 {
     ui->statusBar->showMessage("Test Button Pressed.", 3000);
-    displayFrame();
+    visualiser->showImage(displayFrame());
 }
 
 /* on_actionExit_triggered

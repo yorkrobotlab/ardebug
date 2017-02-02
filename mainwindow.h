@@ -5,6 +5,8 @@
 #include <QStringListModel>
 #include <QThread>
 
+#include "visualiser.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -13,6 +15,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     QThread dataThread;
+    Visualiser* visualiser;
 
 public:
     explicit MainWindow(QWidget *parent = 0);

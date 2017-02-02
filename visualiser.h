@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QImage>
 #include <QPainter>
-#include <opencv2/opencv.h>
+#include <opencv2/opencv.hpp>
 
 class Visualiser : public QWidget
 {
