@@ -22,9 +22,8 @@ public:
     ~MainWindow();
 
 signals:
-    void connectToServer(const QString &);
-    void readDataFromServer(void);
-    void disconnectFromServer(void);
+    void openUDPSocket(int port);
+    void closeUDPSocket(void);
 
 public slots:
     void on_dataFromThread(const QString data);

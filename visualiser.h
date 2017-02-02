@@ -13,11 +13,11 @@ class Visualiser : public QWidget
 public:
     explicit Visualiser(QWidget *parent = 0);
 
-    QSize sizeHint() const { return _qimage.size(); }
-    QSize minimumSizeHint () const {return _qimage.size(); }
+    QSize minimumSizeHint () const {return QSize(200, 200); }
 
     void startVis(void);
     void stopVis(void);
+    int isVisActive(void);
 
 public slots:
     void showImage(const cv::Mat& image);

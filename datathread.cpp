@@ -1,3 +1,12 @@
+/* machinevision.cpp
+ *
+ * This class encapsulates a threaded UDP packet receiver. Data
+ * that is received is sent to the main thread via the Qt signals
+ * and slots system.
+ *
+ * (C) Alistair Jewers Jan 2017
+ */
+
 #include "datathread.h"
 
 #include <stdio.h>
@@ -11,84 +20,69 @@
 
 #include "QString"
 
-void DataThread::connectToServer(const QString param) {
-    struct sockaddr_in serv_addr;
-    struct hostent *server;
+/* openUDPSocket
+ * Opens a UDP socket on the given port, and begins listening for data.
+ */
+void DataThread::openUDPSocket(int port) {
+    struct sockaddr_in sock_in;
 
-    // Create a socket
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-
-    if (sockfd < 0) {
-        fprintf(stderr, "Error opening socket\n");
+    // Create the socket
+    if ((sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
+        fprintf(stderr, "Error creating socket\n");
         return;
     }
 
-    // Get the host entity
-    server = gethostbyname("127.0.0.1");
+    // Zero the structure
+    bzero(&sock_in, sizeof(sock_in));
 
-    if (server == NULL) {
-        fprintf(stderr, "Error, no such host\n");
-        return;
-    }
+    // Set up the socket structure
+    sock_in.sin_addr.s_addr = htonl(INADDR_ANY);
+    sock_in.sin_port = htons(port);
+    sock_in.sin_family = AF_INET;
 
-    // Create the server address structure
-    bzero((char *) &serv_addr, sizeof(serv_addr));
-    serv_addr.sin_family = AF_INET;
-    bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length);
-    serv_addr.sin_port = htons(8001);
-
-    // Attempt to connect the server to the socket
-    if(::connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
-        fprintf(stderr, "Error connecting\n");
+    // Bind the socket
+    if (bind(sockfd, (struct sockaddr*)&sock_in, sizeof(sock_in)) < 0) {
+        fprintf(stderr, "Error binding socket\n");
         return;
     }
 
     // Start the data read timer
     readTimer = new QTimer(this);
-    connect(readTimer, SIGNAL(timeout()), this, SLOT(readDataFromServer()));
-    readTimer->start(100);
+    connect(readTimer, SIGNAL(timeout()), this, SLOT(listenForPacket()));
+    readTimer->start(1);
 }
 
-void DataThread::readDataFromServer() {
-    QString str;
-    char buffer[256];
-    int n;
+/* closeUDPSocket
+ * Closes the UDP socket and stops listening for data.
+ */
+void DataThread::closeUDPSocket(void) {
+    readTimer->stop();
+    close(sockfd);
+}
 
+/* listenForPacket
+ * Listens for data on the UDP socket. Blocking.
+ */
+void DataThread::listenForPacket(void) {
+    struct sockaddr_in si_other;
+    int slen = sizeof(si_other), recv_len;
+    char buffer[256];
+
+    // Pause the timer
     readTimer->stop();
 
-    // Read data from the socket into the buffer
+    // Clear the buffer
     bzero(buffer, 256);
-    n = read(sockfd, buffer, 255);
-    if (n < 0) {
-        fprintf(stderr, "Error reading from socket\n");
+
+    // Receive a packet (blocking)
+    recv_len = recvfrom(sockfd, buffer, 255, 0, (struct sockaddr*)&si_other, (socklen_t *)&slen);
+    if (recv_len < 0) {
+        fprintf(stderr, "Error reading data\n");
         return;
     }
 
-    // If an exit message is received, end the connection
-    if (strcmp(buffer, "Exit\n") == 0) {
-        // Close the socket, connection has ended
-        close(sockfd);
-        return;
-    } else {
-        // Otherwise pass the data to the main thread for processing
-        str.sprintf("%s", buffer);
-        emit(dataFromThread(str));
-    }
-
-    // Send a response
-    if (disconnect) {
-        n = write(sockfd, "Exit\n", 6);
-    } else {
-        n = write(sockfd, "resp\n", 6);
-        readTimer->start(0.1);
-    }
-
-    if (n < 0) {
-        fprintf(stderr, "Error reading from socket\n");
-        return;
-    }
-}
-
-void DataThread::disconnectFromServer(void) {
-    disconnect = 1;
+    // Emit received data through signal
+    QString str;
+    str.sprintf("%s", buffer);
+    emit dataFromThread(str);
 }

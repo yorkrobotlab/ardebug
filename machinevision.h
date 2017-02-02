@@ -3,6 +3,6 @@
 
 #include <opencv2/opencv.hpp>
 
-cv::Mat getFrame(int size);
+cv::Mat machineVision_getLatestFrame(int size);
 
 #endif // MACHINEVISION_H

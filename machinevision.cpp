@@ -84,7 +84,7 @@ void projectpoint_image_to_world(cv::Mat cameraMatrix, double world_z, cv::Point
 /* getFrame
  * Gets the latest video frame.
  */
-Mat getFrame(int size) {
+Mat machineVision_getLatestFrame(int size) {
     /*****Camera calibration parameters**********/
     /*****Done on 18/08/2016 02:40:21 PM*********/
     /*https://github.com/daneshtarapore/apriltags-cpp/blob/optimisation/out_camera_data.xml*/
@@ -145,14 +145,15 @@ Mat getFrame(int size) {
 
 #else /* CVB_CAMERA_PRESENT */
 
+using namespace std;
 using namespace cv;
 
 /* getFrame
  * Gets the latest video frame.
  */
-Mat getFrame(int size) {
+Mat machineVision_getLatestFrame(int size) {
+    // Time varying colour value
     static int r = 0;
-
     r+=5;
     if(r>255) r=0;
 

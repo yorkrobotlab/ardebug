@@ -37,6 +37,17 @@ void Visualiser::stopVis() {
     cameraTimer->stop();
 }
 
+/* isVisActive
+ * Checks if the visualiser is currently running.
+ */
+int Visualiser::isVisActive() {
+    if (cameraTimer->isActive()) {
+        return 1;
+    }
+
+    return 0;
+}
+
 /* showImage
  * Display the supplied opencv image.
  */
@@ -60,9 +71,6 @@ void Visualiser::showImage(const cv::Mat& image) {
     // Each pixel is three bytes, hence bytesPerLine is width * 3
     _qimage = QImage(_tmp.data, _tmp.cols, _tmp.rows, _tmp.cols * 3, QImage::Format_RGB888);
 
-    // Widget size must be fixed to image size
-    this->setFixedSize(image.cols, image.rows);
-
     // Redraw
     repaint();
 }
@@ -71,9 +79,12 @@ void Visualiser::showImage(const cv::Mat& image) {
  * Override. Called to re-draw the widget.
  */
 void Visualiser::paintEvent(QPaintEvent*) {
+    // Calculate the x position
+    int x = (this->size().width() / 2) - (_qimage.width() / 2);
+
     // Display the image
     QPainter painter(this);
-    painter.drawImage(QPoint(0,0), _qimage);
+    painter.drawImage(QPoint(x,0), _qimage);
     painter.end();
 }
 
@@ -82,12 +93,19 @@ void Visualiser::paintEvent(QPaintEvent*) {
  * the latest frame of video data. Pause the timer whilst doing it.
  */
 void Visualiser::getImageFromCamera() {
+    // Determine the limiting size
     int w = this->size().width();
     int h = this->size().height();
     int size = w < h ? w : h;
-    std::cout << "Size: " << w << " " << h << std::endl;
 
+    // Pause the timer
     cameraTimer->stop();
-    this->showImage(getFrame(size));
+
+    // Redraw the image if the size is greater than zero (<0 causes OpenCV error)
+    if (size > 0) {
+        this->showImage(machineVision_getLatestFrame(size));
+    }
+
+    // Restart the timer
     cameraTimer->start(41);
 }

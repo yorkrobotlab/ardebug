@@ -37,8 +37,8 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
-unix: CONFIG += link_pkgconfig
-unix: PKGCONFIG += opencv
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv
 
 #LIBS += -L/opt/cvb/lib/ -lCVCImg
 #LIBS += -L/opt/cvb/lib/ -lCVCDriver

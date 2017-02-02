@@ -11,13 +11,10 @@ class DataThread : public QObject
     QTimer* readTimer;
     int sockfd = 0;
 
-public:
-    int disconnect = 0;
-
 public slots:
-    void connectToServer(const QString param);
-    void readDataFromServer(void);
-    void disconnectFromServer(void);
+    void openUDPSocket(int port);
+    void closeUDPSocket(void);
+    void listenForPacket(void);
 
 signals:
     void dataFromThread(const QString &);

@@ -44,16 +44,17 @@ MainWindow::MainWindow(QWidget *parent) :
     DataThread *dataHandler = new DataThread;
     dataHandler->moveToThread(&dataThread);
     connect(&dataThread, SIGNAL(finished()), dataHandler, SLOT(deleteLater()));
-    connect(this, SIGNAL(connectToServer(QString)), dataHandler, SLOT(connectToServer(QString)));
-    connect(this, SIGNAL(disconnectFromServer(void)), dataHandler, SLOT(disconnectFromServer(void)));
+    connect(this, SIGNAL(openUDPSocket(int)), dataHandler, SLOT(openUDPSocket(int)));
+    connect(this, SIGNAL(closeUDPSocket(void)), dataHandler, SLOT(closeUDPSocket(void)));
     connect(dataHandler, SIGNAL(dataFromThread(QString)), this, SLOT(on_dataFromThread(QString)));
 
     dataThread.start();
 
+    // Intantiate the visualiser
     visualiser = new Visualiser();
-    visualiser->setMaximumSize(2000, 2000);
-    visualiser->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    visualiser->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
+    // Embed the visualiser in the tab
     QHBoxLayout* horizLayout = new QHBoxLayout();
     horizLayout->addWidget(visualiser);
     ui->visualizerTab->setLayout(horizLayout);
@@ -71,12 +72,16 @@ MainWindow::~MainWindow()
 }
 
 /* on_testButton_clicked
- * Respond to user clicks on 'testButton'. Displays a test message.
+ * Respond to user clicks on 'testButton'.
  */
 void MainWindow::on_testButton_clicked()
 {
     ui->statusBar->showMessage("Test Button Pressed.", 3000);
-    visualiser->startVis();
+    if (visualiser->isVisActive()) {
+        visualiser->stopVis();
+    } else {
+        visualiser->startVis();
+    }
 }
 
 /* on_actionExit_triggered
@@ -141,12 +146,21 @@ void MainWindow::on_robotList_clicked(const QModelIndex &index)
 }
 
 /* on_connectButton_clicked()
- * Called when the connect button is clicked. Signals the data thread to
- * initiate a connection to the given IP and port.
+ * Called when the connect button is clicked. Signals the data thread
+ * to open a UDP socket on the port supplied, and listen for data.
  */
 void MainWindow::on_connectButton_clicked()
 {
-    connectToServer("127.0.0.1:8001");
+    openUDPSocket(8888);
+}
+
+/* on_disconnectButton_clicked()
+ * Called when the disconnect button is clicked. Signals the data thread
+ * to close the UDP socket.
+ */
+void MainWindow::on_disconnectButton_clicked()
+{
+    closeUDPSocket();
 }
 
 void MainWindow::on_dataFromThread(const QString data)
@@ -154,7 +168,4 @@ void MainWindow::on_dataFromThread(const QString data)
     ui->overviewText->appendPlainText(data);
 }
 
-void MainWindow::on_disconnectButton_clicked()
-{
-    disconnectFromServer();
-}
+
