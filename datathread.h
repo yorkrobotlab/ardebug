@@ -7,13 +7,14 @@
 class DataThread : public QObject
 {
     Q_OBJECT
-    QThread dataThread;
     QTimer* readTimer;
     int sockfd = 0;
 
 public slots:
     void openUDPSocket(int port);
     void closeUDPSocket(void);
+
+private slots:
     void listenForPacket(void);
 
 signals:

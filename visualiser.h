@@ -11,25 +11,24 @@ class Visualiser : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Visualiser(QWidget *parent = 0);
+    Visualiser(QWidget *parent = 0);
 
     QSize minimumSizeHint () const {return QSize(200, 200); }
 
-    void startVis(void);
-    void stopVis(void);
-    int isVisActive(void);
+    void checkFrameSize(void);
 
 public slots:
     void showImage(const cv::Mat& image);
-    void getImageFromCamera(void);
+
+signals:
+    void frameSizeChanged(int size);
 
 protected:
     void paintEvent(QPaintEvent*);
+    void resizeEvent(QResizeEvent*);
 
     QImage _qimage;
     cv::Mat _tmp;
-
-    QTimer* cameraTimer;
 };
 
 #endif // VISUALISER_H

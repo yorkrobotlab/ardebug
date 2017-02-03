@@ -42,13 +42,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Set up the data thread
     DataThread *dataHandler = new DataThread;
-    dataHandler->moveToThread(&dataThread);
-    connect(&dataThread, SIGNAL(finished()), dataHandler, SLOT(deleteLater()));
+    dataHandler->moveToThread(&networkThread);
+    connect(&networkThread, SIGNAL(finished()), dataHandler, SLOT(deleteLater()));
     connect(this, SIGNAL(openUDPSocket(int)), dataHandler, SLOT(openUDPSocket(int)));
     connect(this, SIGNAL(closeUDPSocket(void)), dataHandler, SLOT(closeUDPSocket(void)));
     connect(dataHandler, SIGNAL(dataFromThread(QString)), this, SLOT(on_dataFromThread(QString)));
 
-    dataThread.start();
+    networkThread.start();
 
     // Intantiate the visualiser
     visualiser = new Visualiser();
@@ -58,6 +58,23 @@ MainWindow::MainWindow(QWidget *parent) :
     QHBoxLayout* horizLayout = new QHBoxLayout();
     horizLayout->addWidget(visualiser);
     ui->visualizerTab->setLayout(horizLayout);
+
+    // Instantiate the camera controller and move it to the camera thread
+    cameraController = new CameraController();
+    cameraController->moveToThread(&cameraThread);
+    connect(&cameraThread, SIGNAL(finished()), dataHandler, SLOT(deleteLater()));
+    connect(this, SIGNAL(startReadingCamera(void)), cameraController, SLOT(startReadingCamera(void)));
+    connect(this, SIGNAL(stopReadingCamera(void)), cameraController, SLOT(stopReadingCamera(void)));
+
+    // Connect its signals to the visualiser and vice versa
+    qRegisterMetaType< cv::Mat >("cv::Mat");
+    connect(cameraController, SIGNAL(dataFromCamera(cv::Mat)), visualiser, SLOT(showImage(cv::Mat)));
+    connect(visualiser, SIGNAL(frameSizeChanged(int)), cameraController, SLOT(updateFrameSize(int)));
+
+    cameraThread.start();
+
+    // Have the visualiser pass its initial frame size to the camera controller
+    visualiser->checkFrameSize();
 }
 
 /* Destructor.
@@ -67,8 +84,11 @@ MainWindow::~MainWindow()
 {
     delete ui;
 
-    dataThread.quit();
-    dataThread.wait();
+    networkThread.quit();
+    networkThread.wait();
+
+    cameraThread.quit();
+    cameraThread.wait();
 }
 
 /* on_testButton_clicked
@@ -77,11 +97,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_testButton_clicked()
 {
     ui->statusBar->showMessage("Test Button Pressed.", 3000);
-    if (visualiser->isVisActive()) {
-        visualiser->stopVis();
-    } else {
-        visualiser->startVis();
-    }
+    startReadingCamera();
 }
 
 /* on_actionExit_triggered

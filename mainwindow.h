@@ -6,6 +6,7 @@
 #include <QThread>
 
 #include "visualiser.h"
+#include "cameracontroller.h"
 
 namespace Ui {
 class MainWindow;
@@ -14,8 +15,10 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    QThread dataThread;
+    QThread networkThread;
+    QThread cameraThread;
     Visualiser* visualiser;
+    CameraController* cameraController;
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -24,6 +27,9 @@ public:
 signals:
     void openUDPSocket(int port);
     void closeUDPSocket(void);
+
+    void startReadingCamera(void);
+    void stopReadingCamera(void);
 
 public slots:
     void on_dataFromThread(const QString data);

@@ -14,39 +14,9 @@
 #include <QLayout>
 
 /* Constructor
- * Create a timer to poll for camera data.
+ * Empty.
  */
-Visualiser::Visualiser(QWidget *parent) {
-    cameraTimer = new QTimer();
-    connect(cameraTimer, SIGNAL(timeout()), this, SLOT(getImageFromCamera()));
-}
-
-/* startVis
- * Start polling for camera data to display in the visualiser.
- */
-void Visualiser::startVis() {
-    if(!cameraTimer->isActive()) {
-        cameraTimer->start(41);
-    }
-}
-
-/* stopVis
- * Stop polling for camera data.
- */
-void Visualiser::stopVis() {
-    cameraTimer->stop();
-}
-
-/* isVisActive
- * Checks if the visualiser is currently running.
- */
-int Visualiser::isVisActive() {
-    if (cameraTimer->isActive()) {
-        return 1;
-    }
-
-    return 0;
-}
+Visualiser::Visualiser(QWidget*)  { }
 
 /* showImage
  * Display the supplied opencv image.
@@ -88,24 +58,28 @@ void Visualiser::paintEvent(QPaintEvent*) {
     painter.end();
 }
 
-/* getImageFromCamera
- * Slot. Called by the camera poll timer. Calls a function in the machine vision file to get
- * the latest frame of video data. Pause the timer whilst doing it.
+/* resizeEvent
+ * Override. Called when the widget is resized. Call checkFrameSize to
+ * emit a frameSizeChanged signal with the new size.
  */
-void Visualiser::getImageFromCamera() {
+void Visualiser::resizeEvent(QResizeEvent*) {
+    checkFrameSize();
+}
+
+/* checkFrameSize
+ * Called to check the frame size and emit it.
+ */
+void Visualiser::checkFrameSize() {
     // Determine the limiting size
     int w = this->size().width();
     int h = this->size().height();
     int size = w < h ? w : h;
 
-    // Pause the timer
-    cameraTimer->stop();
-
-    // Redraw the image if the size is greater than zero (<0 causes OpenCV error)
-    if (size > 0) {
-        this->showImage(machineVision_getLatestFrame(size));
+    // Do not allow <0 sizes
+    if (size <= 0) {
+        size = 1;
     }
 
-    // Restart the timer
-    cameraTimer->start(41);
+    // Emit the new size as a signal
+    emit frameSizeChanged(size);
 }

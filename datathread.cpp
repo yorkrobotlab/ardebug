@@ -1,4 +1,4 @@
-/* machinevision.cpp
+/* datathread.cpp
  *
  * This class encapsulates a threaded UDP packet receiver. Data
  * that is received is sent to the main thread via the Qt signals

@@ -27,13 +27,15 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     datathread.cpp \
     machinevision.cpp \
-    visualiser.cpp
+    visualiser.cpp \
+    cameracontroller.cpp
 
 HEADERS  += mainwindow.h \
     datathread.h \
     machinevision.h \
     visualiser.h \
-    appconfig.h
+    appconfig.h \
+    cameracontroller.h
 
 FORMS    += mainwindow.ui
 
