@@ -85,4 +85,7 @@ void DataThread::listenForPacket(void) {
     QString str;
     str.sprintf("%s", buffer);
     emit dataFromThread(str);
+
+    // Restart the timer
+    readTimer->start(1);
 }
