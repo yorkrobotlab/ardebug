@@ -7,6 +7,7 @@
 
 #include "visualiser.h"
 #include "cameracontroller.h"
+#include "datamodel.h"
 
 namespace Ui {
 class MainWindow;
@@ -19,6 +20,7 @@ class MainWindow : public QMainWindow
     QThread cameraThread;
     Visualiser* visualiser;
     CameraController* cameraController;
+    DataModel* dataModel;
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -32,7 +34,7 @@ signals:
     void stopReadingCamera(void);
 
 public slots:
-    void on_dataFromThread(const QString data);
+    void on_dataModelUpdate(void);
 
 private slots:
     void on_testButton_clicked();

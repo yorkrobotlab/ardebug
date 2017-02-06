@@ -27,26 +27,22 @@ MainWindow::MainWindow(QWidget *parent) :
     // Show a message
     ui->statusBar->showMessage("Application Started Successfully.", 3000);
 
-    // Create a data model for the robot list
-    QStringListModel *robotListModel = new QStringListModel();
+    // Set up the data model
+    dataModel = new DataModel;
+    ui->robotList->setModel(dataModel->getRobotList());
 
-    // Create a string list of robots
-    QStringList robotList;
-    robotList.append("Robot 1");
-    robotList.append("Robot 2");
-    robotList.append("Robot 3");
-
-    // Apply the list to the model and the model to the view
-    robotListModel->setStringList(robotList);
-    ui->robotList->setModel(robotListModel);
-
-    // Set up the data thread
+    // Set up the network thread
     DataThread *dataHandler = new DataThread;
     dataHandler->moveToThread(&networkThread);
     connect(&networkThread, SIGNAL(finished()), dataHandler, SLOT(deleteLater()));
+
+    // Connect signals and sockets for starting and stopping the networking
     connect(this, SIGNAL(openUDPSocket(int)), dataHandler, SLOT(openUDPSocket(int)));
     connect(this, SIGNAL(closeUDPSocket(void)), dataHandler, SLOT(closeUDPSocket(void)));
-    connect(dataHandler, SIGNAL(dataFromThread(QString)), this, SLOT(on_dataFromThread(QString)));
+
+    // Connect signals and sockets for transferring the incoming data
+    connect(dataHandler, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
+    connect(dataModel, SIGNAL(modelChanged(void)), this, SLOT(on_dataModelUpdate(void)));
 
     networkThread.start();
 
@@ -179,9 +175,10 @@ void MainWindow::on_disconnectButton_clicked()
     closeUDPSocket();
 }
 
-void MainWindow::on_dataFromThread(const QString data)
+void MainWindow::on_dataModelUpdate(void)
 {
-    ui->overviewText->appendPlainText(data);
+    // Update the robot list
+    ui->robotList->setModel(dataModel->getRobotList());
 }
 
 
