@@ -16,6 +16,8 @@
 CameraController::CameraController(void) {
     readTimer = new QTimer(this);
     connect(readTimer, SIGNAL(timeout()), this, SLOT(readCamera()));
+
+    machineVision = new MachineVision;
 }
 
 /* updateFrameSize
@@ -30,7 +32,8 @@ void CameraController::updateFrameSize(int size) {
  * Start the timer for reading images from the machine vision camera.
  */
 void CameraController::startReadingCamera(void) {
-    readTimer->start(41);
+    cameraLoaded = machineVision->setupCamera();
+    readTimer->start(1);
 }
 
 /* stopReadingCamera
@@ -38,6 +41,8 @@ void CameraController::startReadingCamera(void) {
  */
 void CameraController::stopReadingCamera(void) {
     readTimer->stop();
+    cameraLoaded = false;
+    machineVision->releaseCamera();
 }
 
 /* readCamera
@@ -46,6 +51,11 @@ void CameraController::stopReadingCamera(void) {
  */
 void CameraController::readCamera(void) {
     readTimer->stop();
-    emit dataFromCamera(machineVision_getLatestFrame(frameSize));
-    readTimer->start(41);
+
+    if (cameraLoaded) {
+        emit dataFromCamera(machineVision->getLatestFrame(frameSize));
+        readTimer->start(1);
+    } else {
+        std::cout << "Camera not loaded, stopping read timer." << std::endl;
+    }
 }

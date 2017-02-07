@@ -8,7 +8,6 @@
  */
 
 #include <machinevision.h>
-#include <appconfig.h>
 
 #include <iostream>
 #include <iomanip>
@@ -19,7 +18,6 @@
 #ifdef CVB_CAMERA_PRESENT
 
 #include <iCVCDriver.h>
-#include <iCVCImg.h>
 #include <iCVGenApi.h>
 #include <CVCError.h>
 #include <iCVCUtilities.h>
@@ -84,28 +82,17 @@ void projectpoint_image_to_world(cv::Mat cameraMatrix, double world_z, cv::Point
 /* getFrame
  * Gets the latest video frame.
  */
-Mat machineVision_getLatestFrame(int size) {
-    /*****Camera calibration parameters**********/
-    /*****Done on 18/08/2016 02:40:21 PM*********/
-    /*https://github.com/daneshtarapore/apriltags-cpp/blob/optimisation/out_camera_data.xml*/
-
-    double tmp_cameraMatrix[3][3] = {{1.6349274125326908e+03, 0.0, 1.2795000000000000e+03}, {0.0, 1.6349274125326908e+03, 1.0235000000000000e+03}, {0.0, 0.0, 1}};
-    cv::Mat cameraMatrix = Mat(3, 3, CV_64FC1, &tmp_cameraMatrix);
-    double tmp_distCoeffs[5][1] = {-1.4790445043449291e-01, 7.8218565302159274e-02, 0.0, 0.0, -1.7646117392362880e-03};
-    cv::Mat distCoeffs = Mat(5, 1, CV_64FC1, &tmp_distCoeffs);
-    /********************************************/
-
+bool MachineVision::setupCamera(void) {
     // Load the camera
     char driverPath[DRIVERPATHSIZE] = { 0 };
     TranslateFileName("%CVB%/drivers/GenICam.vin", driverPath, DRIVERPATHSIZE);
-    IMG hCamera = NULL;
 
     bool success = LoadImageFile(driverPath, hCamera);
 
     if(!success)
     {
         cout << "Error loading " << driverPath << " driver!" << endl;
-        return;
+        return false;
     }
 
     cout << "Load " << driverPath << " successful." << endl;
@@ -113,34 +100,58 @@ Mat machineVision_getLatestFrame(int size) {
     // Start grab with ring buffer
     cvbres_t result = G2Grab(hCamera);
 
-    if(result >= 0)
+    if(result < 0)
     {
-        // Wait for next image to be acquired
-        // (returns immediately if unprocessed images are in the ring buffer)
-        result = G2Wait(hCamera);
-
-        if(result < 0) {
-            cout << setw(3) << " Error with G2Wait: " << CVC_ERROR_FROM_HRES(result) << endl;
-        } else {
-            // Create an attached OpenCV image
-            Mat distorted_image = cvb_to_ocv_nocopy(hCamera);
-
-            // Swap blue and red channels
-            vector<Mat> channels(3);
-            split(distorted_image, channels);
-            merge(vector<Mat>{channels[2], channels[1], channels[0]}, distorted_image);
-
-            // Undistort the image
-            Mat image;
-            undistort(distorted_image, image, cameraMatrix, distCoeffs);
-
-            resize(image, image, Size(size, size), 0, 0, INTER_CUBIC);
-        }
+        cout << "Error grabbing camera with ring buffer." << endl;
+        return false;
     }
 
-    ReleaseObject(hCamera);
+    return true;
+}
+
+Mat MachineVision::getLatestFrame(int size) {
+    /*****Camera calibration parameters**********/
+    /*****Done on 18/08/2016 02:40:21 PM*********/
+    /*https://github.com/daneshtarapore/apriltags-cpp/blob/optimisation/out_camera_data.xml*/
+
+    double tmp_cameraMatrix[3][3] = {{1.6349274125326908e+03, 0.0, 1.2795000000000000e+03}, {0.0, 1.6349274125326908e+03, 1.0235000000000000e+03}, {0.0, 0.0, 1}};
+    Mat cameraMatrix = Mat(3, 3, CV_64FC1, &tmp_cameraMatrix);
+    double tmp_distCoeffs[5][1] = {-1.4790445043449291e-01, 7.8218565302159274e-02, 0.0, 0.0, -1.7646117392362880e-03};
+    Mat distCoeffs = Mat(5, 1, CV_64FC1, &tmp_distCoeffs);
+    /********************************************/
+
+    Mat image;
+
+    // Wait for next image to be acquired
+    // (returns immediately if unprocessed images are in the ring buffer)
+    cvbres_t result = G2Wait(hCamera);
+
+    if(result < 0) {
+        cout << setw(3) << " Error with G2Wait: " << CVC_ERROR_FROM_HRES(result) << endl;
+        image = Mat(size, size, CV_8UC3);
+    } else {
+        // Create an attached OpenCV image
+        Mat distorted_image = cvb_to_ocv_nocopy(hCamera);
+
+        // Swap blue and red channels
+        vector<Mat> channels(3);
+        split(distorted_image, channels);
+        merge(vector<Mat>{channels[2], channels[1], channels[0]}, distorted_image);
+
+        // Undistort the image
+        undistort(distorted_image, image, cameraMatrix, distCoeffs);
+
+        resize(image, image, Size(size, size), 0, 0, INTER_CUBIC);
+
+        /*Mat inv = Mat(size, size, image.type(), Scalar(255, 255, 255));
+        subtract(inv, image, image);*/
+    }
 
     return image;
+}
+
+void MachineVision::releaseCamera(void) {
+    ReleaseObject(hCamera);
 }
 
 #else /* CVB_CAMERA_PRESENT */

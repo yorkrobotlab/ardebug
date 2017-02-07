@@ -44,9 +44,9 @@ FORMS    += mainwindow.ui
 CONFIG += link_pkgconfig
 PKGCONFIG += opencv
 
-#LIBS += -L/opt/cvb/lib/ -lCVCImg
-#LIBS += -L/opt/cvb/lib/ -lCVCDriver
-#LIBS += -L/opt/cvb/lib/ -lCVCUtilities
+LIBS += -L/opt/cvb/lib/ -lCVCImg
+LIBS += -L/opt/cvb/lib/ -lCVCDriver
+LIBS += -L/opt/cvb/lib/ -lCVCUtilities
 
 INCLUDEPATH += /opt/cvb/include
 DEPENDPATH += /opt/cvb/include
