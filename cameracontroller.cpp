@@ -14,10 +14,12 @@
  * Create the read timer and connect it to the read function.
  */
 CameraController::CameraController(void) {
+    // Instantiate the machine vision class which contains the camera routines
+    machineVision = new MachineVision;
+
+    // Set up the timer to read the camera
     readTimer = new QTimer(this);
     connect(readTimer, SIGNAL(timeout()), this, SLOT(readCamera()));
-
-    machineVision = new MachineVision;
 }
 
 /* updateFrameSize
@@ -32,7 +34,10 @@ void CameraController::updateFrameSize(int size) {
  * Start the timer for reading images from the machine vision camera.
  */
 void CameraController::startReadingCamera(void) {
-    cameraLoaded = machineVision->setupCamera();
+    if (!cameraLoaded) {
+        cameraLoaded = machineVision->setupCamera();
+    }
+
     readTimer->start(1);
 }
 

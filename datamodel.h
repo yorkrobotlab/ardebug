@@ -13,6 +13,7 @@ class DataModel : public QObject
 
 public:
     explicit DataModel(QObject *parent = 0);
+    ~DataModel(void);
 
     QStringListModel* getRobotList(void);
 

@@ -79,6 +79,9 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete dataModel;
+    delete visualiser;
+    delete cameraController;
 
     networkThread.quit();
     networkThread.wait();

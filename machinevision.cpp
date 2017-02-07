@@ -79,8 +79,8 @@ void projectpoint_image_to_world(cv::Mat cameraMatrix, double world_z, cv::Point
     double world_y = (image_y - c_y * world_z) / f_y;*/
 }
 
-/* getFrame
- * Gets the latest video frame.
+/* setupCamera
+ * Set up the camera data.
  */
 bool MachineVision::setupCamera(void) {
     // Load the camera
@@ -109,6 +109,9 @@ bool MachineVision::setupCamera(void) {
     return true;
 }
 
+/* getLatestFrame
+ * Gets the latest video frame.
+ */
 Mat MachineVision::getLatestFrame(int size) {
     /*****Camera calibration parameters**********/
     /*****Done on 18/08/2016 02:40:21 PM*********/
@@ -150,6 +153,9 @@ Mat MachineVision::getLatestFrame(int size) {
     return image;
 }
 
+/* releaseCamera
+ * Release the camera data.
+ */
 void MachineVision::releaseCamera(void) {
     ReleaseObject(hCamera);
 }
@@ -159,13 +165,20 @@ void MachineVision::releaseCamera(void) {
 using namespace std;
 using namespace cv;
 
-/* getFrame
+/* setupCamera
+ * Set up the camera data.
+ */
+bool MachineVision::setupCamera(void) {
+    return true;
+}
+
+/* getLatestFrame
  * Gets the latest video frame.
  */
-Mat machineVision_getLatestFrame(int size) {
+Mat MachineVision::getLatestFrame(int size) {
     // Time varying colour value
     static int r = 0;
-    r+=5;
+    r+=1;
     if(r>255) r=0;
 
     // Camera is not present, fake the frame
@@ -173,6 +186,13 @@ Mat machineVision_getLatestFrame(int size) {
 
     // Return the frame as an image
     return image;
+}
+
+/* releaseCamera
+ * Release the camera data.
+ */
+void MachineVision::releaseCamera(void) {
+    // Do Nothing
 }
 
 #endif /* CVB_CAMERA_PRESENT */

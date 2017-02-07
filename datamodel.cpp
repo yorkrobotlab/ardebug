@@ -20,6 +20,10 @@ DataModel::DataModel(QObject *parent) : QObject(parent)
     robotListModel->setStringList(robotList);
 }
 
+DataModel::~DataModel(void) {
+    delete robotListModel;
+}
+
 QStringListModel* DataModel::getRobotList(void) {
     return robotListModel;
 }
