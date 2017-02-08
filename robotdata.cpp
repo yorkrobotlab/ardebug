@@ -61,11 +61,11 @@ int RobotData::getID(void) {
     return this->id;
 }
 
-/* getIDConst
- * Copy of getID, declared cost. Used for list sorting.
+/* setName
+ * Set the robot name string;
  */
-int RobotData::getIDConst(void) const {
-    return this->id;
+void RobotData::setName(QString name) {
+    this->name = name;
 }
 
 /* getName
@@ -73,4 +73,11 @@ int RobotData::getIDConst(void) const {
  */
 QString RobotData::getName(void) {
     return this->name;
+}
+
+/* getIDConst
+ * Copy of getID, declared cost. Used for list sorting.
+ */
+int RobotData::getIDConst(void) const {
+    return this->id;
 }

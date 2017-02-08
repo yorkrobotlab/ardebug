@@ -22,9 +22,11 @@ public:
     void setState(QString state);
     QString getState(void);
 
+    void setName(QString name);
+    QString getName(void);
+
     int getID(void);
     int getIDConst(void) const;
-    QString getName(void);
 };
 
 #endif // ROBOTDATA_H

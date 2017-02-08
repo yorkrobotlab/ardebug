@@ -9,6 +9,8 @@
 #include "ui_mainwindow.h"
 #include "datathread.h"
 #include "machinevision.h"
+#include "datamodel.h"
+#include "robotdata.h"
 
 #include <QLayout>
 
@@ -30,6 +32,8 @@ MainWindow::MainWindow(QWidget *parent) :
     // Set up the data model
     dataModel = new DataModel;
     ui->robotList->setModel(dataModel->getRobotList());
+    connect(ui->robotList->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+            this, SLOT(robotListSelectionChanged(QItemSelection)));
 
     // Set up the network thread
     DataThread *dataHandler = new DataThread;
@@ -42,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Connect signals and sockets for transferring the incoming data
     connect(dataHandler, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
-    connect(dataModel, SIGNAL(modelChanged(void)), this, SLOT(on_dataModelUpdate(void)));
+    connect(dataModel, SIGNAL(modelChanged(bool)), this, SLOT(dataModelUpdate(bool)));
 
     networkThread.start();
 
@@ -71,6 +75,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Have the visualiser pass its initial frame size to the camera controller
     visualiser->checkFrameSize();
+
+    // Initially no robot selected
+    selectedRobotID = -1;
 }
 
 /* Destructor.
@@ -142,22 +149,26 @@ void MainWindow::setVideo(bool enabled) {
     }
 }
 
-/* on_robotList_clicked
+/* on_robotList_selectionChanged
  * A robot was selected from the list
  */
-void MainWindow::on_robotList_clicked(const QModelIndex &index)
-{
-    // Get the name of the robot selected
-    QStringListModel *model = (QStringListModel *)ui->robotList->model();
-    QString robotName = model->stringList().at(index.row());
+void MainWindow::robotListSelectionChanged(const QItemSelection &selection) {
+    // Get the data of the robot selected
+    RobotData* robot = dataModel->getRobot(selection.indexes().at(0).row());
+
+    // Update the selected robot id
+    selectedRobotID = robot->getID();
 
     // Update the overview text
     ui->overviewText->clear();
     ui->overviewText->appendPlainText("Overview info:\n");
-    ui->overviewText->appendPlainText(robotName);
+    ui->overviewText->appendPlainText("ID: " + QString::number(robot->getID()));
+    ui->overviewText->appendPlainText("Name: " + robot->getName());
+    ui->overviewText->appendPlainText("State: " + robot->getState());
+    ui->overviewText->appendPlainText("X: " + QString::number(robot->getPos().x) + ", Y: " + QString::number(robot->getPos().y));
 
     // Show a status bar message
-    ui->statusBar->showMessage(robotName, 3000);
+    ui->statusBar->showMessage(robot->getName(), 3000);
 }
 
 /* on_connectButton_clicked()
@@ -178,10 +189,14 @@ void MainWindow::on_disconnectButton_clicked()
     closeUDPSocket();
 }
 
-void MainWindow::on_dataModelUpdate(void)
+void MainWindow::dataModelUpdate(bool listChanged)
 {
     // Update the robot list
-    ui->robotList->setModel(dataModel->getRobotList());
+    if (listChanged) {
+        ui->robotList->setModel(dataModel->getRobotList());
+
+        int idx = dataModel->getRobotIndex(selectedRobotID, false);
+        QModelIndex qidx = ui->robotList->model()->index(idx, 0);
+        ui->robotList->setCurrentIndex(qidx);
+    }
 }
-
-

@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QStringListModel>
 #include <QThread>
+#include <QItemSelection>
 
 #include "visualiser.h"
 #include "cameracontroller.h"
@@ -21,6 +22,7 @@ class MainWindow : public QMainWindow
     Visualiser* visualiser;
     CameraController* cameraController;
     DataModel* dataModel;
+    int selectedRobotID;
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -34,7 +36,9 @@ signals:
     void stopReadingCamera(void);
 
 public slots:
-    void on_dataModelUpdate(void);
+    void dataModelUpdate(bool listChanged);
+
+    void robotListSelectionChanged(const QItemSelection &selection);
 
 private slots:
     void on_testButton_clicked();
@@ -44,8 +48,6 @@ private slots:
     void on_actionEnable_Video_changed();
 
     void on_videoEnChbx_stateChanged();
-
-    void on_robotList_clicked(const QModelIndex &index);
 
     void on_connectButton_clicked();
 
