@@ -1,23 +1,14 @@
 #include "datamodel.h"
 
-#include <stdio.h>
-#include <iostream>
+using namespace  std;
 
 DataModel::DataModel(QObject *parent) : QObject(parent)
 {
     // Instantiate the data model here
+    robotDataList.reserve(10);
 
-    // Create a  model for the list of active robots
+    // Create a  model for the list of active robot ids
     robotListModel = new QStringListModel();
-
-    // Create a string list of robots
-    QStringList robotList;
-    robotList.append("Robot 1");
-    robotList.append("Robot 2");
-    robotList.append("Robot 3");
-
-    // Apply the list to the model and the model to the view
-    robotListModel->setStringList(robotList);
 }
 
 DataModel::~DataModel(void) {
@@ -25,14 +16,20 @@ DataModel::~DataModel(void) {
 }
 
 QStringListModel* DataModel::getRobotList(void) {
+    QStringList list;
+    for(int i = 0; i < robotDataList.size(); i++) {
+        RobotData* d = (RobotData*)robotDataList.at(i);
+        list.append(d->getID());
+    }
+
+    robotListModel->setStringList(list);
     return robotListModel;
 }
 
 void DataModel::newData(const QString &data) {
     // Process the new data
-    QStringList robotList = robotListModel->stringList();
-    robotList.append(data.simplified());
-    robotListModel->setStringList(robotList);
+    RobotData* robot = new RobotData(data.simplified());
+    robotDataList.push_back(robot);
 
     // Signal to the UI that new data is available
     emit modelChanged();

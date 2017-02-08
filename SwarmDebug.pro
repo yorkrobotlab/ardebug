@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     machinevision.cpp \
     visualiser.cpp \
     cameracontroller.cpp \
-    datamodel.cpp
+    datamodel.cpp \
+    robotdata.cpp
 
 HEADERS  += mainwindow.h \
     datathread.h \
@@ -37,7 +38,9 @@ HEADERS  += mainwindow.h \
     visualiser.h \
     appconfig.h \
     cameracontroller.h \
-    datamodel.h
+    datamodel.h \
+    robotdata.h \
+    util.h
 
 FORMS    += mainwindow.ui
 
