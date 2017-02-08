@@ -7,12 +7,13 @@
 
 class RobotData
 {
-    QString id;
+    int id;
+    QString name;
     Vector2D pos;
     QString state;
 
 public:
-    RobotData(const QString id);
+    RobotData(int id, QString name);
     ~RobotData(void);
 
     void setPos(float x, float y);
@@ -21,7 +22,9 @@ public:
     void setState(QString state);
     QString getState(void);
 
-    QString getID(void);
+    int getID(void);
+    int getIDConst(void) const;
+    QString getName(void);
 };
 
 #endif // ROBOTDATA_H

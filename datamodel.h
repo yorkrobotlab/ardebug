@@ -14,7 +14,7 @@ class DataModel : public QObject
 {
     Q_OBJECT
     QStringListModel* robotListModel;
-    std::vector<RobotData*> robotDataList;
+    std::vector<RobotData> robotDataList;
 
 public:
     explicit DataModel(QObject *parent = 0);
