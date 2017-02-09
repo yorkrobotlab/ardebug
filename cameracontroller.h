@@ -18,6 +18,7 @@ class CameraController : public QObject
 
 public:
     CameraController(void);
+    ~CameraController(void);
 
 public slots:
     void updateFrameSize(int size);
@@ -29,6 +30,7 @@ private slots:
 
 signals:
     void dataFromCamera(const cv::Mat &image);
+    void posData(const QString &);
 };
 
 #endif // CAMERACONTROLLER_H

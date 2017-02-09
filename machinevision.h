@@ -1,7 +1,8 @@
 #ifndef MACHINEVISION_H
 #define MACHINEVISION_H
 
-#include <appconfig.h>
+#include "util.h"
+#include "appconfig.h"
 
 #include <opencv2/opencv.hpp>
 
@@ -23,7 +24,7 @@ private:
 
 public:
     bool setupCamera(void);
-    cv::Mat getLatestFrame(int size);
+    cv::Mat getLatestFrame(int size, std::vector<TrackResult>* result);
     void releaseCamera(void);
 };
 

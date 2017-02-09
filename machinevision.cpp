@@ -175,7 +175,7 @@ bool MachineVision::setupCamera(void) {
 /* getLatestFrame
  * Gets the latest video frame.
  */
-Mat MachineVision::getLatestFrame(int size) {
+Mat MachineVision::getLatestFrame(int size, std::vector<TrackResult>* result) {
     // Time varying colour value
     static int r = 0;
     r+=1;
@@ -183,6 +183,13 @@ Mat MachineVision::getLatestFrame(int size) {
 
     // Camera is not present, fake the frame
     Mat image(size, size, CV_8UC3, Scalar(128, 0, r));
+
+    // Fake a robot position
+    TrackResult res;
+    res.id = 0;
+    res.pos.x = 0.2 + (0.0001 * r);
+    res.pos.y = 0.4;
+    result->push_back(res);
 
     // Return the frame as an image
     return image;

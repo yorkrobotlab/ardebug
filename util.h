@@ -6,6 +6,11 @@ struct Vector2D {
     float y;
 };
 
+struct TrackResult {
+    int id;
+    Vector2D pos;
+};
+
 void sendClosePacket(int port);
 
 #endif // UTIL_H

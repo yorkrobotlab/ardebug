@@ -6,9 +6,11 @@
  * (C) Alistair Jewers Jan 2017
  */
 
-#include "cameracontroller.h"
+#include <vector>
 
+#include "cameracontroller.h"
 #include "machinevision.h"
+#include "util.h"
 
 /* Constructor
  * Create the read timer and connect it to the read function.
@@ -20,6 +22,11 @@ CameraController::CameraController(void) {
     // Set up the timer to read the camera
     readTimer = new QTimer(this);
     connect(readTimer, SIGNAL(timeout()), this, SLOT(readCamera()));
+}
+
+CameraController::~CameraController(void) {
+    delete machineVision;
+    delete readTimer;
 }
 
 /* updateFrameSize
@@ -55,12 +62,27 @@ void CameraController::stopReadingCamera(void) {
  * image acquired in a signal.
  */
 void CameraController::readCamera(void) {
+    // Pause the read timer
     readTimer->stop();
 
+    // Create a vector to store tracking results
+    std::vector<TrackResult> result;
+    result.reserve(10);
+
+    // Check the camera is currently loaded
     if (cameraLoaded) {
-        emit dataFromCamera(machineVision->getLatestFrame(frameSize));
+        // Retrieve the image and tracking data, and emit the image data signal
+        emit dataFromCamera(machineVision->getLatestFrame(frameSize, &result));
+
+        // Restart timer
         readTimer->start(41);
     } else {
         std::cout << "Camera not loaded, stopping read timer." << std::endl;
+    }
+
+    // Iterate over all tracking results and emit position data signals as necessary
+    for (size_t i = 0; i < result.size(); i++) {
+        TrackResult res = (TrackResult)result.at(i);
+        emit posData(QString::number(res.id) + " 2 " + QString::number(res.pos.x) + " " + QString::number(res.pos.y));
     }
 }

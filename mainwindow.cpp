@@ -68,10 +68,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(startReadingCamera(void)), cameraController, SLOT(startReadingCamera(void)));
     connect(this, SIGNAL(stopReadingCamera(void)), cameraController, SLOT(stopReadingCamera(void)));
 
-    // Connect its signals to the visualiser and vice versa
+    // Connect image related signals to the visualiser and vice versa
     qRegisterMetaType< cv::Mat >("cv::Mat");
     connect(cameraController, SIGNAL(dataFromCamera(cv::Mat)), visualiser, SLOT(showImage(cv::Mat)));
     connect(visualiser, SIGNAL(frameSizeChanged(int)), cameraController, SLOT(updateFrameSize(int)));
+
+    // Connect tracking position data signal to data model
+    connect(cameraController, SIGNAL(posData(QString)), dataModel, SLOT(newData(QString)));
 
     cameraThread.start();
 
@@ -89,10 +92,12 @@ MainWindow::~MainWindow()
 {
     sendClosePacket(8888);
 
+    stopReadingCamera();
+
     delete ui;
     delete dataModel;
-    delete visualiser;
-    delete cameraController;
+    //delete visualiser;
+    //delete cameraController;
 
     networkThread.quit();
     networkThread.wait();
