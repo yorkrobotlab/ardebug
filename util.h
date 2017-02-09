@@ -6,4 +6,6 @@ struct Vector2D {
     float y;
 };
 
+void sendClosePacket(int port);
+
 #endif // UTIL_H

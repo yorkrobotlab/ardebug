@@ -24,7 +24,8 @@ public:
     explicit DataModel(QObject *parent = 0);
     ~DataModel(void);
 
-    RobotData* getRobot(int idx);
+    RobotData* getRobotByIndex(int idx);
+    RobotData* getRobotByID(int id);
 
     QStringListModel* getRobotList(void);
 

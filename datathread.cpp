@@ -46,18 +46,13 @@ void DataThread::openUDPSocket(int port) {
         return;
     }
 
+    // Signal that the socket was opened successfully
+    emit socketOpened(sockfd);
+
     // Start the data read timer
     readTimer = new QTimer(this);
     connect(readTimer, SIGNAL(timeout()), this, SLOT(listenForPacket()));
     readTimer->start(1);
-}
-
-/* closeUDPSocket
- * Closes the UDP socket and stops listening for data.
- */
-void DataThread::closeUDPSocket(void) {
-    readTimer->stop();
-    close(sockfd);
 }
 
 /* listenForPacket
@@ -81,11 +76,16 @@ void DataThread::listenForPacket(void) {
         return;
     }
 
-    // Emit received data through signal
-    QString str;
-    str.sprintf("%s", buffer);
-    emit dataFromThread(str);
+    // Check if close packet received
+    if (strcmp(buffer, "close") == 0) {
+        close(sockfd);
+    } else {
+        // Emit received data through signal
+        QString str;
+        str.sprintf("%s", buffer);
+        emit dataFromThread(str);
 
-    // Restart the timer
-    readTimer->start(1);
+        // Restart the timer
+        readTimer->start(1);
+    }
 }

@@ -12,12 +12,12 @@ class DataThread : public QObject
 
 public slots:
     void openUDPSocket(int port);
-    void closeUDPSocket(void);
 
 private slots:
     void listenForPacket(void);
 
 signals:
+    void socketOpened(const int &);
     void dataFromThread(const QString &);
 };
 

@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     visualiser.cpp \
     cameracontroller.cpp \
     datamodel.cpp \
-    robotdata.cpp
+    robotdata.cpp \
+    util.cpp
 
 HEADERS  += mainwindow.h \
     datathread.h \

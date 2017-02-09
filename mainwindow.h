@@ -24,6 +24,8 @@ class MainWindow : public QMainWindow
     DataModel* dataModel;
     int selectedRobotID;
 
+    int sockfd;
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -39,6 +41,8 @@ public slots:
     void dataModelUpdate(bool listChanged);
 
     void robotListSelectionChanged(const QItemSelection &selection);
+
+    void socketOpened(const int &sockfd) { this->sockfd = sockfd; }
 
 private slots:
     void on_testButton_clicked();
@@ -57,6 +61,7 @@ private:
     Ui::MainWindow *ui;
 
     void setVideo(bool enabled);
+    void updateOverviewTab(void);
 };
 
 #endif // MAINWINDOW_H

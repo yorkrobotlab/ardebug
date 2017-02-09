@@ -39,11 +39,28 @@ DataModel::~DataModel(void) {
     delete robotListModel;
 }
 
-/* getRobot
- * Return a pointer to the data of the robot for a given index.
+/* getRobotByIndex
+ * Return a pointer to the data of the robot at the given index. Returns null
+ * if index is invalid.
  */
-RobotData* DataModel::getRobot(int idx) {
+RobotData* DataModel::getRobotByIndex(int idx) {
     return robotDataList.at(idx);
+}
+
+/* getRobotByID
+ * Return a pointer to the data of the robot with the given ID. Returns null
+ * if ID cannot be found.
+ */
+RobotData* DataModel::getRobotByID(int id) {
+    for (size_t i = 0; i < robotDataList.size(); i++) {
+        RobotData* robot = (RobotData*)robotDataList.at(i);
+
+        if (robot->getID() == id) {
+            return robot;
+        }
+    }
+
+    return 0;
 }
 
 /* getRobotList
