@@ -184,16 +184,40 @@ Mat MachineVision::getLatestFrame(int size, std::vector<TrackResult>* result) {
     r+=1;
     if(r>359) r=0;
 
-    // Camera is not present, fake the frame
-    Mat image(size, size, CV_8UC3, Scalar(128, 128, 128));
-
-    // Fake a robot position
+    // Fake some robot position and angle data
     TrackResult res;
-    res.id = 0;
+    res.id = 1;
     res.pos.x = 0.5 + (0.2 * (float)cos(r * (PI/180)));
     res.pos.y = 0.5 + (0.2 * (float)sin(r * (PI/180)));
     res.angle = (r > 269) ? r + -270 : r + 90;
     result->push_back(res);
+
+    res.id = 2;
+    res.pos.x = 0.5 + (0.3 * (float)sin(r * (PI/180)));
+    res.pos.y = 0.5 + (0.3 * (float)cos(r * (PI/180)));
+    res.angle = 360 - r;
+    result->push_back(res);
+
+    res.id = 3;
+    res.pos.x = 0.5 + (0.1 * (float)sin(r * (PI/180)));
+    res.pos.y = 0.5 + (0.1 * (float)cos(r * (PI/180)));
+    res.angle = 360 - r;
+    result->push_back(res);
+
+    res.id = 4;
+    res.pos.x = 0.5 + (0.45 * (float)cos(r * (PI/180)));
+    res.pos.y = 0.5 + (0.45 * (float)sin(r * (PI/180)));
+    res.angle = (r > 269) ? r + -270 : r + 90;
+    result->push_back(res);
+
+    res.id = 5;
+    res.pos.x = 0.2 + (0.1 * (float)sin(4 * r * (PI/180)));
+    res.pos.y = 0.2 + (0.1 * (float)cos(4 * r * (PI/180)));
+    res.angle = 360 - (4 * r);
+    result->push_back(res);
+
+    // Camera is not present, fake the frame
+    Mat image(size, size, CV_8UC3, Scalar(192, 192, 192));
 
     // Return the frame as an image
     return image;

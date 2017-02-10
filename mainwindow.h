@@ -22,7 +22,6 @@ class MainWindow : public QMainWindow
     Visualiser* visualiser;
     CameraController* cameraController;
     DataModel* dataModel;
-    int selectedRobotID;
 
     int sockfd;
 
@@ -62,6 +61,7 @@ private:
 
     void setVideo(bool enabled);
     void updateOverviewTab(void);
+    void updateStateTab(void);
 };
 
 #endif // MAINWINDOW_H

@@ -45,7 +45,7 @@ void CameraController::startReadingCamera(void) {
         cameraLoaded = machineVision->setupCamera();
     }
 
-    readTimer->start(41);
+    readTimer->start(21);
 }
 
 /* stopReadingCamera
@@ -75,7 +75,7 @@ void CameraController::readCamera(void) {
         emit dataFromCamera(machineVision->getLatestFrame(frameSize, &result));
 
         // Restart timer
-        readTimer->start(41);
+        readTimer->start(21);
     } else {
         std::cout << "Camera not loaded, stopping read timer." << std::endl;
     }

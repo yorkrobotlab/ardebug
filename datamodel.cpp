@@ -30,6 +30,9 @@ DataModel::DataModel(QObject *parent) : QObject(parent)
 
     // Create a  model for the list of active robot ids
     robotListModel = new QStringListModel();
+
+    // Initially no robot selected
+    selectedRobotID = -1;
 }
 
 /* Destructor

@@ -80,9 +80,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Have the visualiser pass its initial frame size to the camera controller
     visualiser->checkFrameSize();
-
-    // Initially no robot selected
-    selectedRobotID = -1;
 }
 
 /* Destructor.
@@ -163,28 +160,47 @@ void MainWindow::setVideo(bool enabled) {
  */
 void MainWindow::robotListSelectionChanged(const QItemSelection &selection) {
     // Get the data of the robot selected
-    RobotData* robot = dataModel->getRobotByIndex(selection.indexes().at(0).row());
+    int idx = selection.indexes().at(0).row();
+    if (idx >= 0 || idx < dataModel->getRobotCount()) {
+        RobotData* robot = dataModel->getRobotByIndex(idx);
 
-    // Update the selected robot id
-    selectedRobotID = robot->getID();
+        // Update the selected robot id
+        dataModel->selectedRobotID = robot->getID();
 
-    // Show a status bar message
-    ui->statusBar->showMessage(robot->getName(), 3000);
+        // Show a status bar message
+        ui->statusBar->showMessage(robot->getName(), 3000);
+    } else {
+        dataModel->selectedRobotID = -1;
+    }
 
     // Update the overview tab
     updateOverviewTab();
+
+    // Update the state tab
+    updateStateTab();
 }
 
 void MainWindow::updateOverviewTab(void) {
     // Get the selected robot
-    if (selectedRobotID >= 0) {
-        RobotData* robot = dataModel->getRobotByID(selectedRobotID);
+    if (dataModel->selectedRobotID >= 0) {
+        RobotData* robot = dataModel->getRobotByID(dataModel->selectedRobotID);
 
         // Update the overview text
         ui->robotIDLabel->setText(QString::number(robot->getID()));
         ui->robotNameLabel->setText(robot->getName());
         ui->robotStateLabel->setText(robot->getState());
         ui->robotPosLabel->setText("X: " + QString::number(robot->getPos().x) + ", Y: " + QString::number(robot->getPos().y) + ", A: " + QString::number(robot->getAngle()));
+    }
+}
+
+void MainWindow::updateStateTab(void) {
+    // Get the selected robot
+    if (dataModel->selectedRobotID >= 0) {
+        RobotData* robot = dataModel->getRobotByID(dataModel->selectedRobotID);
+
+        // Update the state lists
+        ui->stateList->setModel(robot->getKnownStates());
+        ui->stateTransitionList->setModel(robot->getStateTransitionList());
     }
 }
 
@@ -212,7 +228,7 @@ void MainWindow::dataModelUpdate(bool listChanged)
     if (listChanged) {
         ui->robotList->setModel(dataModel->getRobotList());
 
-        int idx = dataModel->getRobotIndex(selectedRobotID, false);
+        int idx = dataModel->getRobotIndex(dataModel->selectedRobotID, false);
 
         if (idx != -1) {
             QModelIndex qidx = ui->robotList->model()->index(idx, 0);

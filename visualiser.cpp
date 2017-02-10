@@ -31,20 +31,29 @@ Visualiser::Visualiser(DataModel *dataModelRef) {
  * Display the supplied opencv image.
  */
 void Visualiser::showImage(const Mat& image) {
+    // Iterate over the list of robots
     for (int i = 0; i < dataModelRef->getRobotCount(); i++) {
         // Get data
         RobotData* robot = dataModelRef->getRobotByIndex(i);
         int x = image.cols * robot->getPos().x;
         int y = image.rows * robot->getPos().y;
         int a = robot->getAngle();
+        bool selected = dataModelRef->selectedRobotID == robot->getID();
+
+        // If selected, draw text
+        if (selected) {
+            putText(image, robot->getName().toStdString(), Point(x + 8, y), FONT_HERSHEY_SIMPLEX, 0.3, robot->getColour());
+        }
 
         // Draw cross
-        line(image, Point(x - 2, y), Point(x + 2, y), Scalar(0, 50, 255));
-        line(image, Point(x, y - 2), Point(x, y + 2), Scalar(0, 50, 255));
+        line(image, Point(x - 5, y), Point(x + 5, y), robot->getColour(), selected ? 2 : 1);
+        line(image, Point(x, y - 5), Point(x, y + 5), robot->getColour(), selected ? 2 : 1);
+
+        //circle(image, Point(x, y), 8, robot->getColour(), thickness);
 
         // Draw direction
-        Point end = Point(x + (int)(10 * cos(a * PI/180)), y + (int)(10 * sin(a * PI/180)));
-        line(image, Point(x, y), end, Scalar(0, 0, 255));
+        Point end = Point(x + (int)(12 * cos(a * PI/180)), y + (int)(12 * sin(a * PI/180)));
+        line(image, Point(x, y), end, robot->getColour(), selected ? 2 : 1);
     }
 
     // Convert to RGB

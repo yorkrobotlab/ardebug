@@ -21,6 +21,8 @@ class DataModel : public QObject
     std::vector<RobotData*> robotDataList;
 
 public:
+    int selectedRobotID;
+
     explicit DataModel(QObject *parent = 0);
     ~DataModel(void);
 
