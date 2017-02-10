@@ -83,6 +83,14 @@ QStringListModel* DataModel::getRobotList(void) {
     return robotListModel;
 }
 
+/* getRobotCount
+ * Returns the number of robots for which data is currently
+ * stored;
+ */
+int DataModel::getRobotCount(void) {
+    return robotDataList.size();
+}
+
 /* newData
  * Slot. Called when new data arrives.
  */
@@ -134,8 +142,8 @@ void DataModel::newData(const QString &dataString) {
         robot->setState(data[2]);
         break;
     case PACKET_TYPE_POSITION:
-        if (data.length() > 3) {
-            parsePositionPacket(robot, data[2], data[3]);
+        if (data.length() > 4) {
+            parsePositionPacket(robot, data[2], data[3], data[4]);
         }
         break;
     default:
@@ -154,7 +162,7 @@ void DataModel::newData(const QString &dataString) {
 /* parsePositionPacket
  * Parses floating point data from the string elements of a position packet.
  */
-void DataModel::parsePositionPacket(RobotData* robot, QString xString, QString yString) {
+void DataModel::parsePositionPacket(RobotData* robot, QString xString, QString yString, QString aString) {
     bool ok;
     float x = xString.toFloat(&ok);
 
@@ -168,7 +176,14 @@ void DataModel::parsePositionPacket(RobotData* robot, QString xString, QString y
         return;
     }
 
+    int a = aString.toInt(&ok);
+
+    if(!ok) {
+        return;
+    }
+
     robot->setPos(x, y);
+    robot->setAngle(a);
 }
 
 /* getRobotIndex

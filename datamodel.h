@@ -30,9 +30,10 @@ public:
     QStringListModel* getRobotList(void);
 
     int getRobotIndex(int id, bool create = true);
+    int getRobotCount(void);
 
 private:
-    void parsePositionPacket(RobotData* robot, QString xString, QString yString);
+    void parsePositionPacket(RobotData* robot, QString xString, QString yString, QString aString);
 
 signals:
     void modelChanged(bool listChanged);

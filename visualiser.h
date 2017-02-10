@@ -1,6 +1,8 @@
 #ifndef VISUALISER_H
 #define VISUALISER_H
 
+#include "datamodel.h"
+
 #include <QWidget>
 #include <QImage>
 #include <QPainter>
@@ -12,6 +14,7 @@ class Visualiser : public QWidget
     Q_OBJECT
 public:
     Visualiser(QWidget *parent = 0);
+    Visualiser(DataModel* dataModelRef);
 
     QSize minimumSizeHint () const {return QSize(200, 200); }
 
@@ -29,6 +32,7 @@ protected:
 
     QImage _qimage;
     cv::Mat _tmp;
+    DataModel* dataModelRef;
 };
 
 #endif // VISUALISER_H

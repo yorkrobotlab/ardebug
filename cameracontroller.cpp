@@ -83,6 +83,6 @@ void CameraController::readCamera(void) {
     // Iterate over all tracking results and emit position data signals as necessary
     for (size_t i = 0; i < result.size(); i++) {
         TrackResult res = (TrackResult)result.at(i);
-        emit posData(QString::number(res.id) + " 2 " + QString::number(res.pos.x) + " " + QString::number(res.pos.y));
+        emit posData(QString::number(res.id) + " 2 " + QString::number(res.pos.x) + " " + QString::number(res.pos.y) + " " + QString::number(res.angle));
     }
 }

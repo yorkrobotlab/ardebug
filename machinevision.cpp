@@ -12,6 +12,7 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <math.h>
 
 #include <opencv2/aruco.hpp>
 
@@ -162,6 +163,8 @@ void MachineVision::releaseCamera(void) {
 
 #else /* CVB_CAMERA_PRESENT */
 
+#define PI 3.14159265
+
 using namespace std;
 using namespace cv;
 
@@ -176,19 +179,20 @@ bool MachineVision::setupCamera(void) {
  * Gets the latest video frame.
  */
 Mat MachineVision::getLatestFrame(int size, std::vector<TrackResult>* result) {
-    // Time varying colour value
+    // Time varying value
     static int r = 0;
     r+=1;
-    if(r>255) r=0;
+    if(r>359) r=0;
 
     // Camera is not present, fake the frame
-    Mat image(size, size, CV_8UC3, Scalar(128, 0, r));
+    Mat image(size, size, CV_8UC3, Scalar(128, 128, 128));
 
     // Fake a robot position
     TrackResult res;
     res.id = 0;
-    res.pos.x = 0.2 + (0.0001 * r);
-    res.pos.y = 0.4;
+    res.pos.x = 0.5 + (0.2 * (float)cos(r * (PI/180)));
+    res.pos.y = 0.5 + (0.2 * (float)sin(r * (PI/180)));
+    res.angle = (r > 269) ? r + -270 : r + 90;
     result->push_back(res);
 
     // Return the frame as an image

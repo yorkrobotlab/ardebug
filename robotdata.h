@@ -9,24 +9,29 @@ class RobotData
 {
     int id;
     QString name;
-    Vector2D pos;
     QString state;
+
+    Vector2D pos;
+    int angle;
 
 public:
     RobotData(int id, QString name);
     ~RobotData(void);
 
-    void setPos(float x, float y);
-    Vector2D getPos(void);
-
-    void setState(QString state);
-    QString getState(void);
-
-    void setName(QString name);
-    QString getName(void);
-
     int getID(void);
     int getIDConst(void) const;
+
+    QString getName(void);
+    void setName(QString name);
+
+    QString getState(void);
+    void setState(QString state);
+
+    Vector2D getPos(void);
+    void setPos(float x, float y);
+
+    int getAngle(void);
+    void setAngle(int angle);
 };
 
 #endif // ROBOTDATA_H

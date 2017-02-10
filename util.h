@@ -9,6 +9,7 @@ struct Vector2D {
 struct TrackResult {
     int id;
     Vector2D pos;
+    int angle;
 };
 
 void sendClosePacket(int port);

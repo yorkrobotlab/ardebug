@@ -10,18 +10,43 @@
 #include "machinevision.h"
 
 #include <stdio.h>
+#include <math.h>
+
+#define PI 3.14159265
 
 #include <QLayout>
+
+using namespace cv;
 
 /* Constructor
  * Empty.
  */
 Visualiser::Visualiser(QWidget*)  { }
 
+Visualiser::Visualiser(DataModel *dataModelRef) {
+    this->dataModelRef = dataModelRef;
+}
+
 /* showImage
  * Display the supplied opencv image.
  */
-void Visualiser::showImage(const cv::Mat& image) {
+void Visualiser::showImage(const Mat& image) {
+    for (int i = 0; i < dataModelRef->getRobotCount(); i++) {
+        // Get data
+        RobotData* robot = dataModelRef->getRobotByIndex(i);
+        int x = image.cols * robot->getPos().x;
+        int y = image.rows * robot->getPos().y;
+        int a = robot->getAngle();
+
+        // Draw cross
+        line(image, Point(x - 2, y), Point(x + 2, y), Scalar(0, 50, 255));
+        line(image, Point(x, y - 2), Point(x, y + 2), Scalar(0, 50, 255));
+
+        // Draw direction
+        Point end = Point(x + (int)(10 * cos(a * PI/180)), y + (int)(10 * sin(a * PI/180)));
+        line(image, Point(x, y), end, Scalar(0, 0, 255));
+    }
+
     // Convert to RGB
     switch (image.type()) {
         case CV_8UC1:

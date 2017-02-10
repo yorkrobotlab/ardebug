@@ -53,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
     networkThread.start();
 
     // Intantiate the visualiser
-    visualiser = new Visualiser();
+    visualiser = new Visualiser(dataModel);
     visualiser->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
     // Embed the visualiser in the tab
@@ -184,7 +184,7 @@ void MainWindow::updateOverviewTab(void) {
         ui->robotIDLabel->setText(QString::number(robot->getID()));
         ui->robotNameLabel->setText(robot->getName());
         ui->robotStateLabel->setText(robot->getState());
-        ui->robotPosLabel->setText("X: " + QString::number(robot->getPos().x) + ", Y: " + QString::number(robot->getPos().y));
+        ui->robotPosLabel->setText("X: " + QString::number(robot->getPos().x) + ", Y: " + QString::number(robot->getPos().y) + ", A: " + QString::number(robot->getAngle()));
     }
 }
 

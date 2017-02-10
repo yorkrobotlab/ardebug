@@ -15,6 +15,7 @@ RobotData::RobotData(int id, QString name) {
     this->id = id;
     this->name = name;
     setPos(0.0f, 0.0f);
+    setAngle(0);
     setState("Unknown");
 }
 
@@ -80,4 +81,18 @@ QString RobotData::getName(void) {
  */
 int RobotData::getIDConst(void) const {
     return this->id;
+}
+
+/* getAngle
+ * Get the angle the robot is facing.
+ */
+int RobotData::getAngle(void) {
+    return this->angle;
+}
+
+/* setAngle
+ * Set the robot's angle.
+ */
+void RobotData::setAngle(int angle) {
+    this->angle = angle;
 }
