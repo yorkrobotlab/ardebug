@@ -130,7 +130,7 @@ void DataModel::newData(const QString &dataString) {
     }
 
     // Get the list index of the given robot. New robot added if index not found
-    idx = getRobotIndex(id);
+    idx = getRobotIndex(id, true);
     RobotData* robot = robotDataList.at(idx);
 
     // Handle the packet data

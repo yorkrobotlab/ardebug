@@ -16,6 +16,7 @@ RobotData::RobotData(int id, QString name) {
     this->id = id;
     this->name = name;
     this->state = "Unknown";
+    this->stateTransitionIndex = 0;
     setPos(0.0f, 0.0f);
     setAngle(0);
     setColour(colourGen());

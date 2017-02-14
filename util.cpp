@@ -41,12 +41,13 @@ cv::Scalar colourGen(void) {
     static const int r[] = { 0,   0,   0,   0,   0,   64,  128, 192, 255, 192, 128, 64  };
     static const int g[] = { 0,   64,  128, 192, 255, 192, 128, 64,  0,   0,   0,   0   };
     static const int b[] = { 255, 192, 128, 64,  0,   0,   0,   0,   0,   64,  128, 192 };
-    static int i = -1;
+    static int i = 6;
 
     i++;
     if (i > 11) {
         i = -1;
     }
 
-    return cv::Scalar(b[i], g[i], r[i]);
+    //return cv::Scalar(b[i], g[i], r[i]);
+    return cv::Scalar(255, 255, 255);
 }

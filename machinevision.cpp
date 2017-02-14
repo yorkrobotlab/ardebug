@@ -113,7 +113,7 @@ bool MachineVision::setupCamera(void) {
 /* getLatestFrame
  * Gets the latest video frame.
  */
-Mat MachineVision::getLatestFrame(int size) {
+Mat MachineVision::getLatestFrame(int size, std::vector<TrackResult>* result) {
     /*****Camera calibration parameters**********/
     /*****Done on 18/08/2016 02:40:21 PM*********/
     /*https://github.com/daneshtarapore/apriltags-cpp/blob/optimisation/out_camera_data.xml*/
@@ -128,27 +128,67 @@ Mat MachineVision::getLatestFrame(int size) {
 
     // Wait for next image to be acquired
     // (returns immediately if unprocessed images are in the ring buffer)
-    cvbres_t result = G2Wait(hCamera);
+    cvbres_t camResult = G2Wait(hCamera);
 
-    if(result < 0) {
-        cout << setw(3) << " Error with G2Wait: " << CVC_ERROR_FROM_HRES(result) << endl;
+    if(camResult < 0) {
+        cout << setw(3) << " Error with G2Wait: " << CVC_ERROR_FROM_HRES(camResult) << endl;
         image = Mat(size, size, CV_8UC3);
     } else {
         // Create an attached OpenCV image
-        Mat distorted_image = cvb_to_ocv_nocopy(hCamera);
+        image = cvb_to_ocv_nocopy(hCamera);
 
         // Swap blue and red channels
         vector<Mat> channels(3);
-        split(distorted_image, channels);
-        merge(vector<Mat>{channels[2], channels[1], channels[0]}, distorted_image);
+        split(image, channels);
+        merge(vector<Mat>{channels[2], channels[1], channels[0]}, image);
+
+        // Create arrays for aruco results
+        vector<int> marker_ids;
+        vector<vector<Point2f> > marker_corners, rejected_candidates;
+
+        // Generate an aruco dictionary (Why do this every time?)
+        Ptr<aruco::DetectorParameters> parameters = aruco::DetectorParameters::create();
+        Ptr<aruco::Dictionary> dictionary = aruco::getPredefinedDictionary(aruco::DICT_6X6_50);
+
+        // Detect ArUco markers
+        aruco::detectMarkers(image, dictionary, marker_corners, marker_ids, parameters, rejected_candidates);
+
+        // Create tracking results from detected marker positions
+        for (size_t i = 0; i < marker_ids.size(); i++) {
+            TrackResult t;
+            t.id = marker_ids.at(i);
+
+            // Interpolate for center
+            Point2f marker_centre = (marker_corners[i][0] +
+                                     marker_corners[i][1] +
+                                     marker_corners[i][2] +
+                                     marker_corners[i][3]) / 4;
+
+            // Result positions are proportional
+            t.pos.x = marker_centre.x / image.cols;
+            t.pos.y = marker_centre.y / image.rows;
+
+            double bottom_line_angle = atan2(marker_corners[i][2].y - marker_corners[i][3].y,
+                                             marker_corners[i][2].x - marker_corners[i][3].x)
+                                       * 180.0f / M_PI; // atan2 returns angle in radians [-pi, pi]
+
+            // Ensure angle is a valid number
+            if(std::isnan(bottom_line_angle))
+            {
+                t.angle = 0;
+            } else {
+                t.angle = int(ceil(bottom_line_angle - 90));
+            }
+
+            // Stash this result
+            result->push_back(t);
+        }
 
         // Undistort the image
-        undistort(distorted_image, image, cameraMatrix, distCoeffs);
+        //undistort(distorted_image, image, cameraMatrix, distCoeffs);
 
+        // Resize Image
         resize(image, image, Size(size, size), 0, 0, INTER_CUBIC);
-
-        /*Mat inv = Mat(size, size, image.type(), Scalar(255, 255, 255));
-        subtract(inv, image, image);*/
     }
 
     return image;

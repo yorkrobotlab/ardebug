@@ -43,13 +43,14 @@ void Visualiser::showImage(const Mat& image) {
         // If selected, draw text
         if (selected) {
             putText(image, robot->getName().toStdString(), Point(x + 8, y), FONT_HERSHEY_SIMPLEX, 0.3, robot->getColour());
+            putText(image, robot->getState().toStdString(), Point(x + 8, y + 12), FONT_HERSHEY_SIMPLEX, 0.3, robot->getColour());
         }
 
         // Draw cross
-        line(image, Point(x - 5, y), Point(x + 5, y), robot->getColour(), selected ? 2 : 1);
-        line(image, Point(x, y - 5), Point(x, y + 5), robot->getColour(), selected ? 2 : 1);
+        //line(image, Point(x - 8, y), Point(x + 8, y), robot->getColour(), selected ? 2 : 1);
+        //line(image, Point(x, y - 8), Point(x, y + 8), robot->getColour(), selected ? 2 : 1);
 
-        //circle(image, Point(x, y), 8, robot->getColour(), thickness);
+        circle(image, Point(x, y), 8, robot->getColour(), selected ? 2 : 1);
 
         // Draw direction
         Point end = Point(x + (int)(12 * cos(a * PI/180)), y + (int)(12 * sin(a * PI/180)));
