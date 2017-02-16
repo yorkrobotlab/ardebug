@@ -44,17 +44,15 @@ public slots:
     void socketOpened(const int &sockfd) { this->sockfd = sockfd; }
 
 private slots:
-    void on_testButton_clicked();
-
     void on_actionExit_triggered();
 
     void on_actionEnable_Video_changed();
 
     void on_videoEnChbx_stateChanged();
 
-    void on_connectButton_clicked();
+    void on_networkListenButton_clicked();
 
-    void on_disconnectButton_clicked();
+    void on_networkPortBox_textChanged(const QString &arg1);
 
 private:
     Ui::MainWindow *ui;

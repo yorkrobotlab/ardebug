@@ -4,6 +4,7 @@
 #include <opencv2/opencv.hpp>
 
 #include "machinevision.h"
+#include "util.h"
 
 #include <QObject>
 #include <QTimer>
@@ -13,7 +14,7 @@ class CameraController : public QObject
     Q_OBJECT
     MachineVision* machineVision;
     QTimer* readTimer;
-    int frameSize = 10;
+    Vector2D frameSize;
     bool cameraLoaded = false;
 
 public:
@@ -21,7 +22,7 @@ public:
     ~CameraController(void);
 
 public slots:
-    void updateFrameSize(int size);
+    void updateFrameSize(int width, int height);
     void startReadingCamera(void);
     void stopReadingCamera(void);
 

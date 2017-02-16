@@ -113,7 +113,7 @@ bool MachineVision::setupCamera(void) {
 /* getLatestFrame
  * Gets the latest video frame.
  */
-Mat MachineVision::getLatestFrame(int size, std::vector<TrackResult>* result) {
+Mat MachineVision::getLatestFrame(Vector2D size, std::vector<TrackResult>* result) {
     /*****Camera calibration parameters**********/
     /*****Done on 18/08/2016 02:40:21 PM*********/
     /*https://github.com/daneshtarapore/apriltags-cpp/blob/optimisation/out_camera_data.xml*/
@@ -136,8 +136,6 @@ Mat MachineVision::getLatestFrame(int size, std::vector<TrackResult>* result) {
     } else {
         // Create an attached OpenCV image
         image = cvb_to_ocv_nocopy(hCamera);
-
-        cout << image.cols << ", " << image.rows << endl;
 
         // Swap blue and red channels
         vector<Mat> channels(3);
@@ -190,7 +188,7 @@ Mat MachineVision::getLatestFrame(int size, std::vector<TrackResult>* result) {
         //undistort(distorted_image, image, cameraMatrix, distCoeffs);
 
         // Resize Image
-        resize(image, image, Size(size, size), 0, 0, INTER_CUBIC);
+        resize(image, image, Size(size.y, size.x), 0, 0, INTER_CUBIC);
     }
 
     return image;
@@ -220,7 +218,7 @@ bool MachineVision::setupCamera(void) {
 /* getLatestFrame
  * Gets the latest video frame.
  */
-Mat MachineVision::getLatestFrame(int size, std::vector<TrackResult>* result) {
+Mat MachineVision::getLatestFrame(Vector2D size, std::vector<TrackResult>* result) {
     // Time varying value
     static int r = 0;
     r+=1;
@@ -259,7 +257,7 @@ Mat MachineVision::getLatestFrame(int size, std::vector<TrackResult>* result) {
     result->push_back(res);
 
     // Camera is not present, fake the frame
-    Mat image(size, size, CV_8UC3, Scalar(192, 192, 192));
+    Mat image(size.y, size.x, CV_8UC3, Scalar(192, 192, 192));
 
     // Return the frame as an image
     return image;

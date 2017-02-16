@@ -24,7 +24,7 @@ public slots:
     void showImage(const cv::Mat& image);
 
 signals:
-    void frameSizeChanged(int size);
+    void frameSizeChanged(int width, int height);
 
 protected:
     void paintEvent(QPaintEvent*);

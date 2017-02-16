@@ -105,16 +105,31 @@ void Visualiser::resizeEvent(QResizeEvent*) {
  * Called to check the frame size and emit it.
  */
 void Visualiser::checkFrameSize() {
-    // Determine the limiting size
-    int w = this->size().width();
-    int h = this->size().height();
-    int size = w < h ? w : h;
+    // The camera output dimensions are 2096 x 1180
+    double fullWidth = 2096.0;
+    double fullHeight = 1180.0;
 
-    // Do not allow <0 sizes
-    if (size <= 0) {
-        size = 1;
+    // Determine the limiting size
+    int width = this->size().width();
+    int desiredHeight = (int)ceil((width/fullWidth) * fullHeight);
+
+    int height = this->size().height();
+    int desiredWidth = (int)ceil((height/fullHeight) * fullWidth);
+
+    // Do not allow sizes of zero or less
+    if (width <= 0 || height <= 0) {
+        emit frameSizeChanged(1, 1);
+        return;
     }
 
-    // Emit the new size as a signal
-    emit frameSizeChanged(size);
+    if (desiredHeight > height) {
+        // Height is the limiting dimension
+        emit frameSizeChanged(desiredWidth, height);
+    } else if (desiredWidth > width) {
+        // Width is the limiting dimension
+        emit frameSizeChanged(width, desiredHeight);
+    } else {
+        // Perfect dimensions
+        emit frameSizeChanged(desiredWidth, desiredHeight);
+    }
 }

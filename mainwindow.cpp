@@ -26,17 +26,18 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // Show some default text
-    ui->consoleText->appendPlainText("Overview info:\n\nNo robot selected.");
-
     // Show a message
-    ui->statusBar->showMessage("Application Started Successfully.", 3000);
+    ui->statusBar->showMessage("SwarmDebug v0.01", 3000);
+
+    // Show some console text
+    ui->consoleText->insertPlainText("Application Started Succesfully.\n");
 
     // Set up the data model
     dataModel = new DataModel;
     ui->robotList->setModel(dataModel->getRobotList());
     connect(ui->robotList->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             this, SLOT(robotListSelectionChanged(QItemSelection)));
+    ui->robotList->setEditTriggers(QListView::NoEditTriggers);
 
     // Set up the network thread
     DataThread *dataHandler = new DataThread;
@@ -49,7 +50,6 @@ MainWindow::MainWindow(QWidget *parent) :
     // Connect signals and sockets for transferring the incoming data
     connect(dataHandler, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
     connect(dataModel, SIGNAL(modelChanged(bool)), this, SLOT(dataModelUpdate(bool)));
-
     networkThread.start();
 
     // Intantiate the visualiser
@@ -71,15 +71,17 @@ MainWindow::MainWindow(QWidget *parent) :
     // Connect image related signals to the visualiser and vice versa
     qRegisterMetaType< cv::Mat >("cv::Mat");
     connect(cameraController, SIGNAL(dataFromCamera(cv::Mat)), visualiser, SLOT(showImage(cv::Mat)));
-    connect(visualiser, SIGNAL(frameSizeChanged(int)), cameraController, SLOT(updateFrameSize(int)));
+    connect(visualiser, SIGNAL(frameSizeChanged(int, int)), cameraController, SLOT(updateFrameSize(int, int)));
 
     // Connect tracking position data signal to data model
     connect(cameraController, SIGNAL(posData(QString)), dataModel, SLOT(newData(QString)));
-
     cameraThread.start();
 
     // Have the visualiser pass its initial frame size to the camera controller
     visualiser->checkFrameSize();
+
+    // Start the camera reading immediately
+    startReadingCamera();
 }
 
 /* Destructor.
@@ -101,15 +103,6 @@ MainWindow::~MainWindow()
 
     cameraThread.quit();
     cameraThread.wait();
-}
-
-/* on_testButton_clicked
- * Respond to user clicks on 'testButton'.
- */
-void MainWindow::on_testButton_clicked()
-{
-    ui->statusBar->showMessage("Test Button Pressed.", 3000);
-    startReadingCamera();
 }
 
 /* on_actionExit_triggered
@@ -204,24 +197,6 @@ void MainWindow::updateStateTab(void) {
     }
 }
 
-/* on_connectButton_clicked()
- * Called when the connect button is clicked. Signals the data thread
- * to open a UDP socket on the port supplied, and listen for data.
- */
-void MainWindow::on_connectButton_clicked()
-{
-    openUDPSocket(8888);
-}
-
-/* on_disconnectButton_clicked()
- * Called when the disconnect button is clicked. Signals the data thread
- * to close the UDP socket.
- */
-void MainWindow::on_disconnectButton_clicked()
-{
-    sendClosePacket(8888);
-}
-
 void MainWindow::dataModelUpdate(bool listChanged)
 {
     // Update the robot list
@@ -238,4 +213,58 @@ void MainWindow::dataModelUpdate(bool listChanged)
 
     // Update the overview tab
     updateOverviewTab();
+}
+
+/* on_networkListenButton_clicked
+ * Slot. Called when the listen for data button is clicked. Toggles between
+ * start and stop listening. Opens and closes the UDP socket respectively.
+ */
+void MainWindow::on_networkListenButton_clicked()
+{
+    static bool listening = false;
+    static int openPort = -1;
+
+    if (!listening) {
+        bool ok = false;
+        int port = ui->networkPortBox->text().toInt(&ok);
+
+        if (ok) {
+            listening = true;
+            openUDPSocket(port);
+            openPort = port;
+            ui->networkListenButton->setText("Stop Listening");
+            ui->networkPortBox->setDisabled(true);
+
+            ui->consoleText->moveCursor(QTextCursor::Start, QTextCursor::MoveAnchor);
+            ui->consoleText->insertPlainText(QString("Listening for robot data on port ") + QString::number(port) + QString("...\n"));
+        }
+    } else {
+        if (openPort >= 0) {
+            listening = false;
+            sendClosePacket(openPort);
+            openPort = -1;
+            ui->networkListenButton->setText("Start Listening");
+            ui->networkPortBox->setDisabled(false);
+
+            ui->consoleText->moveCursor(QTextCursor::Start, QTextCursor::MoveAnchor);
+            ui->consoleText->insertPlainText("Closing data socket.\n");
+        }
+    }
+}
+
+/* on_networkPortBox_textChanged
+ * Called when the user types in the port box on the network tab. Only allow
+ * numerical digits, no characters.
+ */
+void MainWindow::on_networkPortBox_textChanged(const QString &text)
+{
+    QString newString;
+
+    for (int i = 0; i < text.length(); i++) {
+        if (text.at(i).isDigit()) {
+            newString.append(text.at(i));
+        }
+    }
+
+    ui->networkPortBox->setText(newString);
 }

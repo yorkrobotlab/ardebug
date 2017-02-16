@@ -10,7 +10,6 @@
 
 #include "cameracontroller.h"
 #include "machinevision.h"
-#include "util.h"
 
 /* Constructor
  * Create the read timer and connect it to the read function.
@@ -22,6 +21,9 @@ CameraController::CameraController(void) {
     // Set up the timer to read the camera
     readTimer = new QTimer(this);
     connect(readTimer, SIGNAL(timeout()), this, SLOT(readCamera()));
+
+    frameSize.x = 10;
+    frameSize.y = 10;
 }
 
 CameraController::~CameraController(void) {
@@ -33,8 +35,9 @@ CameraController::~CameraController(void) {
  * The visualiser frame size has changed, update the local frame size variable
  * to match.
  */
-void CameraController::updateFrameSize(int size) {
-    frameSize = size;
+void CameraController::updateFrameSize(int width, int height) {
+    frameSize.x = width;
+    frameSize.y = height;
 }
 
 /* startReadingCamera

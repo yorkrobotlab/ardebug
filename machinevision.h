@@ -24,7 +24,7 @@ private:
 
 public:
     bool setupCamera(void);
-    cv::Mat getLatestFrame(int size, std::vector<TrackResult>* result);
+    cv::Mat getLatestFrame(Vector2D size, std::vector<TrackResult>* result);
     void releaseCamera(void);
 };
 
