@@ -137,6 +137,8 @@ Mat MachineVision::getLatestFrame(int size, std::vector<TrackResult>* result) {
         // Create an attached OpenCV image
         image = cvb_to_ocv_nocopy(hCamera);
 
+        cout << image.cols << ", " << image.rows << endl;
+
         // Swap blue and red channels
         vector<Mat> channels(3);
         split(image, channels);
