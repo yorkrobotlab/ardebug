@@ -54,6 +54,10 @@ private slots:
 
     void on_networkPortBox_textChanged(const QString &arg1);
 
+    void on_imageXDimEdit_textChanged(const QString &arg1);
+
+    void on_imageYDimEdit_textChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
 

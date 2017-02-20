@@ -8,6 +8,7 @@
 
 #include "visualiser.h"
 #include "machinevision.h"
+#include "settings.h"
 
 #include <stdio.h>
 #include <math.h>
@@ -106,8 +107,8 @@ void Visualiser::resizeEvent(QResizeEvent*) {
  */
 void Visualiser::checkFrameSize() {
     // The camera output dimensions are 2096 x 1180
-    double fullWidth = 2096.0;
-    double fullHeight = 1180.0;
+    double fullWidth = Settings::instance()->getCameraImageSize().x; // 2096
+    double fullHeight = Settings::instance()->getCameraImageSize().y; // 1180
 
     // Determine the limiting size
     int width = this->size().width();

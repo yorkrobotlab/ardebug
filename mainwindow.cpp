@@ -12,6 +12,7 @@
 #include "datamodel.h"
 #include "robotdata.h"
 #include "util.h"
+#include "settings.h"
 
 #include <sys/socket.h>
 
@@ -79,6 +80,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Have the visualiser pass its initial frame size to the camera controller
     visualiser->checkFrameSize();
+
+    ui->imageXDimEdit->setValidator(new QIntValidator(1, 10000, this));
+    ui->imageYDimEdit->setValidator(new QIntValidator(1, 10000, this));
 
     // Start the camera reading immediately
     startReadingCamera();
@@ -267,4 +271,28 @@ void MainWindow::on_networkPortBox_textChanged(const QString &text)
     }
 
     ui->networkPortBox->setText(newString);
+}
+
+void MainWindow::on_imageXDimEdit_textChanged(const QString &arg1)
+{
+    bool ok = false;
+    int w = arg1.toInt(&ok);
+
+    if (ok) {
+        Settings::instance()->setCameraImageWidth(w);
+    }
+
+    visualiser->checkFrameSize();
+}
+
+void MainWindow::on_imageYDimEdit_textChanged(const QString &arg1)
+{
+    bool ok = false;
+    int h = arg1.toInt(&ok);
+
+    if (ok) {
+        Settings::instance()->setCameraImageHeight(h);
+    }
+
+    visualiser->checkFrameSize();
 }

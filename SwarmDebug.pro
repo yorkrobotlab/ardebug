@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     cameracontroller.cpp \
     datamodel.cpp \
     robotdata.cpp \
-    util.cpp
+    util.cpp \
+    settings.cpp
 
 HEADERS  += mainwindow.h \
     datathread.h \
@@ -41,7 +42,8 @@ HEADERS  += mainwindow.h \
     cameracontroller.h \
     datamodel.h \
     robotdata.h \
-    util.h
+    util.h \
+    settings.h
 
 FORMS    += mainwindow.ui
 
