@@ -24,8 +24,8 @@ void sendClosePacket(int port) {
     sock_in.sin_port = htons(port);
     sock_in.sin_family = AF_INET;
 
-    //
-    if (inet_aton("127.0.0.1", &sock_in.sin_addr) < 0) {
+    // Convert ip address from string form to binary
+    if (inet_aton("127.0.0.1", &sock_in.sin_addr) <= 0) {
         fprintf(stderr, "Error inet_aton\n");
         return;
     }
