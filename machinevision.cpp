@@ -132,7 +132,7 @@ Mat MachineVision::getLatestFrame(Vector2D size, std::vector<TrackResult>* resul
 
     if(camResult < 0) {
         cout << setw(3) << " Error with G2Wait: " << CVC_ERROR_FROM_HRES(camResult) << endl;
-        image = Mat(size, size, CV_8UC3);
+        image = Mat(size.x, size.y, CV_8UC3);
     } else {
         // Create an attached OpenCV image
         image = cvb_to_ocv_nocopy(hCamera);
@@ -188,7 +188,7 @@ Mat MachineVision::getLatestFrame(Vector2D size, std::vector<TrackResult>* resul
         //undistort(distorted_image, image, cameraMatrix, distCoeffs);
 
         // Resize Image
-        resize(image, image, Size(size.y, size.x), 0, 0, INTER_CUBIC);
+        resize(image, image, Size(size.x, size.y), 0, 0, INTER_CUBIC);
     }
 
     return image;
