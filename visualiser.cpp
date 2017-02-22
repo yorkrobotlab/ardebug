@@ -13,9 +13,10 @@
 #include <stdio.h>
 #include <math.h>
 
-#define PI 3.14159265
-
 #include <QLayout>
+
+#include "visposition.h"
+#include "visdirection.h"
 
 using namespace cv;
 
@@ -26,6 +27,10 @@ Visualiser::Visualiser(QWidget*)  { }
 
 Visualiser::Visualiser(DataModel *dataModelRef) {
     this->dataModelRef = dataModelRef;
+
+    this->config = VisConfig();
+    this->config.elements.push_back(new VisPosition());
+    this->config.elements.push_back(new VisDirection());
 }
 
 /* showImage
@@ -38,7 +43,6 @@ void Visualiser::showImage(const Mat& image) {
         RobotData* robot = dataModelRef->getRobotByIndex(i);
         int x = image.cols * robot->getPos().x;
         int y = image.rows * robot->getPos().y;
-        int a = robot->getAngle();
         bool selected = dataModelRef->selectedRobotID == robot->getID();
 
         // If selected, draw text
@@ -47,15 +51,11 @@ void Visualiser::showImage(const Mat& image) {
             putText(image, robot->getState().toStdString(), Point(x + 8, y + 12), FONT_HERSHEY_SIMPLEX, 0.3, robot->getColour());
         }
 
-        // Draw cross
-        //line(image, Point(x - 8, y), Point(x + 8, y), robot->getColour(), selected ? 2 : 1);
-        //line(image, Point(x, y - 8), Point(x, y + 8), robot->getColour(), selected ? 2 : 1);
-
-        circle(image, Point(x, y), 8, robot->getColour(), selected ? 2 : 1);
-
-        // Draw direction
-        Point end = Point(x + (int)(12 * cos(a * PI/180)), y + (int)(12 * sin(a * PI/180)));
-        line(image, Point(x, y), end, robot->getColour(), selected ? 2 : 1);
+        // Render the visualisations
+        for (size_t j = 0; j < this->config.elements.size(); j++) {
+            VisElement* element = this->config.elements.at(j);
+            element->render(image, robot, selected);
+        }
     }
 
     // Convert to RGB

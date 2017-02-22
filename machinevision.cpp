@@ -7,7 +7,8 @@
  * (C) Alistair Jewers Feb 2017
  */
 
-#include <machinevision.h>
+#include "machinevision.h"
+#include "settings.h"
 
 #include <iostream>
 #include <iomanip>
@@ -257,10 +258,11 @@ Mat MachineVision::getLatestFrame(Vector2D size, std::vector<TrackResult>* resul
     result->push_back(res);
 
     // Camera is not present, fake the frame
-    Mat image(size.y, size.x, CV_8UC3, Scalar(192, 192, 192));
-
-    // Return the frame as an image
-    return image;
+    if (Settings::instance()->isVideoEnabled()) {
+        return Mat(size.y, size.x, CV_8UC3, Scalar(192, 192, 192));
+    } else {
+        return Mat(size.y, size.x, CV_8UC3, Scalar(0, 0, 0));
+    }
 }
 
 /* releaseCamera

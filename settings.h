@@ -8,6 +8,7 @@ class Settings
     static Settings* s_instance;
 
     Vector2D cameraImageSize;
+    bool videoEnabled;
 
     Settings(void);
 
@@ -24,6 +25,9 @@ public:
     void setCameraImageSize(Vector2D size);
     void setCameraImageWidth(int width);
     void setCameraImageHeight(int height);
+
+    bool isVideoEnabled(void);
+    void setVideoEnabled(bool enable);
 };
 
 #endif // SETTINGS_H

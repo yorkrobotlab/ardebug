@@ -81,6 +81,8 @@ MainWindow::MainWindow(QWidget *parent) :
     // Have the visualiser pass its initial frame size to the camera controller
     visualiser->checkFrameSize();
 
+    visualiser->config.populateSettingsList(ui->visSettingsList);
+
     ui->imageXDimEdit->setValidator(new QIntValidator(1, 10000, this));
     ui->imageYDimEdit->setValidator(new QIntValidator(1, 10000, this));
 
@@ -140,6 +142,9 @@ void MainWindow::on_videoEnChbx_stateChanged()
  * the related controls in sync, and performs the actual enable/disable.
  */
 void MainWindow::setVideo(bool enabled) {
+    // Update setting
+    Settings::instance()->setVideoEnabled(enabled);
+
     // Update UI controls to new state
     ui->actionEnable_Video->setChecked(enabled);
     ui->videoEnChbx->setChecked(enabled);

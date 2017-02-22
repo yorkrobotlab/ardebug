@@ -32,7 +32,11 @@ SOURCES += main.cpp\
     datamodel.cpp \
     robotdata.cpp \
     util.cpp \
-    settings.cpp
+    settings.cpp \
+    visconfig.cpp \
+    viselement.cpp \
+    visposition.cpp \
+    visdirection.cpp
 
 HEADERS  += mainwindow.h \
     datathread.h \
@@ -43,7 +47,11 @@ HEADERS  += mainwindow.h \
     datamodel.h \
     robotdata.h \
     util.h \
-    settings.h
+    settings.h \
+    visconfig.h \
+    viselement.h \
+    visposition.h \
+    visdirection.h
 
 FORMS    += mainwindow.ui
 

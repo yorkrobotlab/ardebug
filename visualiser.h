@@ -2,6 +2,7 @@
 #define VISUALISER_H
 
 #include "datamodel.h"
+#include "visconfig.h"
 
 #include <QWidget>
 #include <QImage>
@@ -13,6 +14,8 @@ class Visualiser : public QWidget
 {
     Q_OBJECT
 public:
+    VisConfig config;
+
     Visualiser(QWidget *parent = 0);
     Visualiser(DataModel* dataModelRef);
 

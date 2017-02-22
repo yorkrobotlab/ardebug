@@ -3,6 +3,8 @@
 Settings::Settings(void) {
     cameraImageSize.x = 2096;
     cameraImageSize.y = 1180;
+
+    videoEnabled = true;
 }
 
 Vector2D Settings::getCameraImageSize(void) {
@@ -10,21 +12,29 @@ Vector2D Settings::getCameraImageSize(void) {
 }
 
 void Settings::setCameraImageSize(Vector2D size) {
-    cameraImageSize = size;
+    this->cameraImageSize = size;
 
     if (size.x <= 0) {
-        size.x = 1;
+        this->cameraImageSize.x = 1;
     }
 
     if (size.y <= 0) {
-        size.y = 1;
+        this->cameraImageSize.y = 1;
     }
 }
 
 void Settings::setCameraImageWidth(int width) {
-    cameraImageSize.x = width > 0 ? width : 1;
+    this->cameraImageSize.x = width > 0 ? width : 1;
 }
 
 void Settings::setCameraImageHeight(int height) {
-    cameraImageSize.y = height > 0 ? height : 1;
+    this->cameraImageSize.y = height > 0 ? height : 1;
+}
+
+bool Settings::isVideoEnabled(void) {
+    return this->videoEnabled;
+}
+
+void Settings::setVideoEnabled(bool enable) {
+    this->videoEnabled = enable;
 }
