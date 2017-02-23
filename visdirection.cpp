@@ -4,6 +4,7 @@
 
 VisDirection::VisDirection(void) {
     setType(VisType::DIRECTION);
+    setEnabled(true);
 }
 
 QString VisDirection::toString(void) {
@@ -11,6 +12,10 @@ QString VisDirection::toString(void) {
 }
 
 void VisDirection::render(cv::Mat image, RobotData *robot, bool selected) {
+    if (!isEnabled()) {
+        return;
+    }
+
     int x = image.cols * robot->getPos().x;
     int y = image.rows * robot->getPos().y;
     int a = robot->getAngle();

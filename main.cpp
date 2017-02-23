@@ -10,6 +10,8 @@
 
 #include "settings.h"
 
+#include "viselement.h"
+
 // Required for passing cv image type between threads in signals.
 Q_DECLARE_METATYPE(cv::Mat)
 

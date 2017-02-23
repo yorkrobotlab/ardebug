@@ -19,12 +19,15 @@ VisConfig::VisConfig() {
  * Fills the settings list widget based on the current configuration.
  */
 void VisConfig::populateSettingsList(QListWidget *list) {
+    list->clear();
+
     for (size_t i = 0; i < this->elements.size(); i++) {
         VisElement* element = elements.at(i);
 
         QListWidgetItem* item = new QListWidgetItem;
         item->setData(Qt::DisplayRole, element->toString());
         item->setData(Qt::CheckStateRole, Qt::Checked);
+        item->setData(Qt::UserRole, QVariant::fromValue<VisElement*>(element));
         list->addItem(item);
     }
 }

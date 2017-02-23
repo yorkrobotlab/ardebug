@@ -44,7 +44,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="visualizerTab">
          <property name="sizePolicy">
@@ -263,7 +263,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="consoleTab">
         <attribute name="title">

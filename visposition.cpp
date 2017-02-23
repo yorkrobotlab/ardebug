@@ -2,6 +2,7 @@
 
 VisPosition::VisPosition(void) {
     setType(VisType::POSITION);
+    setEnabled(true);
 }
 
 QString VisPosition::toString(void) {
@@ -9,6 +10,10 @@ QString VisPosition::toString(void) {
 }
 
 void VisPosition::render(cv::Mat image, RobotData *robot, bool selected) {
+    if (!isEnabled()) {
+        return;
+    }
+
     int x = image.cols * robot->getPos().x;
     int y = image.rows * robot->getPos().y;
 

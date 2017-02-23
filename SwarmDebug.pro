@@ -37,7 +37,8 @@ SOURCES += main.cpp\
     visposition.cpp \
     visdirection.cpp \
     visname.cpp \
-    visstate.cpp
+    visstate.cpp \
+    visproximity.cpp
 
 HEADERS  += mainwindow.h \
     datathread.h \
@@ -54,7 +55,8 @@ HEADERS  += mainwindow.h \
     visposition.h \
     visdirection.h \
     visname.h \
-    visstate.h
+    visstate.h \
+    visproximity.h
 
 FORMS    += mainwindow.ui
 

@@ -8,7 +8,7 @@
 
 #include "util.h"
 
-#define PROX_SENS_COUNT         10
+#define PROX_SENS_COUNT         8
 
 class RobotData
 {
@@ -20,7 +20,7 @@ class RobotData
     QString state;
     QStringListModel knownStates;
     QStringListModel stateTransitionList;
-    StateTransition stateTransitionHistory[PROX_SENS_COUNT];
+    StateTransition stateTransitionHistory[10];
     int stateTransitionIndex;
 
     // Odometry
@@ -31,7 +31,7 @@ class RobotData
     cv::Scalar colour;
 
     // Sensor Data
-    int proximityData[10];
+    int proximityData[PROX_SENS_COUNT];
 
 public:
     RobotData(int id, QString name);

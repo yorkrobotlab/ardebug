@@ -58,6 +58,8 @@ private slots:
 
     void on_imageYDimEdit_textChanged(const QString &arg1);
 
+    void on_visSettingsList_itemClicked(QListWidgetItem *item);
+
 private:
     Ui::MainWindow *ui;
 

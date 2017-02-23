@@ -321,3 +321,11 @@ void MainWindow::on_imageYDimEdit_textChanged(const QString &arg1)
 
     visualiser->checkFrameSize();
 }
+
+void MainWindow::on_visSettingsList_itemClicked(QListWidgetItem *item)
+{
+    QVariant v = item->data(Qt::UserRole);
+    VisElement* e = v.value<VisElement *>();
+
+    e->setEnabled(item->checkState() == Qt::Checked);
+}

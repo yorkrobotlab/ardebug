@@ -20,11 +20,13 @@ public:
     VisType getType(void) { return type; }
 
     void setEnabled(bool en) { enabled = en; }
-    bool getEnabled(void) { return enabled; }
+    bool isEnabled(void) { return enabled; }
 
     virtual QString toString(void) = 0;
 
     virtual void render(cv::Mat image, RobotData* robot, bool selected) = 0;
 };
+
+Q_DECLARE_METATYPE(VisElement*)
 
 #endif // VISELEMENT_H
