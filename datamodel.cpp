@@ -149,11 +149,14 @@ void DataModel::newData(const QString &dataString) {
             parsePositionPacket(robot, data[2], data[3], data[4]);
         }
         break;
+    case PACKET_TYPE_PROXIMITY:
+        parseProximityPacket(robot, data);
+        break;
     default:
         break;
     }
 
-    // Check if the list of robots has changed and needs updating
+    // Check if the list of robots has changed size and needs updating
     if (robotDataList.size() != oldListSize) {
         listChanged = true;
     }
@@ -187,6 +190,32 @@ void DataModel::parsePositionPacket(RobotData* robot, QString xString, QString y
 
     robot->setPos(x, y);
     robot->setAngle(a);
+}
+
+/* parseProximityPacket
+ * Parses raw proximity sensor data values into the data model
+ */
+void DataModel::parseProximityPacket(RobotData *robot, QStringList data) {
+    int proxData[PROX_SENS_COUNT] = {0};
+    int mask = 0;
+
+    // data 0 and 1 are ID and Type. Iterate from data 2 onwards
+    for (int i = 2; i < data.length() && i < PROX_SENS_COUNT + 2; i++) {
+        // Read string into int
+        bool ok = false;
+        int prox = data[i].toInt(&ok);
+
+        // If valid value, store in priximity data array
+        if (ok && prox >= 0) {
+            proxData[i - 2] = prox;
+
+            // Set mask bit to show value at i is valid
+            mask |= 1 << (i-2);
+        }
+    }
+
+    // Update the robots
+    robot->updateProximitySensorData(proxData, mask);
 }
 
 /* getRobotIndex

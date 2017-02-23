@@ -7,19 +7,30 @@
 
 #include "robotdata.h"
 #include "util.h"
+#include <iostream>
 
 /* Construtor
  * Create a robot instance, with an ID and a name. Set other values to
  * defaults.
  */
 RobotData::RobotData(int id, QString name) {
+    // Initialise identifiers
     this->id = id;
     this->name = name;
+
+    // Initialise state data
     this->state = "Unknown";
     this->stateTransitionIndex = 0;
+
+    // Initialise odometry
     setPos(0.0f, 0.0f);
     setAngle(0);
+
+    // Generate colour
     setColour(colourGen());
+
+    // Zero out the proximity data array
+    bzero(this->proximityData, sizeof(int) * PROX_SENS_COUNT);
 }
 
 /* Destructor
@@ -132,18 +143,18 @@ int RobotData::getID(void) {
     return this->id;
 }
 
-/* setName
- * Set the robot name string;
- */
-void RobotData::setName(QString name) {
-    this->name = name;
-}
-
 /* getName
  * Get the robots name string.
  */
 QString RobotData::getName(void) {
     return this->name;
+}
+
+/* setName
+ * Set the robot name string;
+ */
+void RobotData::setName(QString name) {
+    this->name = name;
 }
 
 /* getIDConst
@@ -179,4 +190,26 @@ cv::Scalar RobotData::getColour(void) {
  */
 void RobotData::setColour(cv::Scalar colour) {
     this->colour = colour;
+}
+
+/* updateProximitySensorData
+ * Insert new data into the proximity sensor data array.
+ */
+void RobotData::updateProximitySensorData(int* data, int mask) {
+    for (int i = 0; i < PROX_SENS_COUNT; i++) {
+        if (1 << i & mask) {
+            this->proximityData[i] = data[i];
+        }
+    }
+}
+
+/* getProximitySensorData
+ * Returns the current value for one of the proximity sensors.
+ */
+int RobotData::getProximitySensorData(int sensor) {
+    if (sensor < PROX_SENS_COUNT && sensor >= 0) {
+        return this->proximityData[sensor];
+    }
+
+    return -1;
 }

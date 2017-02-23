@@ -8,21 +8,30 @@
 
 #include "util.h"
 
+#define PROX_SENS_COUNT         10
+
 class RobotData
 {
+    // Identifiers
     int id;
     QString name;
+
+    // State data
     QString state;
     QStringListModel knownStates;
-
-    StateTransition stateTransitionHistory[10];
-    int stateTransitionIndex;
     QStringListModel stateTransitionList;
+    StateTransition stateTransitionHistory[PROX_SENS_COUNT];
+    int stateTransitionIndex;
 
+    // Odometry
     Vector2D pos;
     int angle;
 
+    // Colour
     cv::Scalar colour;
+
+    // Sensor Data
+    int proximityData[10];
 
 public:
     RobotData(int id, QString name);
@@ -47,6 +56,9 @@ public:
 
     cv::Scalar getColour(void);
     void setColour(cv::Scalar colour);
+
+    void updateProximitySensorData(int* data, int mask);
+    int getProximitySensorData(int sensor);
 
 private:
     void updateStateTransitionHistory(QString newState);

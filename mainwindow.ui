@@ -263,7 +263,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>3</number>
        </property>
        <widget class="QWidget" name="consoleTab">
         <attribute name="title">
@@ -399,6 +399,20 @@
             <widget class="QListView" name="stateTransitionList"/>
            </item>
           </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="proximityTab">
+        <attribute name="title">
+         <string>Proximity</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_6">
+         <item>
+          <widget class="QLabel" name="proximityText">
+           <property name="text">
+            <string>-</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>

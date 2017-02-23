@@ -64,6 +64,7 @@ private:
     void setVideo(bool enabled);
     void updateOverviewTab(void);
     void updateStateTab(void);
+    void updateProximityTab(void);
 };
 
 #endif // MAINWINDOW_H

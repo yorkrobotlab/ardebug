@@ -180,6 +180,30 @@ void MainWindow::robotListSelectionChanged(const QItemSelection &selection) {
 
     // Update the state tab
     updateStateTab();
+
+    // Update the proximiy sensor tab
+    updateProximityTab();
+}
+
+void MainWindow::dataModelUpdate(bool listChanged)
+{
+    // Update the robot list
+    if (listChanged) {
+        ui->robotList->setModel(dataModel->getRobotList());
+
+        int idx = dataModel->getRobotIndex(dataModel->selectedRobotID, false);
+
+        if (idx != -1) {
+            QModelIndex qidx = ui->robotList->model()->index(idx, 0);
+            ui->robotList->setCurrentIndex(qidx);
+        }
+    }
+
+    // Update the overview tab
+    updateOverviewTab();
+
+    // Update the proximity sensor tab
+    updateProximityTab();
 }
 
 void MainWindow::updateOverviewTab(void) {
@@ -206,22 +230,18 @@ void MainWindow::updateStateTab(void) {
     }
 }
 
-void MainWindow::dataModelUpdate(bool listChanged)
-{
-    // Update the robot list
-    if (listChanged) {
-        ui->robotList->setModel(dataModel->getRobotList());
+void MainWindow::updateProximityTab(void) {
+    // Get the selected robot
+    if (dataModel->selectedRobotID >= 0) {
+        RobotData* robot = dataModel->getRobotByID(dataModel->selectedRobotID);
+        QString str = QString("Proximity: ");
 
-        int idx = dataModel->getRobotIndex(dataModel->selectedRobotID, false);
-
-        if (idx != -1) {
-            QModelIndex qidx = ui->robotList->model()->index(idx, 0);
-            ui->robotList->setCurrentIndex(qidx);
+        for (int i = 0; i < PROX_SENS_COUNT; i++) {
+            str = str + QString::number(robot->getProximitySensorData(i)) + " ";
         }
-    }
 
-    // Update the overview tab
-    updateOverviewTab();
+        ui->proximityText->setText(str);
+    }
 }
 
 /* on_networkListenButton_clicked

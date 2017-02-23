@@ -13,6 +13,7 @@
 #define PACKET_TYPE_WATCHDOG    0
 #define PACKET_TYPE_STATE       1
 #define PACKET_TYPE_POSITION    2
+#define PACKET_TYPE_PROXIMITY   3
 
 class DataModel : public QObject
 {
@@ -36,6 +37,7 @@ public:
 
 private:
     void parsePositionPacket(RobotData* robot, QString xString, QString yString, QString aString);
+    void parseProximityPacket(RobotData* robot, QStringList data);
 
 signals:
     void modelChanged(bool listChanged);
