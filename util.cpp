@@ -1,3 +1,9 @@
+/* util.cpp
+ *
+ * Utility functions used throughout the application.
+ *
+ * (C) Alistair Jewers Feb 2017
+ */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -6,6 +12,10 @@
 #include <unistd.h>
 #include "util.h"
 
+/* senClosePacket
+ * Sends a specific packet to indicate that the application should close
+ * its socket.
+ */
 void sendClosePacket(int port) {
     struct sockaddr_in sock_in;
     int sockfd;
@@ -37,6 +47,9 @@ void sendClosePacket(int port) {
     close(sockfd);
 }
 
+/* colourGen
+ * Generates a cv colour, different to the recently generated colours.
+ */
 cv::Scalar colourGen(void) {
     static const int r[] = { 0,   0,   0,   0,   0,   64,  128, 192, 255, 192, 128, 64  };
     static const int g[] = { 0,   64,  128, 192, 255, 192, 128, 64,  0,   0,   0,   0   };
@@ -48,6 +61,6 @@ cv::Scalar colourGen(void) {
         i = -1;
     }
 
-    //return cv::Scalar(b[i], g[i], r[i]);
-    return cv::Scalar(255, 255, 255);
+    return cv::Scalar(b[i], g[i], r[i]);
+    //return cv::Scalar(255, 255, 255);
 }

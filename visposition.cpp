@@ -1,7 +1,7 @@
 #include "visposition.h"
 
 VisPosition::VisPosition(void) {
-    this->type = VisType::POSITION;
+    setType(VisType::POSITION);
 }
 
 QString VisPosition::toString(void) {

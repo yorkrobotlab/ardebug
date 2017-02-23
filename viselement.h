@@ -11,8 +11,16 @@ enum VisType { NAME, STATE, POSITION, DIRECTION, PROXIMITY };
 
 class VisElement
 {
-public:
+private:
     VisType type;
+    bool enabled;
+
+public:
+    void setType(VisType t) { type = t; }
+    VisType getType(void) { return type; }
+
+    void setEnabled(bool en) { enabled = en; }
+    bool getEnabled(void) { return enabled; }
 
     virtual QString toString(void) = 0;
 

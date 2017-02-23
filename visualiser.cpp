@@ -17,6 +17,8 @@
 
 #include "visposition.h"
 #include "visdirection.h"
+#include "visname.h"
+#include "visstate.h"
 
 using namespace cv;
 
@@ -25,10 +27,16 @@ using namespace cv;
  */
 Visualiser::Visualiser(QWidget*)  { }
 
+/* Constructor
+ * Initalises the visualiser data.
+ */
 Visualiser::Visualiser(DataModel *dataModelRef) {
     this->dataModelRef = dataModelRef;
 
+    // Default visualiser config
     this->config = VisConfig();
+    this->config.elements.push_back(new VisName());
+    this->config.elements.push_back(new VisState());
     this->config.elements.push_back(new VisPosition());
     this->config.elements.push_back(new VisDirection());
 }
@@ -41,15 +49,7 @@ void Visualiser::showImage(const Mat& image) {
     for (int i = 0; i < dataModelRef->getRobotCount(); i++) {
         // Get data
         RobotData* robot = dataModelRef->getRobotByIndex(i);
-        int x = image.cols * robot->getPos().x;
-        int y = image.rows * robot->getPos().y;
         bool selected = dataModelRef->selectedRobotID == robot->getID();
-
-        // If selected, draw text
-        if (selected) {
-            putText(image, robot->getName().toStdString(), Point(x + 8, y), FONT_HERSHEY_SIMPLEX, 0.3, robot->getColour());
-            putText(image, robot->getState().toStdString(), Point(x + 8, y + 12), FONT_HERSHEY_SIMPLEX, 0.3, robot->getColour());
-        }
 
         // Render the visualisations
         for (size_t j = 0; j < this->config.elements.size(); j++) {
