@@ -6,7 +6,7 @@ VisPosition::VisPosition(void) {
 }
 
 QString VisPosition::toString(void) {
-    return QString("Position Visualisation.");
+    return QString("Position");
 }
 
 void VisPosition::render(cv::Mat image, RobotData *robot, bool selected) {

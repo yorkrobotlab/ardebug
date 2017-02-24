@@ -16,7 +16,7 @@
  */
 CameraController::CameraController(void) {
     // Instantiate the machine vision class which contains the camera routines
-    machineVision = new MachineVision;
+    machineVision = new MachineVision();
 
     // Set up the timer to read the camera
     readTimer = new QTimer(this);

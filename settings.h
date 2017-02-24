@@ -21,6 +21,13 @@ public:
         return s_instance;
     }
 
+    static void deleteInstance() {
+        if (s_instance) {
+            delete s_instance;
+            s_instance = 0;
+        }
+    }
+
     Vector2D getCameraImageSize(void);
     void setCameraImageSize(Vector2D size);
     void setCameraImageWidth(int width);

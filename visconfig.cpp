@@ -12,7 +12,14 @@
  * Initialises the element list
  */
 VisConfig::VisConfig() {
-    this->elements.reserve(5);
+    elements.reserve(5);
+}
+
+VisConfig::~VisConfig(void) {
+    for (size_t i = 0; i < elements.size(); i++) {
+        delete elements[i];
+    }
+    elements.clear();
 }
 
 /* populateSettingsList
@@ -21,7 +28,7 @@ VisConfig::VisConfig() {
 void VisConfig::populateSettingsList(QListWidget *list) {
     list->clear();
 
-    for (size_t i = 0; i < this->elements.size(); i++) {
+    for (size_t i = 0; i < elements.size(); i++) {
         VisElement* element = elements.at(i);
 
         QListWidgetItem* item = new QListWidgetItem;

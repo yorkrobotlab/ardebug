@@ -40,6 +40,11 @@ DataModel::DataModel(QObject *parent) : QObject(parent)
  */
 DataModel::~DataModel(void) {
     delete robotListModel;
+
+    for (size_t i = 0; i < robotDataList.size(); i++) {
+        delete robotDataList[i];
+    }
+    robotDataList.clear();
 }
 
 /* getRobotByIndex

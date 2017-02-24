@@ -20,6 +20,11 @@
 
 #include "QString"
 
+/* Destructor
+ * Delete necessary data.
+ */
+DataThread::~DataThread(void) { }
+
 /* openUDPSocket
  * Opens a UDP socket on the given port, and begins listening for data.
  */
@@ -79,6 +84,7 @@ void DataThread::listenForPacket(void) {
     // Check if close packet received
     if (strcmp(buffer, "close") == 0) {
         close(sockfd);
+        delete readTimer;
     } else {
         // Emit received data through signal
         QString str;

@@ -6,7 +6,7 @@ VisState::VisState() {
 }
 
 QString VisState::toString(void) {
-    return QString("Show robot state.");
+    return QString("State");
 }
 
 

@@ -10,6 +10,8 @@ class DataThread : public QObject
     QTimer* readTimer;
     int sockfd = 0;
 
+    ~DataThread();
+
 public slots:
     void openUDPSocket(int port);
 

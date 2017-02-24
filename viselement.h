@@ -16,6 +16,8 @@ private:
     bool enabled;
 
 public:
+    virtual ~VisElement(void) { }
+
     void setType(VisType t) { type = t; }
     VisType getType(void) { return type; }
 

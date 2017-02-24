@@ -11,7 +11,8 @@ class VisConfig
 public:
     std::vector<VisElement*> elements;
 
-    VisConfig();
+    VisConfig(void);
+    ~VisConfig(void);
 
     void populateSettingsList(QListWidget* list);
 };

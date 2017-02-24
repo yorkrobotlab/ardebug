@@ -6,7 +6,7 @@ VisName::VisName(void) {
 }
 
 QString VisName::toString(void) {
-    return QString("Show robot name.");
+    return QString("Name");
 }
 
 void VisName::render(cv::Mat image, RobotData *robot, bool selected) {

@@ -8,7 +8,7 @@ VisProximity::VisProximity() {
 }
 
 QString VisProximity::toString(void) {
-    return QString("Show proximity sensor data.");
+    return QString("Proximity");
 }
 
 void VisProximity::render(cv::Mat image, RobotData *robot, bool selected) {

@@ -65,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Instantiate the camera controller and move it to the camera thread
     cameraController = new CameraController();
     cameraController->moveToThread(&cameraThread);
-    connect(&cameraThread, SIGNAL(finished()), dataHandler, SLOT(deleteLater()));
+    connect(&cameraThread, SIGNAL(finished()), cameraController, SLOT(deleteLater()));
     connect(this, SIGNAL(startReadingCamera(void)), cameraController, SLOT(startReadingCamera(void)));
     connect(this, SIGNAL(stopReadingCamera(void)), cameraController, SLOT(stopReadingCamera(void)));
 
@@ -101,14 +101,15 @@ MainWindow::~MainWindow()
 
     delete ui;
     delete dataModel;
-    //delete visualiser;
-    //delete cameraController;
+    delete visualiser;
 
     networkThread.quit();
     networkThread.wait();
 
     cameraThread.quit();
     cameraThread.wait();
+
+    Settings::deleteInstance();
 }
 
 /* on_actionExit_triggered

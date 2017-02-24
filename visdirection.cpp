@@ -8,7 +8,7 @@ VisDirection::VisDirection(void) {
 }
 
 QString VisDirection::toString(void) {
-    return QString("Direction Visualisation.");
+    return QString("Direction");
 }
 
 void VisDirection::render(cv::Mat image, RobotData *robot, bool selected) {
