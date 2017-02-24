@@ -86,6 +86,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->imageXDimEdit->setValidator(new QIntValidator(1, 10000, this));
     ui->imageYDimEdit->setValidator(new QIntValidator(1, 10000, this));
 
+    // Initalise the IR data view
+    irDataView = new IRDataView(dataModel);
+
+    QVBoxLayout* vertLayout = new QVBoxLayout();
+    vertLayout->addWidget(irDataView);
+    ui->proximityTab->setLayout(vertLayout);
+
     // Start the camera reading immediately
     startReadingCamera();
 }
@@ -232,17 +239,7 @@ void MainWindow::updateStateTab(void) {
 }
 
 void MainWindow::updateProximityTab(void) {
-    // Get the selected robot
-    if (dataModel->selectedRobotID >= 0) {
-        RobotData* robot = dataModel->getRobotByID(dataModel->selectedRobotID);
-        QString str = QString("Proximity: ");
-
-        for (int i = 0; i < PROX_SENS_COUNT; i++) {
-            str = str + QString::number(robot->getProximitySensorData(i)) + " ";
-        }
-
-        ui->proximityText->setText(str);
-    }
+    irDataView->repaint();
 }
 
 /* on_networkListenButton_clicked

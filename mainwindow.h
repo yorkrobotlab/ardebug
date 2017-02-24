@@ -9,6 +9,7 @@
 #include "visualiser.h"
 #include "cameracontroller.h"
 #include "datamodel.h"
+#include "irdataview.h"
 
 namespace Ui {
 class MainWindow;
@@ -22,6 +23,7 @@ class MainWindow : public QMainWindow
     Visualiser* visualiser;
     CameraController* cameraController;
     DataModel* dataModel;
+    IRDataView* irDataView;
 
     int sockfd;
 
