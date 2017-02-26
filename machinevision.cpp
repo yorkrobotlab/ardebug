@@ -252,8 +252,8 @@ Mat MachineVision::getLatestFrame(Vector2D size, std::vector<TrackResult>* resul
     result->push_back(res);
 
     res.id = 5;
-    res.pos.x = 0.2 + (0.1 * (float)sin(4 * r * (PI/180)));
-    res.pos.y = 0.2 + (0.1 * (float)cos(4 * r * (PI/180)));
+    res.pos.x += + (0.1 * (float)cos(4 * r * (PI/180)));
+    res.pos.y += (0.1 * (float)sin(4 * r * (PI/180)));
     res.angle = 360 - (4 * r);
     result->push_back(res);
 

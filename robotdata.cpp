@@ -21,10 +21,15 @@ RobotData::RobotData(int id, QString name) {
     // Initialise state data
     this->state = "Unknown";
     this->stateTransitionIndex = 0;
+    //This causes a segfault at delete time, something related to deleting the qstrings
+    //bzero(this->stateTransitionHistory, sizeof(StateTransition) * STATE_HISTORY_COUNT);
 
     // Initialise odometry
     setPos(0.0f, 0.0f);
     setAngle(0);
+    this->posHistoryIndex = 0;
+    this->posHistoryFrameCount = 0;
+    bzero(this->posHistory, sizeof(Vector2D) * POS_HISTORY_COUNT);
 
     // Generate colour
     setColour(colourGen());
@@ -44,6 +49,10 @@ RobotData::~RobotData(void) {
  * Update the position with new coords.
  */
 void RobotData::setPos(float x, float y) {
+    // First update the history
+    updatePositionHistory();
+
+    // Then update the current position
     this->pos.x = x;
     this->pos.y = y;
 }
@@ -53,6 +62,54 @@ void RobotData::setPos(float x, float y) {
  */
 Vector2D RobotData::getPos(void) {
     return this->pos;
+}
+
+/* getPosHistory
+ * Gets the historical position data in order of ascending age
+ */
+void RobotData::getPosHistory(Vector2D* result) {
+    int i = 0;
+    int idx = posHistoryIndex - 1;
+
+    if (idx < 0) {
+        idx = POS_HISTORY_COUNT - 1;
+    }
+
+    while (idx != posHistoryIndex) {
+        result[i] = posHistory[idx];
+
+        i++;
+        idx--;
+
+        if (idx < 0) {
+            idx = POS_HISTORY_COUNT - 1;
+        }
+    }
+
+    result[i] = posHistory[posHistoryIndex];
+}
+
+/* updatePositionHistory
+ * Check if enough frames have elapsed to insert the current position
+ * into the position history array.
+ */
+void RobotData::updatePositionHistory(void) {
+    if (posHistoryFrameCount == 0) {
+        posHistory[posHistoryIndex].x = pos.x;
+        posHistory[posHistoryIndex].y = pos.y;
+
+        posHistoryIndex++;
+
+        if (posHistoryIndex >= POS_HISTORY_COUNT) {
+            posHistoryIndex = 0;
+        }
+    }
+
+    posHistoryFrameCount++;
+
+    if (posHistoryFrameCount >= POS_HISTORY_INTERVAL) {
+        posHistoryFrameCount = 0;
+    }
 }
 
 /* setState

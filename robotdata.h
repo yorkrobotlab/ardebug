@@ -8,7 +8,11 @@
 
 #include "util.h"
 
+#define STATE_HISTORY_COUNT     10
+#define POS_HISTORY_COUNT       30
 #define PROX_SENS_COUNT         8
+
+#define POS_HISTORY_INTERVAL    10
 
 class RobotData
 {
@@ -20,11 +24,16 @@ class RobotData
     QString state;
     QStringListModel knownStates;
     QStringListModel stateTransitionList;
-    StateTransition stateTransitionHistory[10];
+    StateTransition stateTransitionHistory[STATE_HISTORY_COUNT];
     int stateTransitionIndex;
 
-    // Odometry
+    // Position
     Vector2D pos;
+    Vector2D posHistory[POS_HISTORY_COUNT];
+    int posHistoryIndex;
+    int posHistoryFrameCount;
+
+    // Direction
     int angle;
 
     // Colour
@@ -49,6 +58,7 @@ public:
     void setState(QString state);
 
     Vector2D getPos(void);
+    void getPosHistory(Vector2D* result);
     void setPos(float x, float y);
 
     int getAngle(void);
@@ -62,6 +72,7 @@ public:
 
 private:
     void updateStateTransitionHistory(QString newState);
+    void updatePositionHistory(void);
 };
 
 #endif // ROBOTDATA_H

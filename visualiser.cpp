@@ -20,6 +20,7 @@
 #include "visname.h"
 #include "visstate.h"
 #include "visproximity.h"
+#include "vispath.h"
 
 using namespace cv;
 
@@ -41,6 +42,7 @@ Visualiser::Visualiser(DataModel *dataModelRef) {
     this->config.elements.push_back(new VisPosition());
     this->config.elements.push_back(new VisDirection());
     this->config.elements.push_back(new VisProximity());
+    this->config.elements.push_back(new VisPath());
 }
 
 /* showImage
