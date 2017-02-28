@@ -73,6 +73,7 @@ MainWindow::MainWindow(QWidget *parent) :
     qRegisterMetaType< cv::Mat >("cv::Mat");
     connect(cameraController, SIGNAL(dataFromCamera(cv::Mat)), visualiser, SLOT(showImage(cv::Mat)));
     connect(visualiser, SIGNAL(frameSizeChanged(int, int)), cameraController, SLOT(updateFrameSize(int, int)));
+    connect(visualiser, SIGNAL(robotSelectedInVisualiser(int)), this, SLOT(robotSelectedInVisualiser(int)));
 
     // Connect tracking position data signal to data model
     connect(cameraController, SIGNAL(posData(QString)), dataModel, SLOT(newData(QString)));
@@ -181,6 +182,38 @@ void MainWindow::robotListSelectionChanged(const QItemSelection &selection) {
         ui->statusBar->showMessage(robot->getName(), 3000);
     } else {
         dataModel->selectedRobotID = -1;
+    }
+
+    // Update the overview tab
+    updateOverviewTab();
+
+    // Update the state tab
+    updateStateTab();
+
+    // Update the proximiy sensor tab
+    updateProximityTab();
+}
+
+/* robotSelectedInVisualiser
+ * Slot. Called when a robot is selected by clicking the visualiser. Updates
+ * the relevent model data and changes the selected item in the list.
+ */
+void MainWindow::robotSelectedInVisualiser(int id) {
+    // Update selected ID
+    dataModel->selectedRobotID = id;
+
+    // Get the list of strings in the robot list
+    QStringListModel* listModel = (QStringListModel*)ui->robotList->model();
+    QStringList stringList = listModel->stringList();
+
+    // Iterate over the list, checking each string for the selected ID
+    for (int i = 0; i < stringList.size(); i++) {
+        QString str = stringList.at(i);
+
+        if (str.startsWith(QString::number(id))) {
+            // Update selection
+            ui->robotList->setCurrentIndex(ui->robotList->model()->index(i, 0));
+        }
     }
 
     // Update the overview tab

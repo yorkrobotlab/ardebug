@@ -90,11 +90,12 @@ void Visualiser::showImage(const Mat& image) {
  */
 void Visualiser::paintEvent(QPaintEvent*) {
     // Calculate the x position
-    int x = (this->size().width() / 2) - (_qimage.width() / 2);
+    int x = (this->size().width() - _qimage.width()) / 2;
+    int y = (this->size().height() - _qimage.height()) / 2;
 
     // Display the image
     QPainter painter(this);
-    painter.drawImage(QPoint(x,0), _qimage);
+    painter.drawImage(QPoint(x,y), _qimage);
     painter.end();
 }
 
@@ -104,6 +105,35 @@ void Visualiser::paintEvent(QPaintEvent*) {
  */
 void Visualiser::resizeEvent(QResizeEvent*) {
     checkFrameSize();
+}
+
+/* mousePressEvent
+ * Captures mouse presses when the mouse is within the visualiser bounds.
+ */
+void Visualiser::mousePressEvent(QMouseEvent* event) {
+    // Calculate margins
+    int xMargin = (this->size().width() - _qimage.width())/2;
+    int yMargin = (this->size().height() - _qimage.height())/2;
+
+    // Calculate x and y values as proportions of the image
+    float x = (float)(event->x() - xMargin) / (float)(this->size().width() - (2 * xMargin));
+    float y = (float)(event->y() - yMargin) / (float)(this->size().height() - (2 * yMargin));
+
+    // Loop over the robots looking for any within a threshold of the click
+    for (int i = 0; i < dataModelRef->getRobotCount(); i++) {
+        RobotData* robot = dataModelRef->getRobotByIndex(i);
+
+        float dx = std::abs(robot->getPos().x - x);
+        float dy = std::abs(robot->getPos().y - y);
+
+        if (dx < 0.02 && dy < 0.02) {
+            // Signal that a robot has been selected
+            emit robotSelectedInVisualiser(robot->getID());
+
+            // Max one selection per click
+            return;
+        }
+    }
 }
 
 /* checkFrameSize

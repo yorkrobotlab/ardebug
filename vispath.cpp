@@ -40,7 +40,9 @@ void VisPath::render(cv::Mat image, RobotData *robot, bool selected) {
         int ex = image.cols * posHistory[i].x;
         int ey = image.rows * posHistory[i].y;
 
-        line(image, cv::Point(x, y), cv::Point(ex, ey), robot->getColour(), 1);
+        if (x != 0 && y != 0 && ex != 0 && ey != 0) {
+            line(image, cv::Point(x, y), cv::Point(ex, ey), robot->getColour(), 1);
+        }
 
         x = ex;
         y = ey;

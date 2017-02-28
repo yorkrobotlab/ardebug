@@ -45,6 +45,8 @@ public slots:
 
     void robotListSelectionChanged(const QItemSelection &selection);
 
+    void robotSelectedInVisualiser(int id);
+
     void socketOpened(const int &sockfd) { this->sockfd = sockfd; }
 
 private slots:

@@ -8,6 +8,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QTimer>
+#include <QMouseEvent>
 #include <opencv2/opencv.hpp>
 
 class Visualiser : public QWidget
@@ -29,9 +30,13 @@ public slots:
 signals:
     void frameSizeChanged(int width, int height);
 
+    void robotSelectedInVisualiser(int id);
+
 protected:
     void paintEvent(QPaintEvent*);
     void resizeEvent(QResizeEvent*);
+
+    void mousePressEvent(QMouseEvent*);
 
     QImage _qimage;
     cv::Mat _tmp;
