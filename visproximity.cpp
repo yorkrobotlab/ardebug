@@ -1,18 +1,37 @@
 #include "visproximity.h"
 
+#include <QCheckBox>
+#include <QFormLayout>
+
 #define PI 3.14159265
 
 VisProximity::VisProximity() {
     setType(VisType::PROXIMITY);
     setEnabled(true);
+    selectedOnly = true;
+    settingsDialog = NULL;
+}
+
+VisProximity::~VisProximity() {
+    if (settingsDialog != NULL) {
+        delete settingsDialog;
+    }
 }
 
 QString VisProximity::toString(void) {
-    return QString("Proximity");
+    QString str = "Proximity. ";
+
+    if (selectedOnly) {
+        str = str + "\t[Selected robot only. ]";
+    } else {
+        str = str + "\t[All robots. ]";
+    }
+
+    return str;
 }
 
 void VisProximity::render(cv::Mat image, RobotData *robot, bool selected) {
-    if (!isEnabled() || !selected) {
+    if (!isEnabled() || (selectedOnly && !selected)) {
         return;
     }
 
@@ -28,3 +47,20 @@ void VisProximity::render(cv::Mat image, RobotData *robot, bool selected) {
         line(image, cv::Point(x, y), end, robot->getColour(), 1);
     }
 }
+
+QDialog* VisProximity::getSettingsDialog(void) {
+    settingsDialog = new ProximitySettingsDialog(this);
+    return settingsDialog;
+}
+
+void VisProximity::setSelectedOnly(bool enable) {
+    selectedOnly = enable;
+}
+
+bool VisProximity::getSelectedOnly(void) {
+    return selectedOnly;
+}
+
+
+
+

@@ -23,3 +23,7 @@ void VisDirection::render(cv::Mat image, RobotData *robot, bool selected) {
     cv::Point end = cv::Point(x + (int)(12 * cos(a * PI/180)), y + (int)(12 * sin(a * PI/180)));
     line(image, cv::Point(x, y), end, robot->getColour(), selected ? 2 : 1);
 }
+
+QDialog* VisDirection::getSettingsDialog(void) {
+    return NULL;
+}

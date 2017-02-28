@@ -22,3 +22,7 @@ void VisState::render(cv::Mat image, RobotData *robot, bool selected) {
         putText(image, robot->getState().toStdString(), cv::Point(x + 8, y + 12), cv::FONT_HERSHEY_SIMPLEX, 0.3, robot->getColour());
     }
 }
+
+QDialog* VisState::getSettingsDialog(void) {
+    return NULL;
+}

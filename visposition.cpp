@@ -19,3 +19,7 @@ void VisPosition::render(cv::Mat image, RobotData *robot, bool selected) {
 
     circle(image, cv::Point(x, y), 8, robot->getColour(), selected ? 2 : 1);
 }
+
+QDialog* VisPosition::getSettingsDialog(void) {
+    return NULL;
+}

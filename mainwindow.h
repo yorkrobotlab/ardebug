@@ -41,6 +41,8 @@ signals:
 public slots:
     void dataModelUpdate(bool listChanged);
 
+    void visConfigUpdate(void);
+
     void robotListSelectionChanged(const QItemSelection &selection);
 
     void socketOpened(const int &sockfd) { this->sockfd = sockfd; }
@@ -61,6 +63,8 @@ private slots:
     void on_imageYDimEdit_textChanged(const QString &arg1);
 
     void on_visSettingsList_itemClicked(QListWidgetItem *item);
+
+    void on_visSettingsList_itemDoubleClicked(QListWidgetItem *item);
 
 private:
     Ui::MainWindow *ui;

@@ -2,6 +2,7 @@
 #define VISELEMENT_H
 
 #include <QString>
+#include <QDialog>
 
 #include <opencv2/opencv.hpp>
 
@@ -27,6 +28,8 @@ public:
     virtual QString toString(void) = 0;
 
     virtual void render(cv::Mat image, RobotData* robot, bool selected) = 0;
+
+    virtual QDialog* getSettingsDialog(void) = 0;
 };
 
 Q_DECLARE_METATYPE(VisElement*)

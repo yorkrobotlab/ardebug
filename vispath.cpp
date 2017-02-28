@@ -3,14 +3,30 @@
 VisPath::VisPath() {
     setType(VisType::PATH);
     setEnabled(true);
+    selectedOnly = false;
+    settingsDialog = NULL;
+}
+
+VisPath::~VisPath() {
+    if (settingsDialog != NULL) {
+        delete settingsDialog;
+    }
 }
 
 QString VisPath::toString(void) {
-    return QString("Path");
+    QString str = "Path. ";
+
+    if (selectedOnly) {
+        str = str + "\t[Selected robot only. ]";
+    } else {
+        str = str + "\t[All robots. ]";
+    }
+
+    return str;
 }
 
 void VisPath::render(cv::Mat image, RobotData *robot, bool selected) {
-    if (!isEnabled()) {
+    if (!isEnabled() || (selectedOnly && !selected)) {
         return;
     }
 
@@ -29,4 +45,17 @@ void VisPath::render(cv::Mat image, RobotData *robot, bool selected) {
         x = ex;
         y = ey;
     }
+}
+
+QDialog* VisPath::getSettingsDialog(void) {
+    settingsDialog = new PathSettingsDialog(this);
+    return settingsDialog;
+}
+
+void VisPath::setSelectedOnly(bool enable) {
+    selectedOnly = enable;
+}
+
+bool VisPath::getSelectedOnly(void) {
+    return selectedOnly;
 }

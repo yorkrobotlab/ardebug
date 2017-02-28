@@ -242,6 +242,10 @@ void MainWindow::updateProximityTab(void) {
     irDataView->repaint();
 }
 
+void MainWindow::visConfigUpdate(void) {
+    visualiser->config.populateSettingsList(ui->visSettingsList);
+}
+
 /* on_networkListenButton_clicked
  * Slot. Called when the listen for data button is clicked. Toggles between
  * start and stop listening. Opens and closes the UDP socket respectively.
@@ -326,4 +330,16 @@ void MainWindow::on_visSettingsList_itemClicked(QListWidgetItem *item)
     VisElement* e = v.value<VisElement *>();
 
     e->setEnabled(item->checkState() == Qt::Checked);
+}
+
+void MainWindow::on_visSettingsList_itemDoubleClicked(QListWidgetItem *item)
+{
+    QVariant v = item->data(Qt::UserRole);
+    VisElement* e = v.value<VisElement *>();
+
+    QDialog* settingsDialog = e->getSettingsDialog();
+    QObject::connect(settingsDialog, SIGNAL(accepted()), this, SLOT(visConfigUpdate(void)));
+    if (settingsDialog != NULL) {
+        settingsDialog->show();
+    }
 }
