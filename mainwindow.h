@@ -68,6 +68,8 @@ private slots:
 
     void on_visSettingsList_itemDoubleClicked(QListWidgetItem *item);
 
+    void on_robotColoursCheckBox_stateChanged();
+
 private:
     Ui::MainWindow *ui;
 

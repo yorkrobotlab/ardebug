@@ -9,6 +9,7 @@ class Settings
 
     Vector2D cameraImageSize;
     bool videoEnabled;
+    bool robotColourEnabled;
 
     Settings(void);
 
@@ -35,6 +36,9 @@ public:
 
     bool isVideoEnabled(void);
     void setVideoEnabled(bool enable);
+
+    bool isRobotColourEnabled(void);
+    void setRobotColourEnabled(bool enable);
 };
 
 #endif // SETTINGS_H

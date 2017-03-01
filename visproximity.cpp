@@ -8,7 +8,7 @@
 VisProximity::VisProximity() {
     setType(VisType::PROXIMITY);
     setEnabled(true);
-    selectedOnly = true;
+    setSelectedOnly(true);
     settingsDialog = NULL;
 }
 
@@ -49,6 +49,10 @@ void VisProximity::render(cv::Mat image, RobotData *robot, bool selected) {
 }
 
 QDialog* VisProximity::getSettingsDialog(void) {
+    if (settingsDialog != NULL) {
+        delete settingsDialog;
+    }
+
     settingsDialog = new ProximitySettingsDialog(this);
     return settingsDialog;
 }

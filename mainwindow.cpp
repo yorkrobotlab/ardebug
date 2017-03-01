@@ -376,3 +376,9 @@ void MainWindow::on_visSettingsList_itemDoubleClicked(QListWidgetItem *item)
         settingsDialog->show();
     }
 }
+
+void MainWindow::on_robotColoursCheckBox_stateChanged()
+{
+    Settings::instance()->setRobotColourEnabled(ui->robotColoursCheckBox->isChecked());
+    dataModel->resetRobotColours();
+}

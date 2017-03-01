@@ -8,7 +8,7 @@
 
 #include "robotdata.h"
 
-enum VisType { NAME, STATE, POSITION, DIRECTION, PROXIMITY, PATH };
+enum VisType { ID, NAME, STATE, POSITION, DIRECTION, PROXIMITY, PATH };
 
 class VisElement
 {

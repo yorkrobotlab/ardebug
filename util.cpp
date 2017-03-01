@@ -11,6 +11,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include "util.h"
+#include "settings.h"
 
 /* senClosePacket
  * Sends a specific packet to indicate that the application should close
@@ -61,6 +62,9 @@ cv::Scalar colourGen(void) {
         i = -1;
     }
 
-    return cv::Scalar(b[i], g[i], r[i]);
-    //return cv::Scalar(255, 255, 255);
+    if (Settings::instance()->isRobotColourEnabled()) {
+        return cv::Scalar(b[i], g[i], r[i]);
+    }
+
+    return cv::Scalar(255, 255, 255);
 }

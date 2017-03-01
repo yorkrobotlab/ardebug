@@ -14,6 +14,7 @@ Settings::Settings(void) {
     cameraImageSize.y = 1180;
 
     videoEnabled = true;
+    robotColourEnabled = true;
 }
 
 /* getCameraImageSize
@@ -60,8 +61,22 @@ bool Settings::isVideoEnabled(void) {
 }
 
 /* setVideoEnabled
- * Enables or disables te video enabled setting.
+ * Enables or disables the video enabled setting.
  */
 void Settings::setVideoEnabled(bool enable) {
     this->videoEnabled = enable;
+}
+
+/* isRobotColourEnabled
+ * Returns true if robots should have different colours.
+ */
+bool Settings::isRobotColourEnabled(void) {
+    return this->robotColourEnabled;
+}
+
+/* setRobotColourEnabled
+ * Enables or disables the robot colouring.
+ */
+void Settings::setRobotColourEnabled(bool enable) {
+    this->robotColourEnabled = enable;
 }

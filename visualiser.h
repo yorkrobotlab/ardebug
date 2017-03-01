@@ -3,6 +3,7 @@
 
 #include "datamodel.h"
 #include "visconfig.h"
+#include "util.h"
 
 #include <QWidget>
 #include <QImage>
@@ -41,6 +42,8 @@ protected:
     QImage _qimage;
     cv::Mat _tmp;
     DataModel* dataModelRef;
+
+    Vector2D click;
 };
 
 #endif // VISUALISER_H

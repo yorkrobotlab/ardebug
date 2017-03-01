@@ -7,6 +7,7 @@
  */
 
 #include "datamodel.h"
+#include "util.h"
 
 #include <iostream>
 #include <stdio.h>
@@ -262,4 +263,11 @@ int DataModel::getRobotIndex(int id, bool create) {
 
     // Return the index
     return idx;
+}
+
+void DataModel::resetRobotColours(void) {
+    for (int i = 0; i < (int)robotDataList.size(); i++) {
+        RobotData* d = (RobotData*)robotDataList.at(i);
+        d->setColour(colourGen());
+    }
 }

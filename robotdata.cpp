@@ -21,8 +21,6 @@ RobotData::RobotData(int id, QString name) {
     // Initialise state data
     this->state = "Unknown";
     this->stateTransitionIndex = 0;
-    //This causes a segfault at delete time, something related to deleting the qstrings
-    //bzero(this->stateTransitionHistory, sizeof(StateTransition) * STATE_HISTORY_COUNT);
 
     // Initialise odometry
     setPos(0.0f, 0.0f);

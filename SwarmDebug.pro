@@ -42,7 +42,9 @@ SOURCES += main.cpp\
     irdataview.cpp \
     vispath.cpp \
     proximitysettingsdialog.cpp \
-    pathsettingsdialog.cpp
+    pathsettingsdialog.cpp \
+    visid.cpp \
+    idsettingsdialog.cpp
 
 HEADERS  += mainwindow.h \
     datathread.h \
@@ -64,7 +66,9 @@ HEADERS  += mainwindow.h \
     irdataview.h \
     vispath.h \
     proximitysettingsdialog.h \
-    pathsettingsdialog.h
+    pathsettingsdialog.h \
+    visid.h \
+    idsettingsdialog.h
 
 FORMS    += mainwindow.ui
 

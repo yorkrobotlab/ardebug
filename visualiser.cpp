@@ -15,10 +15,11 @@
 
 #include <QLayout>
 
-#include "visposition.h"
-#include "visdirection.h"
+#include "visid.h"
 #include "visname.h"
 #include "visstate.h"
+#include "visposition.h"
+#include "visdirection.h"
 #include "visproximity.h"
 #include "vispath.h"
 
@@ -37,12 +38,16 @@ Visualiser::Visualiser(DataModel *dataModelRef) {
 
     // Default visualiser config
     this->config = VisConfig();
+    this->config.elements.push_back(new VisID());
     this->config.elements.push_back(new VisName());
     this->config.elements.push_back(new VisState());
     this->config.elements.push_back(new VisPosition());
     this->config.elements.push_back(new VisDirection());
     this->config.elements.push_back(new VisProximity());
     this->config.elements.push_back(new VisPath());
+
+    this->click.x = 0.0;
+    this->click.y = 0.0;
 }
 
 /* showImage
@@ -61,6 +66,13 @@ void Visualiser::showImage(const Mat& image) {
             element->render(image, robot, selected);
         }
     }
+
+    // Draw click point
+    int x = image.cols * click.x;
+    int y = image.rows * click.y;
+
+    line(image, cv::Point(x - 4, y), cv::Point(x + 4, y), cv::Scalar(255, 0, 0), 1);
+    line(image, cv::Point(x, y - 4), cv::Point(x, y + 4), cv::Scalar(255, 0, 0), 1);
 
     // Convert to RGB
     switch (image.type()) {
@@ -116,17 +128,17 @@ void Visualiser::mousePressEvent(QMouseEvent* event) {
     int yMargin = (this->size().height() - _qimage.height())/2;
 
     // Calculate x and y values as proportions of the image
-    float x = (float)(event->x() - xMargin) / (float)(this->size().width() - (2 * xMargin));
-    float y = (float)(event->y() - yMargin) / (float)(this->size().height() - (2 * yMargin));
+    click.x = (float)(event->x() - xMargin) / (float)(this->size().width() - (2 * xMargin));
+    click.y = (float)(event->y() - yMargin) / (float)(this->size().height() - (2 * yMargin));
 
     // Loop over the robots looking for any within a threshold of the click
     for (int i = 0; i < dataModelRef->getRobotCount(); i++) {
         RobotData* robot = dataModelRef->getRobotByIndex(i);
 
-        float dx = std::abs(robot->getPos().x - x);
-        float dy = std::abs(robot->getPos().y - y);
+        float dx = std::abs(robot->getPos().x - click.x);
+        float dy = std::abs(robot->getPos().y - click.y);
 
-        if (dx < 0.02 && dy < 0.02) {
+        if (dx < 0.04 && dy < 0.04) {
             // Signal that a robot has been selected
             emit robotSelectedInVisualiser(robot->getID());
 

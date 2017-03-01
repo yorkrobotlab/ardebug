@@ -3,7 +3,7 @@
 VisPath::VisPath() {
     setType(VisType::PATH);
     setEnabled(true);
-    selectedOnly = false;
+    setSelectedOnly(false);
     settingsDialog = NULL;
 }
 
@@ -50,6 +50,10 @@ void VisPath::render(cv::Mat image, RobotData *robot, bool selected) {
 }
 
 QDialog* VisPath::getSettingsDialog(void) {
+    if (settingsDialog != NULL) {
+        delete settingsDialog;
+    }
+
     settingsDialog = new PathSettingsDialog(this);
     return settingsDialog;
 }
