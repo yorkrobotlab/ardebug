@@ -70,6 +70,8 @@ private slots:
 
     void on_robotColoursCheckBox_stateChanged();
 
+    void on_logFileButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 

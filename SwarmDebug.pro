@@ -44,7 +44,8 @@ SOURCES += main.cpp\
     proximitysettingsdialog.cpp \
     pathsettingsdialog.cpp \
     visid.cpp \
-    idsettingsdialog.cpp
+    idsettingsdialog.cpp \
+    log.cpp
 
 HEADERS  += mainwindow.h \
     datathread.h \
@@ -68,7 +69,8 @@ HEADERS  += mainwindow.h \
     proximitysettingsdialog.h \
     pathsettingsdialog.h \
     visid.h \
-    idsettingsdialog.h
+    idsettingsdialog.h \
+    log.h
 
 FORMS    += mainwindow.ui
 

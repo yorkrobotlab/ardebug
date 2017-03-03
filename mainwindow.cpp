@@ -13,6 +13,7 @@
 #include "robotdata.h"
 #include "util.h"
 #include "settings.h"
+#include "log.h"
 
 #include <sys/socket.h>
 
@@ -31,7 +32,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->statusBar->showMessage("SwarmDebug v0.01", 3000);
 
     // Show some console text
-    ui->consoleText->insertPlainText("Application Started Succesfully.\n");
+    Log::instance()->setup(ui->consoleText, ui->loggingFileLabel);
+    Log::instance()->logMessage("Application Started Succesfully.\n");
 
     // Set up the data model
     dataModel = new DataModel;
@@ -118,6 +120,7 @@ MainWindow::~MainWindow()
     cameraThread.wait();
 
     Settings::deleteInstance();
+    Log::deleteInstance();
 }
 
 /* on_actionExit_triggered
@@ -299,8 +302,7 @@ void MainWindow::on_networkListenButton_clicked()
             ui->networkListenButton->setText("Stop Listening");
             ui->networkPortBox->setDisabled(true);
 
-            ui->consoleText->moveCursor(QTextCursor::Start, QTextCursor::MoveAnchor);
-            ui->consoleText->insertPlainText(QString("Listening for robot data on port ") + QString::number(port) + QString("...\n"));
+            Log::instance()->logMessage(QString("Listening for robot data on port ") + QString::number(port) + QString("...\n"));
         }
     } else {
         if (openPort >= 0) {
@@ -310,8 +312,7 @@ void MainWindow::on_networkListenButton_clicked()
             ui->networkListenButton->setText("Start Listening");
             ui->networkPortBox->setDisabled(false);
 
-            ui->consoleText->moveCursor(QTextCursor::Start, QTextCursor::MoveAnchor);
-            ui->consoleText->insertPlainText("Closing data socket.\n");
+            Log::instance()->logMessage("Closing data socket.\n");
         }
     }
 }
@@ -381,4 +382,9 @@ void MainWindow::on_robotColoursCheckBox_stateChanged()
 {
     Settings::instance()->setRobotColourEnabled(ui->robotColoursCheckBox->isChecked());
     dataModel->resetRobotColours();
+}
+
+void MainWindow::on_logFileButton_clicked()
+{
+    Log::instance()->setDirectory(this);
 }

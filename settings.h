@@ -15,15 +15,15 @@ class Settings
 
 public:
     static Settings* instance() {
-        if (!s_instance) {
-            s_instance = new Settings;
+        if (s_instance == NULL) {
+            s_instance = new Settings();
         }
 
         return s_instance;
     }
 
     static void deleteInstance() {
-        if (s_instance) {
+        if (s_instance != NULL) {
             delete s_instance;
             s_instance = 0;
         }
