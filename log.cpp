@@ -18,7 +18,6 @@ Log::Log()
 {
     setLoggingEnabled(false);
     logDirectory = QDir::currentPath();
-    std::cout << logDirectory.toStdString() << std::endl;
 }
 
 /* setConsoleRef
@@ -27,6 +26,7 @@ Log::Log()
 void Log::setup(QPlainTextEdit *console, QLabel* dirLabel) {
     this->console = console;
     this->logDirLabel = dirLabel;
+    updateDirectoryLabel();
 }
 
 bool Log::isLoggingEnabled(void) {
@@ -50,12 +50,16 @@ void Log::setDirectory(QMainWindow* mainWindow) {
         QStringList result = fileDialog.selectedFiles();
         logDirectory = result.at(0);
 
-        if (logDirLabel != NULL) {
-            if (logDirectory.length() > 20) {
-                logDirLabel->setText(QString("...") + logDirectory.right(20));
-            } else {
-                logDirLabel->setText(logDirectory);
-            }
+        updateDirectoryLabel();
+    }
+}
+
+void Log::updateDirectoryLabel(void) {
+    if (logDirLabel != NULL) {
+        if (logDirectory.length() > 20) {
+            logDirLabel->setText(QString("...") + logDirectory.right(20));
+        } else {
+            logDirLabel->setText(logDirectory);
         }
     }
 }

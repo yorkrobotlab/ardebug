@@ -9,6 +9,8 @@
 #include "util.h"
 #include <iostream>
 
+#include <QTableWidgetItem>
+
 /* Construtor
  * Create a robot instance, with an ID and a name. Set other values to
  * defaults.
@@ -35,6 +37,8 @@ RobotData::RobotData(int id, QString name) {
     // Zero out the proximity data array
     bzero(this->proximityData, sizeof(int) * PROX_SENS_COUNT);
     bzero(this->backgroundIR, sizeof(int) * PROX_SENS_COUNT);
+
+    //customData[0] = QString("Test");
 }
 
 /* Destructor
@@ -290,4 +294,23 @@ int RobotData::getBackgroundIR(int sensor) {
     }
 
     return -1;
+}
+
+void RobotData::insertCustomData(int key, QString value) {
+    customData[key] = value;
+}
+
+void RobotData::populateCustomDataTable(QTableWidget *table) {
+    table->clearContents();
+    table->setRowCount(0);
+
+    for (std::map<int, QString>::iterator it = customData.begin(); it != customData.end(); ++it) {
+        QTableWidgetItem* key = new QTableWidgetItem(QString::number(it->first));
+        QTableWidgetItem* value = new QTableWidgetItem(it->second);
+
+        int row = table->rowCount();
+        table->setRowCount(table->rowCount() + 1);
+        table->setItem(row, 0, key);
+        table->setItem(row, 1, value);
+    }
 }

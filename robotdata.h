@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QStringListModel>
+#include <QTableWidget>
 
 #include <opencv2/core.hpp>
 
@@ -43,6 +44,9 @@ class RobotData
     int proximityData[PROX_SENS_COUNT];
     int backgroundIR[PROX_SENS_COUNT];
 
+    // Custom Data
+    std::map<int, QString> customData;
+
 public:
     RobotData(int id, QString name);
     ~RobotData(void);
@@ -73,6 +77,9 @@ public:
 
     void updateBackgroundIR(int* data, int mask);
     int getBackgroundIR(int sensor);
+
+    void insertCustomData(int key, QString value);
+    void populateCustomDataTable(QTableWidget* table);
 
 private:
     void updateStateTransitionHistory(QString newState);

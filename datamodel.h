@@ -16,6 +16,7 @@
 #define PACKET_TYPE_PROXIMITY       3
 #define PACKET_TYPE_BACKGROUND_IR   4
 #define PACKET_TYPE_MSG             5
+#define PACKET_TYPE_CUSTOM          6
 
 class DataModel : public QObject
 {
@@ -42,6 +43,7 @@ public:
 private:
     void parsePositionPacket(RobotData* robot, QString xString, QString yString, QString aString);
     void parseProximityPacket(RobotData* robot, QStringList data, bool background);
+    void parseCustomDataPacket(RobotData* robot, QString key, QString value);
 
 signals:
     void modelChanged(bool listChanged);

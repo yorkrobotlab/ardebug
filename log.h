@@ -43,6 +43,7 @@ public:
 
     QString getDirectory(void);
     void setDirectory(QMainWindow* mainWindow);
+    void updateDirectoryLabel(void);
 };
 
 #endif // LOG_H

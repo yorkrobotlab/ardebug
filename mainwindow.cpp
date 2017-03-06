@@ -96,6 +96,11 @@ MainWindow::MainWindow(QWidget *parent) :
     vertLayout->addWidget(irDataView);
     ui->proximityTab->setLayout(vertLayout);
 
+    // Set up the custom data table
+    ui->customDataTable->setColumnCount(2);
+    ui->customDataTable->setHorizontalHeaderLabels(QStringList("Key") << QString("Value"));
+    ui->customDataTable->horizontalHeader()->setStretchLastSection(true);
+
     // Start the camera reading immediately
     startReadingCamera();
 }
@@ -227,6 +232,8 @@ void MainWindow::robotSelectedInVisualiser(int id) {
 
     // Update the proximiy sensor tab
     updateProximityTab();
+
+    updateCustomDataTab();
 }
 
 void MainWindow::dataModelUpdate(bool listChanged)
@@ -248,6 +255,8 @@ void MainWindow::dataModelUpdate(bool listChanged)
 
     // Update the proximity sensor tab
     updateProximityTab();
+
+    updateCustomDataTab();
 }
 
 void MainWindow::updateOverviewTab(void) {
@@ -276,6 +285,15 @@ void MainWindow::updateStateTab(void) {
 
 void MainWindow::updateProximityTab(void) {
     irDataView->repaint();
+}
+
+void MainWindow::updateCustomDataTab(void) {
+    // Get the selected robot
+    if (dataModel->selectedRobotID >= 0) {
+        RobotData* robot = dataModel->getRobotByID(dataModel->selectedRobotID);
+
+        robot->populateCustomDataTable(ui->customDataTable);
+    }
 }
 
 void MainWindow::visConfigUpdate(void) {

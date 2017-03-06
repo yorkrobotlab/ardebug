@@ -81,6 +81,7 @@ private:
     void updateOverviewTab(void);
     void updateStateTab(void);
     void updateProximityTab(void);
+    void updateCustomDataTab(void);
 };
 
 #endif // MAINWINDOW_H
