@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Show some console text
     Log::instance()->setup(ui->consoleText, ui->loggingFileLabel);
-    Log::instance()->logMessage("Application Started Succesfully.\n");
+    Log::instance()->logMessage("Application Started Succesfully.\n", true);
 
     // Set up the data model
     dataModel = new DataModel;
@@ -302,7 +302,7 @@ void MainWindow::on_networkListenButton_clicked()
             ui->networkListenButton->setText("Stop Listening");
             ui->networkPortBox->setDisabled(true);
 
-            Log::instance()->logMessage(QString("Listening for robot data on port ") + QString::number(port) + QString("...\n"));
+            Log::instance()->logMessage(QString("Listening for robot data on port ") + QString::number(port) + QString("...\n"), true);
         }
     } else {
         if (openPort >= 0) {
@@ -312,7 +312,7 @@ void MainWindow::on_networkListenButton_clicked()
             ui->networkListenButton->setText("Start Listening");
             ui->networkPortBox->setDisabled(false);
 
-            Log::instance()->logMessage("Closing data socket.\n");
+            Log::instance()->logMessage("Closing data socket.\n", true);
         }
     }
 }
@@ -387,4 +387,11 @@ void MainWindow::on_robotColoursCheckBox_stateChanged()
 void MainWindow::on_logFileButton_clicked()
 {
     Log::instance()->setDirectory(this);
+}
+
+void MainWindow::on_loggingButton_clicked()
+{
+    Log::instance()->setLoggingEnabled(!Log::instance()->isLoggingEnabled());
+
+    ui->loggingButton->setText(Log::instance()->isLoggingEnabled() ? "Stop Logging" : "Start Logging");
 }

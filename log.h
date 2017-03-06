@@ -36,7 +36,7 @@ public:
     }
 
     void setup(QPlainTextEdit* console, QLabel* dirLabel);
-    void logMessage(QString message);
+    void logMessage(QString message, bool toConsole);
 
     bool isLoggingEnabled(void);
     void setLoggingEnabled(bool enabled);

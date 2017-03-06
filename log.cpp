@@ -12,6 +12,7 @@
 
 #include <QDir>
 #include <QFileDialog>
+#include <QTime>
 
 Log::Log()
 {
@@ -63,16 +64,20 @@ void Log::setDirectory(QMainWindow* mainWindow) {
  * Log a message to the console, if the reference exists,
  * and the text log file, if logging is enabled.
  */
-void Log::logMessage(QString message) {
-    if (console != NULL) {
+void Log::logMessage(QString message, bool toConsole) {
+    if (!message.endsWith("\n")) {
+        message.append("\n");
+    }
+
+    if (console != NULL && toConsole) {
         console->moveCursor(QTextCursor::Start, QTextCursor::MoveAnchor);
         console->insertPlainText(message);
     }
 
     if (isLoggingEnabled()) {
-        std::ofstream logFile("log.txt", std::ios_base::app);
+        std::ofstream logFile(logDirectory.toStdString() + "/log.txt", std::ios_base::app);
         if (logFile.is_open()) {
-            logFile << message.toStdString();
+            logFile << QTime::currentTime().toString("HH:mm:ss:zzz").toStdString() << " - " << message.toStdString();
             logFile.close();
         }
     }

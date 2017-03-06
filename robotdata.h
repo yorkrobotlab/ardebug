@@ -41,6 +41,7 @@ class RobotData
 
     // Sensor Data
     int proximityData[PROX_SENS_COUNT];
+    int backgroundIR[PROX_SENS_COUNT];
 
 public:
     RobotData(int id, QString name);
@@ -69,6 +70,9 @@ public:
 
     void updateProximitySensorData(int* data, int mask);
     int getProximitySensorData(int sensor);
+
+    void updateBackgroundIR(int* data, int mask);
+    int getBackgroundIR(int sensor);
 
 private:
     void updateStateTransitionHistory(QString newState);

@@ -10,10 +10,12 @@
 
 #include "robotdata.h"
 
-#define PACKET_TYPE_WATCHDOG    0
-#define PACKET_TYPE_STATE       1
-#define PACKET_TYPE_POSITION    2
-#define PACKET_TYPE_PROXIMITY   3
+#define PACKET_TYPE_WATCHDOG        0
+#define PACKET_TYPE_STATE           1
+#define PACKET_TYPE_POSITION        2
+#define PACKET_TYPE_PROXIMITY       3
+#define PACKET_TYPE_BACKGROUND_IR   4
+#define PACKET_TYPE_MSG             5
 
 class DataModel : public QObject
 {
@@ -39,7 +41,7 @@ public:
 
 private:
     void parsePositionPacket(RobotData* robot, QString xString, QString yString, QString aString);
-    void parseProximityPacket(RobotData* robot, QStringList data);
+    void parseProximityPacket(RobotData* robot, QStringList data, bool background);
 
 signals:
     void modelChanged(bool listChanged);

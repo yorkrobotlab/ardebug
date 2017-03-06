@@ -72,6 +72,8 @@ private slots:
 
     void on_logFileButton_clicked();
 
+    void on_loggingButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 

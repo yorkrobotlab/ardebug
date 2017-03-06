@@ -268,3 +268,25 @@ int RobotData::getProximitySensorData(int sensor) {
 
     return -1;
 }
+
+/* updateBackgroundIR
+ * Insert new data into the background IR data array.
+ */
+void RobotData::updateBackgroundIR(int* data, int mask) {
+    for (int i = 0; i < PROX_SENS_COUNT; i++) {
+        if (1 << i & mask) {
+            this->backgroundIR[i] = data[i];
+        }
+    }
+}
+
+/* getBackgroundIR
+ * Returns the current background IR value for one of the IR sensors.
+ */
+int RobotData::getBackgroundIR(int sensor) {
+    if (sensor < PROX_SENS_COUNT && sensor >= 0) {
+        return this->backgroundIR[sensor];
+    }
+
+    return -1;
+}

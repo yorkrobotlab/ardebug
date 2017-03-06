@@ -8,6 +8,7 @@
 
 #include "datamodel.h"
 #include "util.h"
+#include "log.h"
 
 #include <iostream>
 #include <stdio.h>
@@ -114,7 +115,7 @@ void DataModel::newData(const QString &dataString) {
 
     // Data packets must contain minimum of 3 elements; ID, type, content
     if (data.length() < 3) {
-        cout << "Invalid data pakcet: " << dataString.toStdString() << endl;
+        Log::instance()->logMessage("Invalid data pakcet: " + dataString, true);
         return;
     }
 
@@ -123,7 +124,7 @@ void DataModel::newData(const QString &dataString) {
     id = data[0].toInt(&ok, 10);
 
     if (!ok || id < 0) {
-        cout << "Invalid robot ID: " << data[0].toStdString() << ", Data ignored." << endl;
+        Log::instance()->logMessage("Invalid robot ID: " + data[0] + ", Data ignored.", true);
         return;
     }
 
@@ -131,7 +132,7 @@ void DataModel::newData(const QString &dataString) {
     type = data[1].toInt(&ok, 10);
 
     if (!ok) {
-        cout << "Invalid packet type: " << data[1].toStdString() << ", Data ignored." << endl;
+        Log::instance()->logMessage("Invalid packet type: " + data[1] + ", Data ignored.", true);
         return;
     }
 
@@ -146,18 +147,28 @@ void DataModel::newData(const QString &dataString) {
             robot->setName(data[2]);
             listChanged = true;
         }
+        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + ": Watchdog Packet", false);
         break;
     case PACKET_TYPE_STATE:
         robot->setState(data[2]);
+        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + ": State " + data[2], false);
         break;
     case PACKET_TYPE_POSITION:
         if (data.length() > 4) {
             parsePositionPacket(robot, data[2], data[3], data[4]);
+            //Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + ": Position X:" + data[2] + ", Y:" + data[3] + ", A:" + data[4], false);
         }
         break;
     case PACKET_TYPE_PROXIMITY:
-        parseProximityPacket(robot, data);
+        parseProximityPacket(robot, data, false);
         break;
+    case PACKET_TYPE_BACKGROUND_IR:
+        parseProximityPacket(robot, data, true);
+        break;
+    case PACKET_TYPE_MSG:
+        data.removeFirst();
+        data.removeFirst();
+        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + ": Message: " + data.join(" "), true);
     default:
         break;
     }
@@ -201,7 +212,7 @@ void DataModel::parsePositionPacket(RobotData* robot, QString xString, QString y
 /* parseProximityPacket
  * Parses raw proximity sensor data values into the data model
  */
-void DataModel::parseProximityPacket(RobotData *robot, QStringList data) {
+void DataModel::parseProximityPacket(RobotData *robot, QStringList data, bool background) {
     int proxData[PROX_SENS_COUNT] = {0};
     int mask = 0;
 
@@ -221,7 +232,20 @@ void DataModel::parseProximityPacket(RobotData *robot, QStringList data) {
     }
 
     // Update the robots
-    robot->updateProximitySensorData(proxData, mask);
+    if (background) {
+        robot->updateBackgroundIR(proxData, mask);
+    } else {
+        robot->updateProximitySensorData(proxData, mask);
+    }
+
+    // Log the data
+    data.removeFirst();
+    data.removeFirst();
+    if (background) {
+        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + ": Background IR Data: " + data.join(" "), false);
+    } else {
+        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + ": IR Data: " + data.join(" "), false);
+    }
 }
 
 /* getRobotIndex
