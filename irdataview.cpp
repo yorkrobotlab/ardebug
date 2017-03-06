@@ -35,17 +35,20 @@ void IRDataView::paintEvent(QPaintEvent*) {
         RobotData* robot = dataModelRef->getRobotByID(dataModelRef->selectedRobotID);
 
         // Robot name
-        painter.drawText(10, 10, 300, 20, 0, robot->getName());
+        painter.drawText(10, 2, 300, 20, 0, robot->getName());
 
         // Draw a bar for each of the IR sensors on the robot
         for (int i = 0; i < PROX_SENS_COUNT; i++) {
             int raw = robot->getProximitySensorData(i);
-            int barHeight = (int)(maxHeight * ((float)raw/4095.0f));
+            int background = robot->getBackgroundIR(i);
 
-            painter.fillRect(60 + i * 50, baseLine, 20, -barHeight, Qt::red);
+            int barHeight[] = { (int)(maxHeight * ((float)raw/4095.0f)), (int)(maxHeight * ((float)background/4095.0f))};
+
+            painter.fillRect(60 + i * 100, baseLine, 20, -barHeight[0], Qt::red);
+            painter.fillRect(80 + i * 100, baseLine, 20, -barHeight[1], Qt::blue);
 
             // Add the raw data value beneath
-            painter.drawText(60 + i * 50, baseLine + 20, 50, 20, 0, QString::number(robot->getProximitySensorData(i)));
+            painter.drawText(60 + i * 100, baseLine + 20, 100, 20, 0, QString::number(raw) + " / " + QString::number(background));
         }
     }
 

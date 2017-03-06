@@ -34,6 +34,7 @@ RobotData::RobotData(int id, QString name) {
 
     // Zero out the proximity data array
     bzero(this->proximityData, sizeof(int) * PROX_SENS_COUNT);
+    bzero(this->backgroundIR, sizeof(int) * PROX_SENS_COUNT);
 }
 
 /* Destructor
