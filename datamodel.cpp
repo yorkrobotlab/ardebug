@@ -171,7 +171,7 @@ void DataModel::newData(const QString &dataString) {
         Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + ": Message: " + data.join(" "), true);
     case PACKET_TYPE_CUSTOM:
         if (data.length() > 3) {
-            parseCustomDataPacket(robot, data[2], data[3]);
+            robot->insertCustomData(data[2], data[3]);
         }
     default:
         break;
@@ -250,17 +250,6 @@ void DataModel::parseProximityPacket(RobotData *robot, QStringList data, bool ba
     } else {
         Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + ": IR Data: " + data.join(" "), false);
     }
-}
-
-void DataModel::parseCustomDataPacket(RobotData *robot, QString keyString, QString value) {
-    bool ok;
-    float key = keyString.toInt(&ok);
-
-    if(!ok) {
-        return;
-    }
-
-    robot->insertCustomData(key, value);
 }
 
 /* getRobotIndex

@@ -45,7 +45,7 @@ class RobotData
     int backgroundIR[PROX_SENS_COUNT];
 
     // Custom Data
-    std::map<int, QString> customData;
+    std::map<QString, QString> customData;
 
 public:
     RobotData(int id, QString name);
@@ -78,7 +78,7 @@ public:
     void updateBackgroundIR(int* data, int mask);
     int getBackgroundIR(int sensor);
 
-    void insertCustomData(int key, QString value);
+    void insertCustomData(QString key, QString value);
     void populateCustomDataTable(QTableWidget* table);
 
 private:

@@ -43,7 +43,6 @@ public:
 private:
     void parsePositionPacket(RobotData* robot, QString xString, QString yString, QString aString);
     void parseProximityPacket(RobotData* robot, QStringList data, bool background);
-    void parseCustomDataPacket(RobotData* robot, QString key, QString value);
 
 signals:
     void modelChanged(bool listChanged);

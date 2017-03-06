@@ -296,7 +296,7 @@ int RobotData::getBackgroundIR(int sensor) {
     return -1;
 }
 
-void RobotData::insertCustomData(int key, QString value) {
+void RobotData::insertCustomData(QString key, QString value) {
     customData[key] = value;
 }
 
@@ -304,8 +304,8 @@ void RobotData::populateCustomDataTable(QTableWidget *table) {
     table->clearContents();
     table->setRowCount(0);
 
-    for (std::map<int, QString>::iterator it = customData.begin(); it != customData.end(); ++it) {
-        QTableWidgetItem* key = new QTableWidgetItem(QString::number(it->first));
+    for (std::map<QString, QString>::iterator it = customData.begin(); it != customData.end(); it++) {
+        QTableWidgetItem* key = new QTableWidgetItem(it->first);
         QTableWidgetItem* value = new QTableWidgetItem(it->second);
 
         int row = table->rowCount();
