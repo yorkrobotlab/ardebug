@@ -68,3 +68,7 @@ cv::Scalar colourGen(void) {
 
     return cv::Scalar(255, 255, 255);
 }
+
+double square(double val) {
+    return val * val;
+}

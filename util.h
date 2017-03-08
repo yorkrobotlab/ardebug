@@ -26,4 +26,6 @@ void sendClosePacket(int port);
 
 cv::Scalar colourGen(void);
 
+double square(double val);
+
 #endif // UTIL_H

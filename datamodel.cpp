@@ -147,11 +147,11 @@ void DataModel::newData(const QString &dataString) {
             robot->setName(data[2]);
             listChanged = true;
         }
-        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + ": Watchdog Packet", false);
+        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + " - Watchdog Packet", false);
         break;
     case PACKET_TYPE_STATE:
         robot->setState(data[2]);
-        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + ": State " + data[2], false);
+        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + " - State " + data[2], false);
         break;
     case PACKET_TYPE_POSITION:
         if (data.length() > 4) {
@@ -168,10 +168,11 @@ void DataModel::newData(const QString &dataString) {
     case PACKET_TYPE_MSG:
         data.removeFirst();
         data.removeFirst();
-        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + ": Message: " + data.join(" "), true);
+        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + " - Message: " + data.join(" "), true);
     case PACKET_TYPE_CUSTOM:
         if (data.length() > 3) {
             robot->insertCustomData(data[2], data[3]);
+            Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + " - Custom Data: " + data[2] + " " + data[3], false);
         }
     default:
         break;
