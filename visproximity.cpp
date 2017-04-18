@@ -37,12 +37,11 @@ void VisProximity::render(cv::Mat image, RobotData *robot, bool selected) {
 
     int x = image.cols * robot->getPos().x;
     int y = image.rows * robot->getPos().y;
-    int intervalAngle = -(int)(360.0f/PROX_SENS_COUNT);
 
     for (int i = 0; i < PROX_SENS_COUNT; i++) {
         int raw = robot->getProximitySensorData(i) > 0 ? robot->getProximitySensorData(i) : 1;
         double len = square(((raw/4095.0) * 10.0) - 10.0);
-        int a = (i * intervalAngle) + robot->getAngle();
+        int a = robot->getAngle() + sensorAngles[i];
 
         cv::Point end = cv::Point(x + (int)(len * cos(a * PI/180)), y + (int)(len * sin(a * PI/180)));
         line(image, cv::Point(x, y), end, robot->getColour(), 1);

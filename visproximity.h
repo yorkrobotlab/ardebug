@@ -26,6 +26,9 @@ private:
 
     // Settings
     bool selectedOnly;
+
+    // Sensor Angles
+    int sensorAngles[8] = {12, 45, 90, 135, 225, 270, 315, 348};
 };
 
 #endif // VISPROXIMITY_H
