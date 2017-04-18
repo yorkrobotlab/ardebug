@@ -12,6 +12,7 @@ ProximitySettingsDialog::ProximitySettingsDialog(VisElement *visElement) {
 
     selectedOnlyCheckbox = new QCheckBox();
     selectedOnlyCheckbox->setChecked(((VisProximity*)visElement)->getSelectedOnly());
+
     QPushButton* applyButton = new QPushButton("Apply");
     QPushButton* cancelButton = new QPushButton("Cancel");
     QObject::connect(applyButton, SIGNAL(clicked(bool)), this, SLOT(accept(void)));

@@ -192,7 +192,11 @@ Mat MachineVision::getLatestFrame(Vector2D size, std::vector<TrackResult>* resul
         resize(image, image, Size(size.x, size.y), 0, 0, INTER_CUBIC);
     }
 
-    return image;
+    if (Settings::instance()->isVideoEnabled()) {
+        return image;
+    } else {
+        return Mat(size.y, size.x, CV_8UC3, Scalar(0, 0, 0));
+    }
 }
 
 /* releaseCamera
