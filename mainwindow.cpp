@@ -103,6 +103,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Start the camera reading immediately
     startReadingCamera();
+
+    // Initialise the testing window to null
+    testingWindow = NULL;
 }
 
 /* Destructor.
@@ -117,6 +120,10 @@ MainWindow::~MainWindow()
     delete ui;
     delete dataModel;
     delete visualiser;
+
+    if (testingWindow != NULL) {
+        delete testingWindow;
+    }
 
     networkThread.quit();
     networkThread.wait();
@@ -413,4 +420,17 @@ void MainWindow::on_loggingButton_clicked()
     Log::instance()->setLoggingEnabled(!Log::instance()->isLoggingEnabled());
 
     ui->loggingButton->setText(Log::instance()->isLoggingEnabled() ? "Stop Logging" : "Start Logging");
+}
+
+void MainWindow::on_actionTesting_Window_triggered()
+{
+    // If no testing window exists yet, create one
+    if (testingWindow == NULL) {
+        testingWindow = new TestingWindow();
+    }
+
+    // If the testing window exists show it
+    if (testingWindow != NULL) {
+        testingWindow->show();
+    }
 }

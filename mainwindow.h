@@ -10,6 +10,7 @@
 #include "cameracontroller.h"
 #include "datamodel.h"
 #include "irdataview.h"
+#include "testingwindow.h"
 
 namespace Ui {
 class MainWindow;
@@ -24,6 +25,8 @@ class MainWindow : public QMainWindow
     CameraController* cameraController;
     DataModel* dataModel;
     IRDataView* irDataView;
+
+    TestingWindow* testingWindow;
 
     int sockfd;
 
@@ -73,6 +76,8 @@ private slots:
     void on_logFileButton_clicked();
 
     void on_loggingButton_clicked();
+
+    void on_actionTesting_Window_triggered();
 
 private:
     Ui::MainWindow *ui;

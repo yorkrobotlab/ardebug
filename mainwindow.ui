@@ -483,8 +483,15 @@
     </property>
     <addaction name="actionEnable_Video"/>
    </widget>
+   <widget class="QMenu" name="menuDeveloper">
+    <property name="title">
+     <string>Developer</string>
+    </property>
+    <addaction name="actionTesting_Window"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuVisualizer"/>
+   <addaction name="menuDeveloper"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionExit">
@@ -504,6 +511,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="actionTesting_Window">
+   <property name="text">
+    <string>Testing Window</string>
    </property>
   </action>
  </widget>
