@@ -9,6 +9,7 @@ VisProximity::VisProximity() {
     setType(VisType::PROXIMITY);
     setEnabled(true);
     setSelectedOnly(true);
+    setHeatMode(false);
     settingsDialog = NULL;
 }
 
@@ -39,12 +40,23 @@ void VisProximity::render(cv::Mat image, RobotData *robot, bool selected) {
     int y = image.rows * robot->getPos().y;
 
     for (int i = 0; i < PROX_SENS_COUNT; i++) {
+        if (sensorAngles[i] < 0) {
+            continue;
+        }
+
         int raw = robot->getProximitySensorData(i) > 0 ? robot->getProximitySensorData(i) : 1;
-        double len = square(((raw/4095.0) * 10.0) - 10.0);
         int a = robot->getAngle() + sensorAngles[i];
 
-        cv::Point end = cv::Point(x + (int)(len * cos(a * PI/180)), y + (int)(len * sin(a * PI/180)));
-        line(image, cv::Point(x, y), end, robot->getColour(), 1);
+        if (heatMode) {
+            int r = (int)((raw/4095.0) * 255);
+            int s = (int)((raw/4095.0) * 2) + 2;
+            cv::Point sens = cv::Point(x + (int)(20 * cos(a * PI/180)), y + (int)(20 * sin(a * PI/180)));
+            rectangle(image, sens - cv::Point(s, s), sens + cv::Point(s, s), cv::Scalar(0, 0, r), CV_FILLED);
+        } else {
+            double len = square(((raw/4095.0) * 10.0) - 10.0);
+            cv::Point end = cv::Point(x + (int)(len * cos(a * PI/180)), y + (int)(len * sin(a * PI/180)));
+            line(image, cv::Point(x, y), end, robot->getColour(), 1);
+        }
     }
 }
 
@@ -63,6 +75,14 @@ void VisProximity::setSelectedOnly(bool enable) {
 
 bool VisProximity::getSelectedOnly(void) {
     return selectedOnly;
+}
+
+void VisProximity::setHeatMode(bool enable) {
+    heatMode = enable;
+}
+
+bool VisProximity::getHeatMode(void) {
+    return heatMode;
 }
 
 

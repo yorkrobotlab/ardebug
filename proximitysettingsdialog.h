@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QDialog>
 #include <QCheckBox>
+#include <QLineEdit>
 
 class ProximitySettingsDialog : public QDialog
 {
@@ -20,6 +21,9 @@ private:
     VisElement* visElement;
 
     QCheckBox* selectedOnlyCheckbox;
+    QCheckBox* heatModeCheckbox;
+
+    QLineEdit* sensorAngleBox[8];
 };
 
 #endif // PROXIMITYSETTINGSDIALOG_H

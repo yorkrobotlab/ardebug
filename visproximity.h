@@ -21,14 +21,18 @@ public:
     void setSelectedOnly(bool enable);
     bool getSelectedOnly(void);
 
+    void setHeatMode(bool enable);
+    bool getHeatMode(void);
+
+    // Sensor Angles
+    int sensorAngles[8] = {12, 45, 90, 135, 225, 270, 315, 348};
+
 private:
     ProximitySettingsDialog* settingsDialog;
 
     // Settings
     bool selectedOnly;
-
-    // Sensor Angles
-    int sensorAngles[8] = {12, 45, 90, 135, 225, 270, 315, 348};
+    bool heatMode;
 };
 
 #endif // VISPROXIMITY_H
