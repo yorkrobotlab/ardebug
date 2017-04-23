@@ -47,7 +47,9 @@ SOURCES += main.cpp\
     idsettingsdialog.cpp \
     log.cpp \
     namesettingsdialog.cpp \
-    statesettingsdialog.cpp
+    statesettingsdialog.cpp \
+    viscustom.cpp \
+    customsettingsdialog.cpp
 
 HEADERS  += mainwindow.h \
     datathread.h \
@@ -74,7 +76,9 @@ HEADERS  += mainwindow.h \
     idsettingsdialog.h \
     log.h \
     namesettingsdialog.h \
-    statesettingsdialog.h
+    statesettingsdialog.h \
+    viscustom.h \
+    customsettingsdialog.h
 
 FORMS    += mainwindow.ui
 

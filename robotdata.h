@@ -80,6 +80,7 @@ public:
 
     void insertCustomData(QString key, QString value);
     void populateCustomDataTable(QTableWidget* table);
+    QString getCustomData(QString key);
 
 private:
     void updateStateTransitionHistory(QString newState);

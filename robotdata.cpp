@@ -315,3 +315,15 @@ void RobotData::populateCustomDataTable(QTableWidget *table) {
         table->setItem(row, 1, value);
     }
 }
+
+QString RobotData::getCustomData(QString key) {
+    std::map<QString, QString>::iterator it;
+
+    it = customData.find(key);
+
+    if (it != customData.end()) {
+        return customData.find(key)->second;
+    }
+
+    return "None";
+}

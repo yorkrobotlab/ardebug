@@ -22,6 +22,7 @@
 #include "visdirection.h"
 #include "visproximity.h"
 #include "vispath.h"
+#include "viscustom.h"
 
 using namespace cv;
 
@@ -45,6 +46,7 @@ Visualiser::Visualiser(DataModel *dataModelRef) {
     this->config.elements.push_back(new VisDirection());
     this->config.elements.push_back(new VisProximity());
     this->config.elements.push_back(new VisPath());
+    this->config.elements.push_back(new VisCustom());
 
     this->click.x = 0.0;
     this->click.y = 0.0;
