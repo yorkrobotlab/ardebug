@@ -390,8 +390,9 @@ void MainWindow::on_visSettingsList_itemDoubleClicked(QListWidgetItem *item)
     VisElement* e = v.value<VisElement *>();
 
     QDialog* settingsDialog = e->getSettingsDialog();
-    QObject::connect(settingsDialog, SIGNAL(accepted()), this, SLOT(visConfigUpdate(void)));
+
     if (settingsDialog != NULL) {
+        QObject::connect(settingsDialog, SIGNAL(accepted()), this, SLOT(visConfigUpdate(void)));
         settingsDialog->show();
     }
 }

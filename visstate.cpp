@@ -3,26 +3,47 @@
 VisState::VisState() {
     setType(VisType::STATE);
     setEnabled(true);
+    setSelectedOnly(true);
+    settingsDialog = NULL;
 }
 
 QString VisState::toString(void) {
-    return QString("State");
+    QString str = "State. ";
+
+    if (selectedOnly) {
+        str = str + "\t[Selected robot only. ]";
+    } else {
+        str = str + "\t[All robots. ]";
+    }
+
+    return str;
 }
 
 
 void VisState::render(cv::Mat image, RobotData *robot, bool selected) {
-    if (!isEnabled()) {
+    if (!isEnabled() || (selectedOnly && !selected)) {
         return;
     }
 
     int x = image.cols * robot->getPos().x;
     int y = image.rows * robot->getPos().y;
 
-    if (selected) {
-        putText(image, robot->getState().toStdString(), cv::Point(x + 12, y + 12), cv::FONT_HERSHEY_SIMPLEX, 0.3, robot->getColour());
-    }
+    putText(image, robot->getState().toStdString(), cv::Point(x + 12, y + 12), cv::FONT_HERSHEY_SIMPLEX, 0.3, robot->getColour());
 }
 
 QDialog* VisState::getSettingsDialog(void) {
-    return NULL;
+    if (settingsDialog != NULL) {
+        delete settingsDialog;
+    }
+
+    settingsDialog = new StateSettingsDialog(this);
+    return settingsDialog;
+}
+
+void VisState::setSelectedOnly(bool enable) {
+    selectedOnly = enable;
+}
+
+bool VisState::getSelectedOnly(void) {
+    return selectedOnly;
 }

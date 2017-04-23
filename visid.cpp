@@ -1,6 +1,6 @@
 #include "visid.h"
 
-VisID::VisID() {
+VisID::VisID(void) {
     setType(VisType::ID);
     setEnabled(true);
     setSelectedOnly(false);

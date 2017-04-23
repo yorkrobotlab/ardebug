@@ -45,7 +45,9 @@ SOURCES += main.cpp\
     pathsettingsdialog.cpp \
     visid.cpp \
     idsettingsdialog.cpp \
-    log.cpp
+    log.cpp \
+    namesettingsdialog.cpp \
+    statesettingsdialog.cpp
 
 HEADERS  += mainwindow.h \
     datathread.h \
@@ -70,7 +72,9 @@ HEADERS  += mainwindow.h \
     pathsettingsdialog.h \
     visid.h \
     idsettingsdialog.h \
-    log.h
+    log.h \
+    namesettingsdialog.h \
+    statesettingsdialog.h
 
 FORMS    += mainwindow.ui
 
