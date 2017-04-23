@@ -11,9 +11,9 @@ QString VisName::toString(void) {
     QString str = "Name. ";
 
     if (selectedOnly) {
-        str = str + "\t[Selected robot only. ]";
+        str = str + "\t\t[Selected robot only. ]";
     } else {
-        str = str + "\t[All robots. ]";
+        str = str + "\t\t[All robots. ]";
     }
 
     return str;

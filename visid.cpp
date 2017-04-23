@@ -17,9 +17,9 @@ QString VisID::toString(void) {
     QString str = "ID. ";
 
     if (selectedOnly) {
-        str = str + "\t[Selected robot only. ]";
+        str = str + "\t\t[Selected robot only. ]";
     } else {
-        str = str + "\t[All robots. ]";
+        str = str + "\t\t[All robots. ]";
     }
 
     return str;

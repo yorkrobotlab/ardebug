@@ -9,12 +9,12 @@ VisCustom::VisCustom(void) {
 }
 
 QString VisCustom::toString(void) {
-    QString str = "Custom Data. \t " + target + " ";
+    QString str = "Custom Data.";
 
     if (selectedOnly) {
-        str = str + "[Selected robot only. ]";
+        str = str + "\t[Selected robot only. Target: " + target + "]";
     } else {
-        str = str + "[All robots. ]";
+        str = str + "\t[All robots. Target: " + target + "]";
     }
 
     return str;
@@ -29,6 +29,10 @@ void VisCustom::render(cv::Mat image, RobotData *robot, bool selected) {
     int y = image.rows * robot->getPos().y;
 
     QString value = robot->getCustomData(target);
+
+    if (!value.isEmpty()) {
+        value = target + ": " + value;
+    }
 
     if (value != NULL) {
         putText(image, value.toStdString(), cv::Point(x + 12, y + 24), cv::FONT_HERSHEY_SIMPLEX, 0.3, robot->getColour());

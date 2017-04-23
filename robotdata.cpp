@@ -325,5 +325,5 @@ QString RobotData::getCustomData(QString key) {
         return customData.find(key)->second;
     }
 
-    return "None";
+    return "";
 }
