@@ -62,9 +62,9 @@ void TestingWindow::reject(void) {
 }
 
 void TestingWindow::runButtonClicked(void) {
-    QDialog::reject();
+
 }
 
 void TestingWindow::runAllButtonClicked(void) {
-    QDialog::reject();
+
 }
