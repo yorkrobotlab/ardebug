@@ -15,6 +15,8 @@ Settings::Settings(void) {
 
     videoEnabled = true;
     robotColourEnabled = true;
+
+    posHistorySampleInterval = 10;
 }
 
 /* getCameraImageSize
@@ -79,4 +81,18 @@ bool Settings::isRobotColourEnabled(void) {
  */
 void Settings::setRobotColourEnabled(bool enable) {
     this->robotColourEnabled = enable;
+}
+
+/* getPosHistorySampleInterval
+ * Returns the interval for robot position history sampling.
+ */
+int Settings::getPosHistorySampleInterval(void) {
+    return this->posHistorySampleInterval;
+}
+
+/* setPosHistorySampleInterval
+ * Set the interval used for robot position histoy sampling.
+ */
+void Settings::setPosHistorySampleInterval(int interval) {
+    this->posHistorySampleInterval = interval;
 }

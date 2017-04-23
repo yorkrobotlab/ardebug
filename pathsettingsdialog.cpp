@@ -1,5 +1,6 @@
 #include "pathsettingsdialog.h"
 #include "vispath.h"
+#include "settings.h"
 
 #include <QPushButton>
 #include <QFormLayout>
@@ -12,6 +13,9 @@ PathSettingsDialog::PathSettingsDialog(VisElement* visElement) {
 
     selectedOnlyCheckbox = new QCheckBox();
     selectedOnlyCheckbox->setChecked(((VisPath*)visElement)->getSelectedOnly());
+
+    posHistoryIntervalBox = new QLineEdit(QString::number(Settings::instance()->getPosHistorySampleInterval()));
+
     QPushButton* applyButton = new QPushButton("Apply");
     QPushButton* cancelButton = new QPushButton("Cancel");
     QObject::connect(applyButton, SIGNAL(clicked(bool)), this, SLOT(accept(void)));
@@ -19,6 +23,7 @@ PathSettingsDialog::PathSettingsDialog(VisElement* visElement) {
 
     QFormLayout* formLayout = new QFormLayout;
     formLayout->addRow("Show only for selected:", selectedOnlyCheckbox);
+    formLayout->addRow("Position sample interval:", posHistoryIntervalBox);
 
     QHBoxLayout* buttonBox = new QHBoxLayout();
     buttonBox->addWidget(applyButton);
@@ -34,6 +39,15 @@ PathSettingsDialog::PathSettingsDialog(VisElement* visElement) {
 void PathSettingsDialog::accept(void) {
     VisPath* visPath = (VisPath*)visElement;
     visPath->setSelectedOnly(selectedOnlyCheckbox->isChecked());
+
+    int interval = 1;
+    bool ok = false;
+
+    interval = posHistoryIntervalBox->text().toInt(&ok);
+
+    if (ok) {
+        Settings::instance()->setPosHistorySampleInterval(interval);
+    }
 
     QDialog::accept();
 }

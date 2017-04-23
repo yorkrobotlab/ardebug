@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QDialog>
 #include <QCheckBox>
+#include <QLineEdit>
 
 class PathSettingsDialog : public QDialog
 {
@@ -19,6 +20,8 @@ private:
     VisElement* visElement;
 
     QCheckBox* selectedOnlyCheckbox;
+
+    QLineEdit* posHistoryIntervalBox;
 };
 
 #endif // PATHSETTINGSDIALOG_H

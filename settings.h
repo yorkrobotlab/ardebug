@@ -11,6 +11,8 @@ class Settings
     bool videoEnabled;
     bool robotColourEnabled;
 
+    int posHistorySampleInterval;
+
     Settings(void);
 
 public:
@@ -39,6 +41,9 @@ public:
 
     bool isRobotColourEnabled(void);
     void setRobotColourEnabled(bool enable);
+
+    int getPosHistorySampleInterval(void);
+    void setPosHistorySampleInterval(int interval);
 };
 
 #endif // SETTINGS_H

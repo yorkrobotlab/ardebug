@@ -7,6 +7,7 @@
 
 #include "robotdata.h"
 #include "util.h"
+#include "settings.h"
 #include <iostream>
 
 #include <QTableWidgetItem>
@@ -110,7 +111,7 @@ void RobotData::updatePositionHistory(void) {
 
     posHistoryFrameCount++;
 
-    if (posHistoryFrameCount >= POS_HISTORY_INTERVAL) {
+    if (posHistoryFrameCount >= Settings::instance()->getPosHistorySampleInterval()) {
         posHistoryFrameCount = 0;
     }
 }
