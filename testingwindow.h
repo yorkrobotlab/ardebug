@@ -40,7 +40,7 @@ private:
 
     QListWidget* testList;
 
-    Test testArray[3];
+    Test testArray[9];
 };
 
 #endif // TESTINGWINDOW_H

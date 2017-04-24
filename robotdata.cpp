@@ -53,12 +53,12 @@ RobotData::~RobotData(void) {
  * Update the position with new coords.
  */
 void RobotData::setPos(float x, float y) {
-    // First update the history
-    updatePositionHistory();
-
     // Then update the current position
     this->pos.x = x;
     this->pos.y = y;
+
+    // First update the history
+    updatePositionHistory();
 }
 
 /* getPos
