@@ -25,7 +25,7 @@ public:
     bool getHeatMode(void);
 
     // Sensor Angles
-    int sensorAngles[8] = {12, 45, 90, 135, 225, 270, 315, 348};
+    int sensorAngles[8] = {348, 315, 270, 225, 135, 90, 40, 12};
 
 private:
     ProximitySettingsDialog* settingsDialog;
