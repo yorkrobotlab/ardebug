@@ -23,19 +23,23 @@ IRDataView::IRDataView(DataModel *dataModelRef) {
  */
 void IRDataView::paintEvent(QPaintEvent*) {
     // Geometries for the bars
-    int maxHeight = this->size().height() - 60;
-    int baseLine = this->size().height() - 40;
+    int maxHeight = this->size().height() - 80;
+    int baseLine = this->size().height() - 60;
 
     // Clear the panel
     QPainter painter(this);
     painter.fillRect( 0, 0, this->size().width(), this->size().height(), Qt::white);
+
+    painter.drawText(10, 2, 300, 20, 0, "IR Data");
+    painter.drawText(10, baseLine + 20, 100, 20, 0, "Active: ");
+    painter.drawText(10, baseLine + 40, 100, 20, 0, "Background: ");
 
     // If a robot is selected display its data
     if (dataModelRef->selectedRobotID != -1) {
         RobotData* robot = dataModelRef->getRobotByID(dataModelRef->selectedRobotID);
 
         // Robot name
-        painter.drawText(10, 2, 300, 20, 0, robot->getName());
+        painter.drawText(10, 22, 300, 20, 0, QString::number(robot->getID()) + ": " + robot->getName());
 
         // Draw a bar for each of the IR sensors on the robot
         for (int i = 0; i < PROX_SENS_COUNT; i++) {
@@ -44,11 +48,12 @@ void IRDataView::paintEvent(QPaintEvent*) {
 
             int barHeight[] = { (int)(maxHeight * ((float)raw/4095.0f)), (int)(maxHeight * ((float)background/4095.0f))};
 
-            painter.fillRect(60 + i * 100, baseLine, 20, -barHeight[0], Qt::red);
-            painter.fillRect(80 + i * 100, baseLine, 20, -barHeight[1], Qt::blue);
+            painter.fillRect(160 + i * 50, baseLine, 20, -barHeight[0], Qt::red);
+            painter.fillRect(180 + i * 50, baseLine, 20, -barHeight[1], Qt::blue);
 
             // Add the raw data value beneath
-            painter.drawText(60 + i * 100, baseLine + 20, 100, 20, 0, QString::number(raw) + " / " + QString::number(background));
+            painter.drawText(160 + i * 50, baseLine + 20, 100, 20, 0, QString::number(raw));
+            painter.drawText(160 + i * 50, baseLine + 40, 100, 20, 0, QString::number(background));
         }
     }
 

@@ -59,7 +59,7 @@
         </widget>
         <widget class="QWidget" name="visSettingsTab">
          <attribute name="title">
-          <string>Settings</string>
+          <string>Visualizer Settings</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <item>
@@ -303,7 +303,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="consoleTab">
         <attribute name="title">
@@ -325,7 +325,7 @@
            <item row="0" column="0">
             <widget class="QLabel" name="label_12">
              <property name="text">
-              <string>Overview</string>
+              <string>Robot Data Overview</string>
              </property>
             </widget>
            </item>

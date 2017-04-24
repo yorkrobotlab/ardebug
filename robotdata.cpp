@@ -168,7 +168,7 @@ void RobotData::updateStateTransitionHistory(QString newState) {
         // If the transition at idx is not null, add it to the list
         StateTransition trans = this->stateTransitionHistory[idx];
         if (!trans.time.isNull()) {
-            list.append(trans.time.toString("HH:mm:ss:zzz") + " " + trans.oldState + " -> " + trans.newState);
+            list.append("[" + trans.time.toString("HH:mm:ss:zzz") + "]   " + trans.oldState + " -> " + trans.newState);
         }
     }
 

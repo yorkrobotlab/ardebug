@@ -69,13 +69,12 @@ void Log::updateDirectoryLabel(void) {
  * and the text log file, if logging is enabled.
  */
 void Log::logMessage(QString message, bool toConsole) {
-    if (!message.endsWith("\n")) {
-        message.append("\n");
+    if (message.endsWith("\n")) {
+        message.remove(message.length() - 1, 1);
     }
 
     if (console != NULL && toConsole) {
-        console->moveCursor(QTextCursor::Start, QTextCursor::MoveAnchor);
-        console->insertPlainText(message);
+        console->appendPlainText(message);
     }
 
     if (isLoggingEnabled()) {
