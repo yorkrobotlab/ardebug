@@ -121,19 +121,19 @@
         </widget>
         <widget class="QWidget" name="cameraTab">
          <attribute name="title">
-          <string>Camera</string>
+          <string>Tracking Camera Settings</string>
          </attribute>
          <layout class="QFormLayout" name="formLayout_8">
           <item row="0" column="0">
            <layout class="QFormLayout" name="formLayout_7">
-            <item row="0" column="0">
+            <item row="1" column="0">
              <widget class="QLabel" name="label_5">
               <property name="text">
                <string>Image Dimensions</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
+            <item row="1" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_3">
               <item>
                <widget class="QLineEdit" name="imageXDimEdit">
@@ -182,17 +182,38 @@
               </item>
              </layout>
             </item>
-            <item row="1" column="0">
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_10">
+              <property name="text">
+               <string>Flip Image Vertically</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_19">
+              <property name="text">
+               <string>Flip Image Horizontally</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="Line" name="line_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="0">
              <widget class="QLabel" name="label_7">
               <property name="text">
                <string>Tag ID Mapping</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
+            <item row="6" column="1">
              <widget class="QTableWidget" name="tagMappingTable"/>
             </item>
-            <item row="2" column="1">
+            <item row="7" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_2">
               <item>
                <widget class="QPushButton" name="tagMappingAddButton">
@@ -209,6 +230,34 @@
                </widget>
               </item>
              </layout>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>Camera Options</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>ARuCo Tracking Options</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QCheckBox" name="flipImageVerticallyCheckBox">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QCheckBox" name="flipImageHorizontallyCheckBox">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>

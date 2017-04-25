@@ -143,6 +143,19 @@ Mat MachineVision::getLatestFrame(Vector2D size, std::vector<TrackResult>* resul
         split(image, channels);
         merge(vector<Mat>{channels[2], channels[1], channels[0]}, image);
 
+        Mat flippedImage;
+        if (Settings::instance()->isImageHorizontalFlipEnabled() &&
+            Settings::instance()->isImageVerticalFlipEnabled()) {
+            flip(image, flippedImage, -1)
+        } else if(Settings::instance()->isImageHorizontalFlipEnabled()) {
+            flip(image, flippedImage, 0);
+        } else if(Settings::instance()->isImageVerticalFlipEnabled()) {
+            flip(image, flippedImage, 1);
+        }
+
+        image = flippedImage;
+
+
         // Create arrays for aruco results
         vector<int> marker_ids;
         vector<vector<Point2f> > marker_corners, rejected_candidates;

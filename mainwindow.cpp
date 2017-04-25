@@ -491,3 +491,13 @@ void MainWindow::on_tagMappingAddButton_clicked()
         addIDMappingDialog->show();
     }
 }
+
+void MainWindow::on_flipImageVerticallyCheckBox_stateChanged(int checked)
+{
+    Settings::instance()->setImageVerticalFlip(checked == Qt::Checked);
+}
+
+void MainWindow::on_flipImageHorizontallyCheckBox_stateChanged(int checked)
+{
+    Settings::instance()->setImageHorizontalFlip(checked == Qt::Checked);
+}

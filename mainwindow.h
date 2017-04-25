@@ -86,6 +86,10 @@ private slots:
 
     void on_tagMappingAddButton_clicked();
 
+    void on_flipImageVerticallyCheckBox_stateChanged(int arg1);
+
+    void on_flipImageHorizontallyCheckBox_stateChanged(int arg1);
+
 private:
     Ui::MainWindow *ui;
 
