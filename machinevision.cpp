@@ -143,13 +143,8 @@ Mat MachineVision::getLatestFrame(Vector2D size, std::vector<TrackResult>* resul
         split(unflippedImage, channels);
         merge(vector<Mat>{channels[2], channels[1], channels[0]}, unflippedImage);
 
-        if (Settings::instance()->isImageHorizontalFlipEnabled() &&
-            Settings::instance()->isImageVerticalFlipEnabled()) {
+        if (Settings::instance()->isImageFlipped()) {
             flip(unflippedImage, image, -1);
-        } else if(Settings::instance()->isImageHorizontalFlipEnabled()) {
-            flip(unflippedImage, image, 1);
-        } else if(Settings::instance()->isImageVerticalFlipEnabled()) {
-            flip(unflippedImage, image, 0);
         } else {
             image = unflippedImage;
         }

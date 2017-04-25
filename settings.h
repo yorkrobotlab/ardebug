@@ -15,8 +15,7 @@ class Settings
     Vector2D cameraImageSize;
     bool videoEnabled;
     bool robotColourEnabled;
-    bool imageVerticalFlip;
-    bool imageHorizontalFlip;
+    bool imageFlip;
 
     int posHistorySampleInterval;
 
@@ -54,11 +53,8 @@ public:
     int getPosHistorySampleInterval(void);
     void setPosHistorySampleInterval(int interval);
 
-    bool isImageVerticalFlipEnabled(void);
-    void setImageVerticalFlip(bool enable);
-
-    bool isImageHorizontalFlipEnabled(void);
-    void setImageHorizontalFlip(bool enable);
+    bool isImageFlipped(void);
+    void setImageFlipEnabled(bool enable);
 };
 
 #endif // SETTINGS_H

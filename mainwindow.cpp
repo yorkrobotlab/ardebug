@@ -492,12 +492,7 @@ void MainWindow::on_tagMappingAddButton_clicked()
     }
 }
 
-void MainWindow::on_flipImageVerticallyCheckBox_stateChanged(int checked)
+void MainWindow::on_flipImageCheckBox_stateChanged(int checked)
 {
-    Settings::instance()->setImageVerticalFlip(checked == Qt::Checked);
-}
-
-void MainWindow::on_flipImageHorizontallyCheckBox_stateChanged(int checked)
-{
-    Settings::instance()->setImageHorizontalFlip(checked == Qt::Checked);
+    Settings::instance()->setImageFlipEnabled(checked == Qt::Checked);
 }

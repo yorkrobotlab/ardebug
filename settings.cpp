@@ -15,8 +15,7 @@ Settings::Settings(void) {
 
     videoEnabled = true;
     robotColourEnabled = true;
-    imageVerticalFlip = false;
-    imageHorizontalFlip = false;
+    imageFlip = true;
 
     posHistorySampleInterval = 10;
 
@@ -101,18 +100,10 @@ void Settings::setPosHistorySampleInterval(int interval) {
     this->posHistorySampleInterval = interval;
 }
 
-bool Settings::isImageVerticalFlipEnabled(void) {
-    return this->imageVerticalFlip;
+bool Settings::isImageFlipped(void) {
+    return this->imageFlip;
 }
 
-void Settings::setImageVerticalFlip(bool enable) {
-    this->imageVerticalFlip = enable;
-}
-
-bool Settings::isImageHorizontalFlipEnabled(void) {
-    return this->imageHorizontalFlip;
-}
-
-void Settings::setImageHorizontalFlip(bool enable) {
-    this->imageHorizontalFlip = enable;
+void Settings::setImageFlipEnabled(bool enable) {
+    this->imageFlip = enable;
 }
