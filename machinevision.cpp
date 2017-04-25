@@ -136,24 +136,23 @@ Mat MachineVision::getLatestFrame(Vector2D size, std::vector<TrackResult>* resul
         image = Mat(size.x, size.y, CV_8UC3);
     } else {
         // Create an attached OpenCV image
-        image = cvb_to_ocv_nocopy(hCamera);
+        Mat unflippedImage = cvb_to_ocv_nocopy(hCamera);
 
         // Swap blue and red channels
         vector<Mat> channels(3);
-        split(image, channels);
-        merge(vector<Mat>{channels[2], channels[1], channels[0]}, image);
+        split(unflippedImage, channels);
+        merge(vector<Mat>{channels[2], channels[1], channels[0]}, unflippedImage);
 
-        Mat flippedImage;
         if (Settings::instance()->isImageHorizontalFlipEnabled() &&
             Settings::instance()->isImageVerticalFlipEnabled()) {
-            flip(image, flippedImage, -1)
+            flip(unflippedImage, image, -1);
         } else if(Settings::instance()->isImageHorizontalFlipEnabled()) {
-            flip(image, flippedImage, 0);
+            flip(unflippedImage, image, 1);
         } else if(Settings::instance()->isImageVerticalFlipEnabled()) {
-            flip(image, flippedImage, 1);
+            flip(unflippedImage, image, 0);
+        } else {
+            image = unflippedImage;
         }
-
-        image = flippedImage;
 
 
         // Create arrays for aruco results
