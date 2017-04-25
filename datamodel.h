@@ -17,6 +17,7 @@
 #define PACKET_TYPE_BACKGROUND_IR   4
 #define PACKET_TYPE_MSG             5
 #define PACKET_TYPE_CUSTOM          6
+#define PACKET_TYPE_INVALID         7
 
 class DataModel : public QObject
 {

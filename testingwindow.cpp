@@ -323,6 +323,62 @@ bool positionHistoryTestFunction(TestingWindow* window) {
     return pass;
 }
 
+bool stateTransitionHistoryTestFunction(TestingWindow* window) {
+    bool pass = true;
+
+    window->console->append("Create data model.");
+    window->dataModel = new DataModel();
+
+    window->console->append("Insert State Packet [0 1 STATE_1].");
+    window->console->append("Insert State Packet [0 1 STATE_2].");
+    window->console->append("Insert State Packet [0 1 STATE_3].");
+    window->console->append("Insert State Packet [0 1 STATE_4].");
+    window->dataModel->newData("0 1 STATE_1");
+    window->dataModel->newData("0 1 STATE_2");
+    window->dataModel->newData("0 1 STATE_3");
+    window->dataModel->newData("0 1 STATE_4");
+
+    QStringList stateTransitionStringList = window->dataModel->getRobotByID(0)->getStateTransitionList()->stringList();
+    window->console->append("ASSERT: State transition N = STATE_3 -> STATE_4: " + assertTrue(stateTransitionStringList.at(0).endsWith("STATE_3 -> STATE_4"), &pass));
+    window->console->append("ASSERT: State transition N-1 = STATE_2 -> STATE_3: " + assertTrue(stateTransitionStringList.at(1).endsWith("STATE_2 -> STATE_3"), &pass));
+    window->console->append("ASSERT: State transition N-2 = STATE_1 -> STATE_2: " + assertTrue(stateTransitionStringList.at(2).endsWith("STATE_1 -> STATE_2"), &pass));
+    window->console->append("ASSERT: State transition N-3 = Unknown -> STATE_1: " + assertTrue(stateTransitionStringList.at(3).endsWith("Unknown -> STATE_1"), &pass));
+
+    window->console->append("Delete data model.");
+    delete window->dataModel;
+
+    return pass;
+}
+
+bool badDataTestFunction(TestingWindow* window) {
+    bool pass = true;
+
+    window->console->append("Create data model.");
+    window->dataModel = new DataModel();
+
+    window->console->append("Insert Watchdog Packet [0 0 Robot0] (Well Formed).");
+    window->dataModel->newData("0 0 Robot0");
+    window->console->append("ASSERT: Robot Count = 1: " + assertTrue(window->dataModel->getRobotCount() == 1, &pass));
+
+    window->console->append("Insert Bad Packet [A 0 RobotA] (Incorrectly Formed).");
+    window->console->append("Insert Bad Packet [1 RobotA] (Incorrectly Formed).");
+    window->console->append("Insert Bad Packet [A ] (Incorrectly Formed).");
+    window->console->append("Insert Bad Packet [1 7 DATA] (No such type).");
+    window->console->append("Insert Bad Packet [-1 0 NegBot] (Negative robot ID).");
+    window->dataModel->newData("A 0 RobotA");
+    window->dataModel->newData("1 RobotA");
+    window->dataModel->newData("A ");
+    window->dataModel->newData("1 7 DATA");
+    window->dataModel->newData("-1 0 NegBot");
+    window->console->append("ASSERT: Robot Count = 1: " + assertTrue(window->dataModel->getRobotCount() == 1, &pass));
+    window->console->append(QString::number(window->dataModel->getRobotCount()));
+
+    window->console->append("Delete data model.");
+    delete window->dataModel;
+
+    return pass;
+}
+
 TestingWindow::TestingWindow() {
     Test robotInsertionTest;
     robotInsertionTest.name = "Robot Insertion Test";
@@ -352,6 +408,14 @@ TestingWindow::TestingWindow() {
     positionHistoryTest.name = "Position History Test";
     positionHistoryTest.function = &positionHistoryTestFunction;
 
+    Test stateTransitionHistoryTest;
+    stateTransitionHistoryTest.name = "State Transition History Test";
+    stateTransitionHistoryTest.function = &stateTransitionHistoryTestFunction;
+
+    Test badDataTest;
+    badDataTest.name = "Bad Data Test";
+    badDataTest.function = &badDataTestFunction;
+
     testArray[0] = robotInsertionTest;
     testArray[1] = nameDataTest;
     testArray[2] = stateDataTest;
@@ -359,6 +423,8 @@ TestingWindow::TestingWindow() {
     testArray[4] = irDataTest;
     testArray[5] = customDataTest;
     testArray[6] = positionHistoryTest;
+    testArray[7] = stateTransitionHistoryTest;
+    testArray[8] = badDataTest;
 
     initUI();
 }
@@ -398,7 +464,7 @@ void TestingWindow::initUI(void) {
 
     this->setLayout(mainBox);
 
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < 9; i++) {
         testList->addItem(testArray[i].name);
     }
 }
@@ -424,7 +490,7 @@ void TestingWindow::runButtonClicked(void) {
 void TestingWindow::runAllButtonClicked(void) {
     console->clear();
 
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < 9; i++) {
         runTest(testArray[i]);
     }
 }

@@ -131,7 +131,7 @@ void DataModel::newData(const QString &dataString) {
     // Try to obtain the packet type from the second element
     type = data[1].toInt(&ok, 10);
 
-    if (!ok) {
+    if (!ok || type < 0 || type >= PACKET_TYPE_INVALID) {
         Log::instance()->logMessage("Invalid packet type: " + data[1] + ", Data ignored.", true);
         return;
     }
