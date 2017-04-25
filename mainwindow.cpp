@@ -15,6 +15,7 @@
 #include "settings.h"
 #include "log.h"
 #include "addidmappingdialog.h"
+#include "robotinfodialog.h"
 
 #include <sys/socket.h>
 
@@ -213,6 +214,20 @@ void MainWindow::robotListSelectionChanged(const QItemSelection &selection) {
     updateProximityTab();
 }
 
+void MainWindow::on_robotList_doubleClicked(const QModelIndex &index)
+{
+    int idx = index.row();
+
+    if (idx >= 0 || idx < dataModel->getRobotCount()) {
+        RobotData* robot = dataModel->getRobotByIndex(idx);
+
+        RobotInfoDialog* robotInfoDialog = new RobotInfoDialog(robot);
+        QObject::connect(robotInfoDialog, SIGNAL(deleteRobot(int)), dataModel, SLOT(deleteRobot(int)));
+        QObject::connect(robotInfoDialog, SIGNAL(accepted()), this, SLOT(robotDeleted()));
+        robotInfoDialog->show();
+    }
+}
+
 /* robotSelectedInVisualiser
  * Slot. Called when a robot is selected by clicking the visualiser. Updates
  * the relevent model data and changes the selected item in the list.
@@ -229,7 +244,7 @@ void MainWindow::robotSelectedInVisualiser(int id) {
     for (int i = 0; i < stringList.size(); i++) {
         QString str = stringList.at(i);
 
-        if (str.startsWith(QString::number(id))) {
+        if (str.startsWith(QString::number(id) + ":")) {
             // Update selection
             ui->robotList->setCurrentIndex(ui->robotList->model()->index(i, 0));
         }
@@ -245,6 +260,10 @@ void MainWindow::robotSelectedInVisualiser(int id) {
     updateProximityTab();
 
     updateCustomDataTab();
+}
+
+void MainWindow::robotDeleted(void) {
+    dataModelUpdate(true);
 }
 
 void MainWindow::dataModelUpdate(bool listChanged)
@@ -280,6 +299,11 @@ void MainWindow::updateOverviewTab(void) {
         ui->robotNameLabel->setText(robot->getName());
         ui->robotStateLabel->setText(robot->getState());
         ui->robotPosLabel->setText("X: " + QString::number(robot->getPos().x) + ", Y: " + QString::number(robot->getPos().y) + ", A: " + QString::number(robot->getAngle()));
+    } else {
+        ui->robotIDLabel->setText("-");
+        ui->robotNameLabel->setText("-");
+        ui->robotStateLabel->setText("-");
+        ui->robotPosLabel->setText("-");
     }
 }
 

@@ -42,6 +42,8 @@ signals:
     void stopReadingCamera(void);
 
 public slots:
+    void robotDeleted(void);
+
     void dataModelUpdate(bool listChanged);
 
     void visConfigUpdate(void);
@@ -52,7 +54,6 @@ public slots:
 
     void socketOpened(const int &sockfd) { this->sockfd = sockfd; }
 
-    void idMappingTableSetup(void);
     void idMappingUpdate(void);
 
 private slots:
@@ -88,6 +89,8 @@ private slots:
 
     void on_flipImageCheckBox_stateChanged(int arg1);
 
+    void on_robotList_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::MainWindow *ui;
 
@@ -96,6 +99,8 @@ private:
     void updateStateTab(void);
     void updateProximityTab(void);
     void updateCustomDataTab(void);
+
+    void idMappingTableSetup(void);
 };
 
 #endif // MAINWINDOW_H

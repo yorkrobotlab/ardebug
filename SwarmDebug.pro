@@ -51,7 +51,8 @@ SOURCES += main.cpp\
     viscustom.cpp \
     customsettingsdialog.cpp \
     testingwindow.cpp \
-    addidmappingdialog.cpp
+    addidmappingdialog.cpp \
+    robotinfodialog.cpp
 
 HEADERS  += mainwindow.h \
     datathread.h \
@@ -82,7 +83,8 @@ HEADERS  += mainwindow.h \
     viscustom.h \
     customsettingsdialog.h \
     testingwindow.h \
-    addidmappingdialog.h
+    addidmappingdialog.h \
+    robotinfodialog.h
 
 FORMS    += mainwindow.ui
 

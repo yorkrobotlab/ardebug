@@ -316,3 +316,15 @@ void DataModel::resetRobotColours(void) {
         d->setColour(colourGen());
     }
 }
+
+void DataModel::deleteRobot(int ID) {
+    if (this->selectedRobotID == ID) {
+        this->selectedRobotID = -1;
+    }
+
+    int idx = getRobotIndex(ID, false);
+
+    if (idx >= 0 && (size_t)idx < robotDataList.size()) {
+        robotDataList.erase(robotDataList.begin() + idx);
+    }
+}

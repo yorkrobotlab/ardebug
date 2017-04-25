@@ -50,6 +50,7 @@ signals:
 
 public slots:
     void newData(const QString &);
+    void deleteRobot(int ID);
 };
 
 #endif // DATAMODEL_H
