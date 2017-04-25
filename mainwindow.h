@@ -52,6 +52,9 @@ public slots:
 
     void socketOpened(const int &sockfd) { this->sockfd = sockfd; }
 
+    void idMappingTableSetup(void);
+    void idMappingUpdate(void);
+
 private slots:
     void on_actionExit_triggered();
 
@@ -78,6 +81,10 @@ private slots:
     void on_loggingButton_clicked();
 
     void on_actionTesting_Window_triggered();
+
+    void on_tagMappingDeleteButton_clicked();
+
+    void on_tagMappingAddButton_clicked();
 
 private:
     Ui::MainWindow *ui;

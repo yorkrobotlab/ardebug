@@ -50,7 +50,8 @@ SOURCES += main.cpp\
     statesettingsdialog.cpp \
     viscustom.cpp \
     customsettingsdialog.cpp \
-    testingwindow.cpp
+    testingwindow.cpp \
+    addidmappingdialog.cpp
 
 HEADERS  += mainwindow.h \
     datathread.h \
@@ -80,7 +81,8 @@ HEADERS  += mainwindow.h \
     statesettingsdialog.h \
     viscustom.h \
     customsettingsdialog.h \
-    testingwindow.h
+    testingwindow.h \
+    addidmappingdialog.h
 
 FORMS    += mainwindow.ui
 

@@ -3,6 +3,11 @@
 
 #include "util.h"
 
+typedef struct {
+    int arucoID;
+    int robotID;
+} ArucoIDPair;
+
 class Settings
 {
     static Settings* s_instance;
@@ -16,6 +21,8 @@ class Settings
     Settings(void);
 
 public:
+    std::vector<ArucoIDPair*> idMapping;
+
     static Settings* instance() {
         if (s_instance == NULL) {
             s_instance = new Settings();

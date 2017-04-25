@@ -17,6 +17,8 @@ Settings::Settings(void) {
     robotColourEnabled = true;
 
     posHistorySampleInterval = 10;
+
+    idMapping.reserve(2);
 }
 
 /* getCameraImageSize

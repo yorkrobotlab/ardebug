@@ -9,6 +9,7 @@
 #include "datamodel.h"
 #include "util.h"
 #include "log.h"
+#include "settings.h"
 
 #include <iostream>
 #include <stdio.h>
@@ -134,6 +135,21 @@ void DataModel::newData(const QString &dataString) {
     if (!ok || type < 0 || type >= PACKET_TYPE_INVALID) {
         Log::instance()->logMessage("Invalid packet type: " + data[1] + ", Data ignored.", true);
         return;
+    }
+
+    /* If this is a position packet the ID will be an ARuCo ID. Check the ID mapping table to see if
+     * this needs to be mapped to a different robot ID.
+     */
+    if (type == PACKET_TYPE_POSITION) {
+        for (size_t i = 0; i < Settings::instance()->idMapping.size(); i++) {
+            ArucoIDPair* pair = Settings::instance()->idMapping.at(i);
+
+            // If there is a match in the map, swap for the correct robot ID
+            if (pair->arucoID == id) {
+                id = pair->robotID;
+                break;
+            }
+        }
     }
 
     // Get the list index of the given robot. New robot added if index not found

@@ -14,6 +14,7 @@
 #include "util.h"
 #include "settings.h"
 #include "log.h"
+#include "addidmappingdialog.h"
 
 #include <sys/socket.h>
 
@@ -101,8 +102,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->customDataTable->setHorizontalHeaderLabels(QStringList("Key") << QString("Value"));
     ui->customDataTable->horizontalHeader()->setStretchLastSection(true);
 
+    // Set up the ID mapping table
+    idMappingTableSetup();
+
     // Start the camera reading immediately
-    startReadingCamera();
+    startReadingCamera();    
 
     // Initialise the testing window to null
     testingWindow = NULL;
@@ -432,5 +436,58 @@ void MainWindow::on_actionTesting_Window_triggered()
     // If the testing window exists show it
     if (testingWindow != NULL) {
         testingWindow->show();
+    }
+}
+
+void MainWindow::idMappingTableSetup(void) {
+    ui->tagMappingTable->setColumnCount(2);
+
+    QStringList headerList;
+    headerList.append("ARuCo ID");
+    headerList.append("Robot ID");
+    ui->tagMappingTable->setHorizontalHeaderLabels(headerList);
+    ui->tagMappingTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+
+    idMappingUpdate();
+}
+
+void MainWindow::idMappingUpdate(void) {
+    ui->tagMappingTable->clearContents();
+
+    ui->tagMappingTable->setRowCount(Settings::instance()->idMapping.size());
+
+    for (size_t i = 0; i < Settings::instance()->idMapping.size(); i++) {
+        ArucoIDPair* p = Settings::instance()->idMapping.at(i);
+
+        QTableWidgetItem* arucoID = new QTableWidgetItem(QString::number(p->arucoID));
+        QTableWidgetItem* robotID = new QTableWidgetItem(QString::number(p->robotID));
+
+        arucoID->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
+        robotID->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
+
+        ui->tagMappingTable->setItem(i, 0, arucoID);
+        ui->tagMappingTable->setItem(i, 1, robotID);
+    }
+}
+
+void MainWindow::on_tagMappingDeleteButton_clicked() {
+    if (ui->tagMappingTable->selectionModel()->hasSelection()) {
+        QModelIndexList selection = ui->tagMappingTable->selectionModel()->selectedIndexes();
+
+        for (int i = 0; i < selection.count(); i++) {
+            Settings::instance()->idMapping.erase(Settings::instance()->idMapping.begin() + selection.at(i).row());
+        }
+
+        idMappingUpdate();
+    }
+}
+
+void MainWindow::on_tagMappingAddButton_clicked()
+{
+    QDialog* addIDMappingDialog = new AddIDMAppingDialog();
+
+    if (addIDMappingDialog != NULL) {
+        QObject::connect(addIDMappingDialog, SIGNAL(accepted()), this, SLOT(idMappingUpdate(void)));
+        addIDMappingDialog->show();
     }
 }
