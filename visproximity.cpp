@@ -51,7 +51,12 @@ void VisProximity::render(cv::Mat image, RobotData *robot, bool selected) {
             int r = (int)((raw/4095.0) * 255);
             int s = (int)((raw/4095.0) * 2) + 2;
             cv::Point sens = cv::Point(x + (int)(20 * cos(a * PI/180)), y + (int)(20 * sin(a * PI/180)));
-            rectangle(image, sens - cv::Point(s, s), sens + cv::Point(s, s), cv::Scalar(255, 255-r, 255-r), CV_FILLED);
+
+            if (raw > 140) {
+                rectangle(image, sens - cv::Point(s, s), sens + cv::Point(s, s), cv::Scalar(255-r, 255-r, 255), CV_FILLED);
+            } else {
+                rectangle(image, sens - cv::Point(1, 1), sens + cv::Point(1, 1), cv::Scalar(115, 115, 115), CV_FILLED);
+            }
         } else {
             double len = square(((raw/4095.0) * 10.0) - 10.0) * 0.4;
             cv::Point end = cv::Point(x + (int)(len * cos(a * PI/180)), y + (int)(len * sin(a * PI/180)));

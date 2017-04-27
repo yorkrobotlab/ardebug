@@ -140,7 +140,7 @@ void Visualiser::mousePressEvent(QMouseEvent* event) {
         float dx = std::abs(robot->getPos().x - click.x);
         float dy = std::abs(robot->getPos().y - click.y);
 
-        if (dx < 0.04 && dy < 0.04) {
+        if (dx < 0.02 && dy < 0.02) {
             // Signal that a robot has been selected
             emit robotSelectedInVisualiser(robot->getID());
 

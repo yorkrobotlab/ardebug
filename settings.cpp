@@ -14,7 +14,7 @@ Settings::Settings(void) {
     cameraImageSize.y = 1180;
 
     videoEnabled = true;
-    robotColourEnabled = true;
+    robotColourEnabled = false;
     imageFlip = true;
 
     posHistorySampleInterval = 10;
