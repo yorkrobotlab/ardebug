@@ -136,7 +136,10 @@ Mat MachineVision::getLatestFrame(Vector2D size, std::vector<TrackResult>* resul
         image = Mat(size.x, size.y, CV_8UC3);
     } else {
         // Create an attached OpenCV image
-        Mat unflippedImage = cvb_to_ocv_nocopy(hCamera);
+        Mat originalImage = cvb_to_ocv_nocopy(hCamera);
+
+        Mat unflippedImage;
+        originalImage.convertTo(unflippedImage, -1, 2, 40);
 
         // Swap blue and red channels
         vector<Mat> channels(3);
