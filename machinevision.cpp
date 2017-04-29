@@ -93,18 +93,18 @@ bool MachineVision::setupCamera(void) {
 
     if(!success)
     {
-        cout << "Error loading " << driverPath << " driver!" << endl;
+        Log::instance()->logMessage("Error loading " + QString(driverPath) + " driver!", true);
         return false;
     }
 
-    cout << "Load " << driverPath << " successful." << endl;
+    Log::instance()->logMessage("Load " + QString(driverPath) + " successful.", true);
 
     // Start grab with ring buffer
     cvbres_t result = G2Grab(hCamera);
 
     if(result < 0)
     {
-        cout << "Error grabbing camera with ring buffer." << endl;
+        Log::instance()->logMessage("Error grabbing camera with ring buffer.", true);
         return false;
     }
 
@@ -132,7 +132,7 @@ Mat MachineVision::getLatestFrame(Vector2D size, std::vector<TrackResult>* resul
     cvbres_t camResult = G2Wait(hCamera);
 
     if(camResult < 0) {
-        cout << setw(3) << " Error with G2Wait: " << CVC_ERROR_FROM_HRES(camResult) << endl;
+        Log::instance()->logMessage(QString::number(setw(3)) + " Error with G2Wait: " + QString::number(CVC_ERROR_FROM_HRES(camResult)), true);
         image = Mat(size.x, size.y, CV_8UC3);
     } else {
         // Create an attached OpenCV image

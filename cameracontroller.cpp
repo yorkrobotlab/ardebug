@@ -10,6 +10,7 @@
 
 #include "cameracontroller.h"
 #include "machinevision.h"
+#include "log.h"
 
 /* Constructor
  * Create the read timer and connect it to the read function.
@@ -80,7 +81,7 @@ void CameraController::readCamera(void) {
         // Restart timer
         readTimer->start(21);
     } else {
-        std::cout << "Camera not loaded, stopping read timer." << std::endl;
+        Log::instance()->logMessage("Camera not loaded, stopping read timer.", true);
     }
 
     // Iterate over all tracking results and emit position data signals as necessary
