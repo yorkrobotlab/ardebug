@@ -9,6 +9,7 @@
 
 #include "machinevision.h"
 #include "settings.h"
+#include "log.h"
 
 #include <iostream>
 #include <iomanip>
@@ -132,7 +133,7 @@ Mat MachineVision::getLatestFrame(Vector2D size, std::vector<TrackResult>* resul
     cvbres_t camResult = G2Wait(hCamera);
 
     if(camResult < 0) {
-        Log::instance()->logMessage(QString::number(setw(3)) + " Error with G2Wait: " + QString::number(CVC_ERROR_FROM_HRES(camResult)), true);
+        Log::instance()->logMessage("Error with G2Wait: " + QString::number(CVC_ERROR_FROM_HRES(camResult)), true);
         image = Mat(size.x, size.y, CV_8UC3);
     } else {
         // Create an attached OpenCV image
