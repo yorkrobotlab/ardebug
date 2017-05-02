@@ -18,6 +18,7 @@ class Settings
     bool imageFlip;
 
     int posHistorySampleInterval;
+    bool showAverageRobotPos;
 
     Settings(void);
 
@@ -55,6 +56,9 @@ public:
 
     bool isImageFlipped(void);
     void setImageFlipEnabled(bool enable);
+
+    bool isShowAveragePos(void);
+    void setShowAveragePos(bool enable);
 };
 
 #endif // SETTINGS_H

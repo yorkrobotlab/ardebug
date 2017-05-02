@@ -91,6 +91,8 @@ private slots:
 
     void on_robotList_doubleClicked(const QModelIndex &index);
 
+    void on_averagePositionCheckBox_stateChanged(int arg1);
+
 private:
     Ui::MainWindow *ui;
 

@@ -1,7 +1,7 @@
 #include "viscustom.h"
 
 VisCustom::VisCustom(void) {
-    setType(VisType::NAME);
+    setType(VisType::CUSTOM);
     setEnabled(true);
     setSelectedOnly(true);
     setTarget("None");

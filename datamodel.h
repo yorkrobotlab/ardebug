@@ -28,6 +28,8 @@ class DataModel : public QObject
 public:
     int selectedRobotID;
 
+    Vector2D averageRobotPos;
+
     explicit DataModel(QObject *parent = 0);
     ~DataModel(void);
 
@@ -44,6 +46,7 @@ public:
 private:
     void parsePositionPacket(RobotData* robot, QString xString, QString yString, QString aString);
     void parseProximityPacket(RobotData* robot, QStringList data, bool background);
+    void updateAveragePosition(void);
 
 signals:
     void modelChanged(bool listChanged);

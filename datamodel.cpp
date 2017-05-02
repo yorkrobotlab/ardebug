@@ -36,6 +36,10 @@ DataModel::DataModel(QObject *parent) : QObject(parent)
 
     // Initially no robot selected
     selectedRobotID = -1;
+
+    // Initialise the average position
+    averageRobotPos.x = 0.0f;
+    averageRobotPos.y = 0.0f;
 }
 
 /* Destructor
@@ -228,6 +232,8 @@ void DataModel::parsePositionPacket(RobotData* robot, QString xString, QString y
 
     robot->setPos(x, y);
     robot->setAngle(a);
+
+    updateAveragePosition();
 }
 
 /* parseProximityPacket
@@ -327,4 +333,23 @@ void DataModel::deleteRobot(int ID) {
     if (idx >= 0 && (size_t)idx < robotDataList.size()) {
         robotDataList.erase(robotDataList.begin() + idx);
     }
+}
+
+/* updateAveragePosition
+ * Updates the average position.
+ */
+void DataModel::updateAveragePosition(void) {
+    float x = 0.0f;
+    float y = 0.0f;
+    int robotCount = (int)robotDataList.size();
+
+    for (int idx = 0; idx < robotCount; idx++) {
+        RobotData* d = (RobotData*)robotDataList.at(idx);
+
+        x += d->getPos().x;
+        y += d->getPos().y;
+    }
+
+    averageRobotPos.x = x/robotCount;
+    averageRobotPos.y = y/robotCount;
 }

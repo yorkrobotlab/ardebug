@@ -16,6 +16,7 @@ Settings::Settings(void) {
     videoEnabled = true;
     robotColourEnabled = true;
     imageFlip = true;
+    showAverageRobotPos = false;
 
     posHistorySampleInterval = 10;
 
@@ -106,4 +107,12 @@ bool Settings::isImageFlipped(void) {
 
 void Settings::setImageFlipEnabled(bool enable) {
     this->imageFlip = enable;
+}
+
+bool Settings::isShowAveragePos(void) {
+    return this->showAverageRobotPos;
+}
+
+void Settings::setShowAveragePos(bool enable) {
+    this->showAverageRobotPos = enable;
 }

@@ -520,3 +520,8 @@ void MainWindow::on_flipImageCheckBox_stateChanged(int checked)
 {
     Settings::instance()->setImageFlipEnabled(checked == Qt::Checked);
 }
+
+void MainWindow::on_averagePositionCheckBox_stateChanged(int checked)
+{
+    Settings::instance()->setShowAveragePos(checked == Qt::Checked);
+}
