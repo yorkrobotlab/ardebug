@@ -70,11 +70,11 @@ void Visualiser::showImage(const Mat& image) {
     }
 
     // Draw click point
-    int x = image.cols * click.x;
-    int y = image.rows * click.y;
+    //int x = image.cols * click.x;
+    //int y = image.rows * click.y;
 
-    line(image, cv::Point(x - 4, y), cv::Point(x + 4, y), cv::Scalar(255, 0, 0), 1);
-    line(image, cv::Point(x, y - 4), cv::Point(x, y + 4), cv::Scalar(255, 0, 0), 1);
+    //line(image, cv::Point(x - 4, y), cv::Point(x + 4, y), cv::Scalar(255, 0, 0), 1);
+    //line(image, cv::Point(x, y - 4), cv::Point(x, y + 4), cv::Scalar(255, 0, 0), 1);
 
     // Convert to RGB
     switch (image.type()) {
