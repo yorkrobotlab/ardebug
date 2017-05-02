@@ -236,25 +236,31 @@ bool MachineVision::setupCamera(void) {
  */
 Mat MachineVision::getLatestFrame(Vector2D size, std::vector<TrackResult>* result) {
     // Time varying value
+    static float rf = 0;
     static int r = 0;
-    r+=1;
-    if(r>359) r=0;
+
+    rf += 0.3;
+    if(rf>359.0) rf=0;
+
+    r = (int)rf;
+
+
 
     // Fake some robot position and angle data
     TrackResult res;
     res.id = 1;
-    res.pos.x = 0.5 + (0.2 * (float)cos(r * (PI/180)));
-    res.pos.y = 0.5 + (0.2 * (float)sin(r * (PI/180)));
-    res.angle = (r > 269) ? r + -270 : r + 90;
+    res.pos.x = 0.2 + (0.1 * (float)cos(r * (PI/180)));
+    res.pos.y = 0.5 + (0.15 * (float)sin(r * (PI/180)));
+    res.angle = (r > 269) ? r + -275 : r + 95;
     result->push_back(res);
 
     res.id = 2;
-    res.pos.x = 0.5 + (0.3 * (float)sin(r * (PI/180)));
-    res.pos.y = 0.5 + (0.3 * (float)cos(r * (PI/180)));
-    res.angle = 360 - r;
+    res.pos.x = 0.7;
+    res.pos.y = 0.5;
+    res.angle = 270;
     result->push_back(res);
 
-    res.id = 3;
+    /*res.id = 3;
     res.pos.x = 0.5 + (0.1 * (float)sin(r * (PI/180)));
     res.pos.y = 0.5 + (0.1 * (float)cos(r * (PI/180)));
     res.angle = 360 - r;
@@ -270,7 +276,7 @@ Mat MachineVision::getLatestFrame(Vector2D size, std::vector<TrackResult>* resul
     res.pos.x += + (0.1 * (float)cos(4 * r * (PI/180)));
     res.pos.y += (0.1 * (float)sin(4 * r * (PI/180)));
     res.angle = 360 - (4 * r);
-    result->push_back(res);
+    result->push_back(res);*/
 
     // Camera is not present, fake the frame
     if (Settings::instance()->isVideoEnabled()) {
