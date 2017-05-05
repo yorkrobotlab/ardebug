@@ -8,7 +8,7 @@ ProximitySettingsDialog::ProximitySettingsDialog(VisElement *visElement) {
     this->visElement = visElement;
     this->setModal(true);
     this->setGeometry(300, 300, 400, 400);
-    this->setWindowTitle("Proximity Visualistion Settings");
+    this->setWindowTitle("IR Data Visualistion Settings");
 
     selectedOnlyCheckbox = new QCheckBox();
     selectedOnlyCheckbox->setChecked(((VisProximity*)visElement)->getSelectedOnly());
