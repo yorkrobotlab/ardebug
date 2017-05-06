@@ -1,4 +1,5 @@
 #include "visid.h"
+#include "settings.h"
 
 VisID::VisID(void) {
     setType(VisType::ID);
@@ -30,10 +31,17 @@ void VisID::render(cv::Mat image, RobotData *robot, bool selected) {
         return;
     }
 
+    cv::Scalar colour = Settings::instance()->isRobotColourEnabled() ? robot->getColour() : cv::Scalar(255, 255, 255);
+
     int x = image.cols * robot->getPos().x;
     int y = image.rows * robot->getPos().y;
 
-    putText(image, QString::number(robot->getID()).toStdString(), cv::Point(x - 24, y), cv::FONT_HERSHEY_SIMPLEX, 0.3, robot->getColour());
+    putText(image,
+            QString::number(robot->getID()).toStdString(),
+            cv::Point(x - 24, y),
+            cv::FONT_HERSHEY_SIMPLEX,
+            0.3,
+            colour);
 }
 
 QDialog* VisID::getSettingsDialog(void) {

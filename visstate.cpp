@@ -1,4 +1,5 @@
 #include "visstate.h"
+#include "settings.h"
 
 VisState::VisState() {
     setType(VisType::STATE);
@@ -25,10 +26,17 @@ void VisState::render(cv::Mat image, RobotData *robot, bool selected) {
         return;
     }
 
+    cv::Scalar colour = Settings::instance()->isRobotColourEnabled() ? robot->getColour() : cv::Scalar(255, 255, 255);
+
     int x = image.cols * robot->getPos().x;
     int y = image.rows * robot->getPos().y;
 
-    putText(image, robot->getState().toStdString(), cv::Point(x + 12, y + 12), cv::FONT_HERSHEY_SIMPLEX, 0.3, robot->getColour());
+    putText(image,
+            robot->getState().toStdString(),
+            cv::Point(x + 12, y + 12),
+            cv::FONT_HERSHEY_SIMPLEX,
+            0.3,
+            colour);
 }
 
 QDialog* VisState::getSettingsDialog(void) {

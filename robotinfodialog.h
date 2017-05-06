@@ -22,6 +22,11 @@ signals:
 
 private:
     int ID;
+    RobotData* robot;
+
+    QLineEdit* redBox;
+    QLineEdit* greenBox;
+    QLineEdit* blueBox;
 
     void accept(void);
     void reject(void);

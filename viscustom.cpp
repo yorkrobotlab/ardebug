@@ -1,4 +1,5 @@
 #include "viscustom.h"
+#include "settings.h"
 
 VisCustom::VisCustom(void) {
     setType(VisType::CUSTOM);
@@ -25,6 +26,8 @@ void VisCustom::render(cv::Mat image, RobotData *robot, bool selected) {
         return;
     }
 
+    cv::Scalar colour = Settings::instance()->isRobotColourEnabled() ? robot->getColour() : cv::Scalar(255, 255, 255);
+
     int x = image.cols * robot->getPos().x;
     int y = image.rows * robot->getPos().y;
 
@@ -35,7 +38,11 @@ void VisCustom::render(cv::Mat image, RobotData *robot, bool selected) {
     }
 
     if (value != NULL) {
-        putText(image, value.toStdString(), cv::Point(x + 12, y + 24), cv::FONT_HERSHEY_SIMPLEX, 0.3, robot->getColour());
+        putText(image,
+                value.toStdString(),
+                cv::Point(x + 12, y + 24),
+                cv::FONT_HERSHEY_SIMPLEX, 0.3,
+                colour);
     }
 }
 

@@ -1,4 +1,5 @@
 #include "vispath.h"
+#include "settings.h"
 
 VisPath::VisPath() {
     setType(VisType::PATH);
@@ -30,6 +31,8 @@ void VisPath::render(cv::Mat image, RobotData *robot, bool selected) {
         return;
     }
 
+    cv::Scalar colour = Settings::instance()->isRobotColourEnabled() ? robot->getColour() : cv::Scalar(255, 255, 255);
+
     int x = image.cols * robot->getPos().x;
     int y = image.rows * robot->getPos().y;
 
@@ -41,7 +44,11 @@ void VisPath::render(cv::Mat image, RobotData *robot, bool selected) {
         int ey = image.rows * posHistory[i].y;
 
         if (x != 0 && y != 0 && ex != 0 && ey != 0) {
-            line(image, cv::Point(x, y), cv::Point(ex, ey), robot->getColour(), 1);
+            line(image,
+                 cv::Point(x, y),
+                 cv::Point(ex, ey),
+                 colour,
+                 1);
         }
 
         x = ex;

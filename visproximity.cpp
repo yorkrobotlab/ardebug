@@ -1,7 +1,5 @@
 #include "visproximity.h"
-
-#include <QCheckBox>
-#include <QFormLayout>
+#include "settings.h"
 
 #define PI 3.14159265
 
@@ -42,6 +40,8 @@ void VisProximity::render(cv::Mat image, RobotData *robot, bool selected) {
         return;
     }
 
+    cv::Scalar colour = Settings::instance()->isRobotColourEnabled() ? robot->getColour() : cv::Scalar(255, 255, 255);
+
     int x = image.cols * robot->getPos().x;
     int y = image.rows * robot->getPos().y;
 
@@ -59,14 +59,26 @@ void VisProximity::render(cv::Mat image, RobotData *robot, bool selected) {
             cv::Point sens = cv::Point(x + (int)(20 * cos(a * PI/180)), y + (int)(20 * sin(a * PI/180)));
 
             if (raw > 140) {
-                rectangle(image, sens - cv::Point(s, s), sens + cv::Point(s, s), cv::Scalar(255-r, 255-r, 255), CV_FILLED);
+                rectangle(image,
+                          sens - cv::Point(s, s),
+                          sens + cv::Point(s, s),
+                          cv::Scalar(255-r, 255-r, 255),
+                          CV_FILLED);
             } else {
-                rectangle(image, sens - cv::Point(1, 1), sens + cv::Point(1, 1), cv::Scalar(115, 115, 115), CV_FILLED);
+                rectangle(image,
+                          sens - cv::Point(1, 1),
+                          sens + cv::Point(1, 1),
+                          cv::Scalar(115, 115, 115),
+                          CV_FILLED);
             }
         } else {
             double len = square(((raw/4095.0) * 10.0) - 10.0) * 0.4;
             cv::Point end = cv::Point(x + (int)(len * cos(a * PI/180)), y + (int)(len * sin(a * PI/180)));
-            line(image, cv::Point(x, y), end, robot->getColour(), 1);
+            line(image,
+                 cv::Point(x, y),
+                 end,
+                 colour,
+                 1);
         }
     }
 }
