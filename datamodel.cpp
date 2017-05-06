@@ -167,11 +167,11 @@ void DataModel::newData(const QString &dataString) {
             robot->setName(data[2]);
             listChanged = true;
         }
-        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + " - Watchdog Packet", false);
+        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + " - Watchdog Packet. Name: " + data[2], false);
         break;
     case PACKET_TYPE_STATE:
         robot->setState(data[2]);
-        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + " - State " + data[2], false);
+        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + " - State: " + data[2], false);
         break;
     case PACKET_TYPE_POSITION:
         if (data.length() > 4) {
@@ -189,6 +189,7 @@ void DataModel::newData(const QString &dataString) {
         data.removeFirst();
         data.removeFirst();
         Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + " - Message: " + data.join(" "), true);
+        break;
     case PACKET_TYPE_CUSTOM:
         if (data.length() > 3) {
             robot->insertCustomData(data[2], data[3]);
@@ -269,9 +270,9 @@ void DataModel::parseProximityPacket(RobotData *robot, QStringList data, bool ba
     data.removeFirst();
     data.removeFirst();
     if (background) {
-        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + ": Background IR Data: " + data.join(" "), false);
+        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + " - Background IR Data: " + data.join(" "), false);
     } else {
-        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + ": IR Data: " + data.join(" "), false);
+        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + " - IR Data: " + data.join(" "), false);
     }
 }
 

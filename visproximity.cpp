@@ -21,16 +21,22 @@ QString VisProximity::toString(void) {
     QString str = "IR Sensors. ";
 
     if (selectedOnly) {
-        str = str + "\t\t[Selected robot only. ] ";
+        str = str + "\t\t[Selected robot only. ";
     } else {
-        str = str + "\t\t[All robots. ] ";
+        str = str + "\t\t[All robots. ";
     }
 
     if (heatMode) {
-        str = str + "[Heat Mode]";
+        str = str + "Heat Mode. Angles:";
     } else {
-        str = str + "[Proximity Mode]";
+        str = str + "Proximity Mode. Angles:";
     }
+
+    for (int i = 0; i < 8; i++) {
+        str = str + " " + QString::number(sensorAngles[i]);
+    }
+
+    str = str + "]";
 
     return str;
 }

@@ -80,7 +80,7 @@ void Log::logMessage(QString message, bool toConsole) {
     if (isLoggingEnabled()) {
         std::ofstream logFile(logDirectory.toStdString() + "/log.txt", std::ios_base::app);
         if (logFile.is_open()) {
-            logFile << QTime::currentTime().toString("HH:mm:ss:zzz").toStdString() << " - " << message.toStdString();
+            logFile << QTime::currentTime().toString("HH:mm:ss:zzz").toStdString() << " - " << message.toStdString() << std::endl;
             logFile.close();
         }
     }
