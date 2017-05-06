@@ -8,7 +8,7 @@ CustomSettingsDialog::CustomSettingsDialog(VisElement* visElement) {
     this->visElement = visElement;
     this->setModal(true);
     this->setGeometry(300, 300, 400, 400);
-    this->setWindowTitle("ID Visualistion Settings");
+    this->setWindowTitle("Custom Data Visualisation Settings");
 
     selectedOnlyCheckbox = new QCheckBox();
     selectedOnlyCheckbox->setChecked(((VisCustom*)visElement)->getSelectedOnly());

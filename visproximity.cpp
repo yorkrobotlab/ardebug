@@ -9,7 +9,7 @@ VisProximity::VisProximity() {
     setType(VisType::PROXIMITY);
     setEnabled(true);
     setSelectedOnly(true);
-    setHeatMode(false);
+    setHeatMode(true);
     settingsDialog = NULL;
 }
 
@@ -23,9 +23,15 @@ QString VisProximity::toString(void) {
     QString str = "IR Sensors. ";
 
     if (selectedOnly) {
-        str = str + "\t\t[Selected robot only. ]";
+        str = str + "\t\t[Selected robot only. ] ";
     } else {
-        str = str + "\t\t[All robots. ]";
+        str = str + "\t\t[All robots. ] ";
+    }
+
+    if (heatMode) {
+        str = str + "[Heat Mode]";
+    } else {
+        str = str + "[Proximity Mode]";
     }
 
     return str;

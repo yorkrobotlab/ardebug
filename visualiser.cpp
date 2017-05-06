@@ -74,8 +74,13 @@ void Visualiser::showImage(const Mat& image) {
         int x = image.cols * dataModelRef->averageRobotPos.x;
         int y = image.rows * dataModelRef->averageRobotPos.y;
 
-        line(image, cv::Point(x - 2, y), cv::Point(x + 2, y), cv::Scalar(255, 0, 0), 1);
-        line(image, cv::Point(x, y - 2), cv::Point(x, y + 2), cv::Scalar(255, 0, 0), 1);
+        if (Settings::instance()->isRobotColourEnabled()) {
+            line(image, cv::Point(x - 2, y), cv::Point(x + 2, y), cv::Scalar(255, 0, 0), 1);
+            line(image, cv::Point(x, y - 2), cv::Point(x, y + 2), cv::Scalar(255, 0, 0), 1);
+        } else {
+            line(image, cv::Point(x - 2, y), cv::Point(x + 2, y), cv::Scalar(255, 255, 255), 1);
+            line(image, cv::Point(x, y - 2), cv::Point(x, y + 2), cv::Scalar(255, 255, 255), 1);
+        }
     }
 
     // Draw click point
