@@ -3,8 +3,8 @@
 
 VisPath::VisPath() {
     setType(VisType::PATH);
-    setEnabled(true);
-    setSelectedOnly(false);
+    setEnabled(false);
+    setSelectedOnly(true);
     settingsDialog = NULL;
 }
 

@@ -3,7 +3,7 @@
 
 VisCustom::VisCustom(void) {
     setType(VisType::CUSTOM);
-    setEnabled(true);
+    setEnabled(false);
     setSelectedOnly(true);
     setTarget("None");
     settingsDialog = NULL;

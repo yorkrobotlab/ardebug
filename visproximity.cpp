@@ -5,9 +5,9 @@
 
 VisProximity::VisProximity() {
     setType(VisType::PROXIMITY);
-    setEnabled(true);
+    setEnabled(false);
     setSelectedOnly(true);
-    setHeatMode(true);
+    setHeatMode(false);
     settingsDialog = NULL;
 }
 
