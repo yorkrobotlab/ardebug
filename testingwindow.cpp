@@ -45,6 +45,30 @@ bool robotInsertionTestFunction(TestingWindow* window) {
     window->dataModel->newData("6 6 Key Value");
     window->console->append("ASSERT: Robot Count = 6: " + assertTrue(window->dataModel->getRobotCount() == 6, &pass));
 
+    window->console->append("Insert Watchdog Packet [6 0 Robot6].");
+    window->dataModel->newData("0 0 Robot0");
+    window->console->append("ASSERT: Robot Count = 6: " + assertTrue(window->dataModel->getRobotCount() == 6, &pass));
+
+    window->console->append("Insert State Packet [5 1 STATE2].");
+    window->dataModel->newData("1 1 STATE2");
+    window->console->append("ASSERT: Robot Count = 6: " + assertTrue(window->dataModel->getRobotCount() == 6, &pass));
+
+    window->console->append("Insert Position Packet [4 2 0.5 0.5 90].");
+    window->dataModel->newData("2 2 0.5 0.5 90");
+    window->console->append("ASSERT: Robot Count = 6: " + assertTrue(window->dataModel->getRobotCount() == 6, &pass));
+
+    window->console->append("Insert IR Packet [3 3 101 201 301 401 1001 2001 3001 4001].");
+    window->dataModel->newData("3 3 101 201 301 401 1001 2001 3001 4001");
+    window->console->append("ASSERT: Robot Count = 6: " + assertTrue(window->dataModel->getRobotCount() == 6, &pass));
+
+    window->console->append("Insert Background IR Packet [2 4 101 201 301 401 1001 2001 3001 4001].");
+    window->dataModel->newData("2 4 101 201 301 401 1001 2001 3001 4001");
+    window->console->append("ASSERT: Robot Count = 6: " + assertTrue(window->dataModel->getRobotCount() == 6, &pass));
+
+    window->console->append("Insert Custom Data Packet [0 6 Key Value].");
+    window->dataModel->newData("0 6 Key Value");
+    window->console->append("ASSERT: Robot Count = 6: " + assertTrue(window->dataModel->getRobotCount() == 6, &pass));
+
     window->console->append("Delete data model.");
     delete window->dataModel;
 
@@ -228,6 +252,7 @@ bool customDataTestFunction(TestingWindow* window) {
     window->console->append("ASSERT: Robot 0 Custom data for key Key1 = Value7: " + assertTrue(window->dataModel->getRobotByID(0)->getCustomData("Key1") == "Value7", &pass));
     window->console->append("ASSERT: Robot 1 Custom data for key Key1 = Value8: " + assertTrue(window->dataModel->getRobotByID(1)->getCustomData("Key1") == "Value8", &pass));
     window->console->append("ASSERT: Robot 2 Custom data for key Key1 = Value9: " + assertTrue(window->dataModel->getRobotByID(2)->getCustomData("Key1") == "Value9", &pass));
+
     window->console->append("ASSERT: Robot 0 Custom data for key Key2 = Value4: " + assertTrue(window->dataModel->getRobotByID(0)->getCustomData("Key2") == "Value4", &pass));
     window->console->append("ASSERT: Robot 1 Custom data for key Key2 = Value5: " + assertTrue(window->dataModel->getRobotByID(1)->getCustomData("Key2") == "Value5", &pass));
     window->console->append("ASSERT: Robot 2 Custom data for key Key2 = Value6: " + assertTrue(window->dataModel->getRobotByID(2)->getCustomData("Key2") == "Value6", &pass));
@@ -358,7 +383,11 @@ bool badDataTestFunction(TestingWindow* window) {
 
     window->console->append("Insert Watchdog Packet [0 0 Robot0] (Well Formed).");
     window->dataModel->newData("0 0 Robot0");
-    window->console->append("ASSERT: Robot Count = 1: " + assertTrue(window->dataModel->getRobotCount() == 1, &pass));
+
+    window->console->append("Insert State Packet [1 1 STATE] (Well Formed).");
+    window->dataModel->newData("1 1 STATE");
+
+    window->console->append("ASSERT: Robot Count = 1: " + assertTrue(window->dataModel->getRobotCount() == 2, &pass));
 
     window->console->append("Insert Bad Packet [A 0 RobotA] (Incorrectly Formed).");
     window->console->append("Insert Bad Packet [1 RobotA] (Incorrectly Formed).");
@@ -370,7 +399,7 @@ bool badDataTestFunction(TestingWindow* window) {
     window->dataModel->newData("A ");
     window->dataModel->newData("1 7 DATA");
     window->dataModel->newData("-1 0 NegBot");
-    window->console->append("ASSERT: Robot Count = 1: " + assertTrue(window->dataModel->getRobotCount() == 1, &pass));
+    window->console->append("ASSERT: Robot Count = 1: " + assertTrue(window->dataModel->getRobotCount() == 2, &pass));
     window->console->append(QString::number(window->dataModel->getRobotCount()));
 
     window->console->append("Delete data model.");
