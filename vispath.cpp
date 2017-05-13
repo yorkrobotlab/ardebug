@@ -1,6 +1,16 @@
+/* viscustom.cpp
+ *
+ * This class encapsulates the visualisation of robot path.
+ *
+ * (C) Alistair Jewers Feb 2017
+ */
+
 #include "vispath.h"
 #include "settings.h"
 
+/* Constructor
+ * Initialise all setttings
+ */
 VisPath::VisPath() {
     setType(VisType::PATH);
     setEnabled(false);
@@ -8,12 +18,18 @@ VisPath::VisPath() {
     settingsDialog = NULL;
 }
 
+/* Destructor
+ * Release all memory
+ */
 VisPath::~VisPath() {
     if (settingsDialog != NULL) {
         delete settingsDialog;
     }
 }
 
+/* toString
+ * Generate a string describing all settings.
+ */
 QString VisPath::toString(void) {
     QString str = "Path. ";
 
@@ -26,6 +42,9 @@ QString VisPath::toString(void) {
     return str;
 }
 
+/* render
+ * Render this visualisation for one robot.
+ */
 void VisPath::render(cv::Mat image, RobotData *robot, bool selected) {
     if (!isEnabled() || (selectedOnly && !selected)) {
         return;
@@ -56,6 +75,9 @@ void VisPath::render(cv::Mat image, RobotData *robot, bool selected) {
     }
 }
 
+/* getSettingsDialog
+ * Return a pointer to the settings dialog for this visualisation.
+ */
 QDialog* VisPath::getSettingsDialog(void) {
     if (settingsDialog != NULL) {
         delete settingsDialog;
@@ -65,10 +87,16 @@ QDialog* VisPath::getSettingsDialog(void) {
     return settingsDialog;
 }
 
+/* setSelectedOnly
+ * Enables or disables the selected robot only setting
+ */
 void VisPath::setSelectedOnly(bool enable) {
     selectedOnly = enable;
 }
 
+/* getSelectedOnly
+ * Return the current state of the selected robot only setting
+ */
 bool VisPath::getSelectedOnly(void) {
     return selectedOnly;
 }

@@ -1,6 +1,16 @@
+/* viscustom.cpp
+ *
+ * This class encapsulates the visualisation of name data.
+ *
+ * (C) Alistair Jewers Feb 2017
+ */
+
 #include "visname.h"
 #include "settings.h"
 
+/* Constructor
+ * Initialise all setttings
+ */
 VisName::VisName(void) {
     setType(VisType::NAME);
     setEnabled(true);
@@ -8,6 +18,9 @@ VisName::VisName(void) {
     settingsDialog = NULL;
 }
 
+/* toString
+ * Generate a string describing all settings.
+ */
 QString VisName::toString(void) {
     QString str = "Name. ";
 
@@ -20,6 +33,9 @@ QString VisName::toString(void) {
     return str;
 }
 
+/* render
+ * Render this visualisation for one robot.
+ */
 void VisName::render(cv::Mat image, RobotData *robot, bool selected) {
     if (!isEnabled() || (selectedOnly && !selected)) {
         return;
@@ -38,6 +54,9 @@ void VisName::render(cv::Mat image, RobotData *robot, bool selected) {
             colour);
 }
 
+/* getSettingsDialog
+ * Return a pointer to the settings dialog for this visualisation.
+ */
 QDialog* VisName::getSettingsDialog(void) {
     if (settingsDialog != NULL) {
         delete settingsDialog;
@@ -47,10 +66,16 @@ QDialog* VisName::getSettingsDialog(void) {
     return settingsDialog;
 }
 
+/* setSelectedOnly
+ * Enables or disables the selected robot only setting
+ */
 void VisName::setSelectedOnly(bool enable) {
     selectedOnly = enable;
 }
 
+/* getSelectedOnly
+ * Return the current state of the selected robot only setting
+ */
 bool VisName::getSelectedOnly(void) {
     return selectedOnly;
 }

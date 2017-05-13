@@ -1,3 +1,11 @@
+/* testingwindow.cpp
+ *
+ * This class encapsulates a window for running and displaying the outputs of
+ * the data model unit tests.
+ *
+ * (C) Alistair Jewers Jan 2017
+ */
+
 #include "testingwindow.h"
 #include "settings.h"
 
@@ -6,6 +14,9 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
+/* assertTrue
+ * Utility function for asserting a truth
+ */
 QString assertTrue(bool condition, bool* pass) {
     if (condition) {
         return QString("TRUE");
@@ -15,6 +26,9 @@ QString assertTrue(bool condition, bool* pass) {
     }
 }
 
+/* robotInsertionTest
+ * Tests that robots are correctly inserted into the data model when detected
+ */
 bool robotInsertionTestFunction(TestingWindow* window) {
     bool pass = true;
 
@@ -75,6 +89,9 @@ bool robotInsertionTestFunction(TestingWindow* window) {
     return pass;
 }
 
+/* nameDataTestFunction
+ * Tests that name data is inserted into the model correctly.
+ */
 bool nameDataTestFunction(TestingWindow* window) {
     bool pass = true;
 
@@ -107,6 +124,9 @@ bool nameDataTestFunction(TestingWindow* window) {
     return pass;
 }
 
+/* stateDataTestFunction
+ * Tests that state data is inserted into the model correctly.
+ */
 bool stateDataTestFunction(TestingWindow* window) {
     bool pass = true;
 
@@ -139,6 +159,9 @@ bool stateDataTestFunction(TestingWindow* window) {
     return pass;
 }
 
+/* positionDataTestFunction
+ * Tests that position data is correctly inserted into the data model.
+ */
 bool positionDataTestFunction(TestingWindow* window) {
     bool pass = true;
 
@@ -183,6 +206,9 @@ bool positionDataTestFunction(TestingWindow* window) {
     return pass;
 }
 
+/* irDataTestFunction
+ * Tests that IR data is correctly inserted into the data model
+ */
 bool irDataTestFunction(TestingWindow* window) {
     bool pass = true;
 
@@ -217,6 +243,9 @@ bool irDataTestFunction(TestingWindow* window) {
     return pass;
 }
 
+/* customDataTestFunction
+ * Tests that custom data is correctly inserted into the data model
+ */
 bool customDataTestFunction(TestingWindow* window) {
     bool pass = true;
 
@@ -263,6 +292,9 @@ bool customDataTestFunction(TestingWindow* window) {
     return pass;
 }
 
+/* positionHistoryTestFunction
+ * Tests that the position history is correctly created from position data
+ */
 bool positionHistoryTestFunction(TestingWindow* window) {
     bool pass = true;
 
@@ -348,6 +380,9 @@ bool positionHistoryTestFunction(TestingWindow* window) {
     return pass;
 }
 
+/* stateTransitionHistoryTestFunction
+ * Tests that the state transition history is correctly created from state data
+ */
 bool stateTransitionHistoryTestFunction(TestingWindow* window) {
     bool pass = true;
 
@@ -375,6 +410,9 @@ bool stateTransitionHistoryTestFunction(TestingWindow* window) {
     return pass;
 }
 
+/* badDataTestFunction
+ * Tests that badly formed data is ignored
+ */
 bool badDataTestFunction(TestingWindow* window) {
     bool pass = true;
 
@@ -408,7 +446,11 @@ bool badDataTestFunction(TestingWindow* window) {
     return pass;
 }
 
+/* Constructor
+ * Initialises the tests
+ */
 TestingWindow::TestingWindow() {
+    // Initialise all the tests
     Test robotInsertionTest;
     robotInsertionTest.name = "Robot Insertion Test";
     robotInsertionTest.function = &robotInsertionTestFunction;
@@ -445,6 +487,7 @@ TestingWindow::TestingWindow() {
     badDataTest.name = "Bad Data Test";
     badDataTest.function = &badDataTestFunction;
 
+    // Create the test array
     testArray[0] = robotInsertionTest;
     testArray[1] = nameDataTest;
     testArray[2] = stateDataTest;
@@ -455,14 +498,20 @@ TestingWindow::TestingWindow() {
     testArray[7] = stateTransitionHistoryTest;
     testArray[8] = badDataTest;
 
+    // Initialise the GUI
     initUI();
 }
 
+/* initUI
+ * Initialises the UI
+ */
 void TestingWindow::initUI(void) {
+    // Set up window
     this->setModal(true);
     this->setGeometry(200, 200, 1200, 675);
     this->setWindowTitle("Unit Tests");
 
+    // Create the window components
     testList = new QListWidget();
     console = new QTextEdit();
 
@@ -474,38 +523,53 @@ void TestingWindow::initUI(void) {
     QObject::connect(runButton, SIGNAL(clicked(bool)), this, SLOT(runButtonClicked()));
     QObject::connect(runAllButton, SIGNAL(clicked(bool)), this, SLOT(runAllButtonClicked()));
 
+    // Lay out the run buttons in a row
     QHBoxLayout* runButtonBox = new QHBoxLayout();
     runButtonBox->addWidget(runButton);
     runButtonBox->addWidget(runAllButton);
 
+    // Lay out the run buttons below the test list
     QVBoxLayout* testListBox = new QVBoxLayout();
     testListBox->addWidget(new QLabel("Tests:"));
     testListBox->addWidget(testList);
     testListBox->addLayout(runButtonBox);
 
+    // Lay out the output console with a label above
     QVBoxLayout* consoleBox = new QVBoxLayout();
     consoleBox->addWidget(new QLabel("Output:"));
     consoleBox->addWidget(console);
 
+    // Combine the layouts horzontally
     QHBoxLayout* mainBox = new QHBoxLayout();
     mainBox->addLayout(testListBox, 1);
     mainBox->addLayout(consoleBox, 3);
 
+    // Set the main layout
     this->setLayout(mainBox);
 
+    // Populate the test list
     for (int i = 0; i < 9; i++) {
         testList->addItem(testArray[i].name);
     }
 }
 
+/* accept
+ * Overrides QDialog accept function. Called to close the window.
+ */
 void TestingWindow::accept(void) {
     QDialog::accept();
 }
 
+/* reject
+ * Overrides QDialog reject function. Called to close the window.
+ */
 void TestingWindow::reject(void) {
     QDialog::reject();
 }
 
+/* runButtonClicked
+ * Runs the selected test
+ */
 void TestingWindow::runButtonClicked(void) {
     console->clear();
 
@@ -516,6 +580,9 @@ void TestingWindow::runButtonClicked(void) {
     }
 }
 
+/* runAllButtonClicked
+ * Runs all of the tests
+ */
 void TestingWindow::runAllButtonClicked(void) {
     console->clear();
 
@@ -524,6 +591,9 @@ void TestingWindow::runAllButtonClicked(void) {
     }
 }
 
+/* runTest
+ * Run a specific test
+ */
 bool TestingWindow::runTest(Test test) {
     console->append("+++ " + test.name + " +++");
     console->append("START");

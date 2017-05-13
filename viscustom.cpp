@@ -1,6 +1,16 @@
+/* viscustom.cpp
+ *
+ * This class encapsulates the visualisation of custom data.
+ *
+ * (C) Alistair Jewers Feb 2017
+ */
+
 #include "viscustom.h"
 #include "settings.h"
 
+/* Constructor
+ * Initialise all setttings
+ */
 VisCustom::VisCustom(void) {
     setType(VisType::CUSTOM);
     setEnabled(false);
@@ -9,6 +19,18 @@ VisCustom::VisCustom(void) {
     settingsDialog = NULL;
 }
 
+/* Destructor
+ * Release all memory
+ */
+VisCustom::~VisCustom() {
+    if (settingsDialog != NULL) {
+        delete settingsDialog;
+    }
+}
+
+/* toString
+ * Generate a string describing all settings.
+ */
 QString VisCustom::toString(void) {
     QString str = "Custom Data.";
 
@@ -21,6 +43,9 @@ QString VisCustom::toString(void) {
     return str;
 }
 
+/* render
+ * Render this visualisation for one robot.
+ */
 void VisCustom::render(cv::Mat image, RobotData *robot, bool selected) {
     if (!isEnabled() || (selectedOnly && !selected)) {
         return;
@@ -46,6 +71,9 @@ void VisCustom::render(cv::Mat image, RobotData *robot, bool selected) {
     }
 }
 
+/* getSettingsDialog
+ * Return a pointer to the settings dialog for this visualisation.
+ */
 QDialog* VisCustom::getSettingsDialog(void) {
     if (settingsDialog != NULL) {
         delete settingsDialog;
@@ -55,18 +83,30 @@ QDialog* VisCustom::getSettingsDialog(void) {
     return settingsDialog;
 }
 
+/* setSelectedOnly
+ * Enables or disables the selected robot only setting
+ */
 void VisCustom::setSelectedOnly(bool enable) {
     selectedOnly = enable;
 }
 
+/* getSelectedOnly
+ * Return the current state of the selected robot only setting
+ */
 bool VisCustom::getSelectedOnly(void) {
     return selectedOnly;
 }
 
+/* setTarget
+ * Set the target custom data point by key
+ */
 void VisCustom::setTarget(QString target) {
     this->target = target;
 }
 
+/* getTarget
+ * Get the key of the target custom data point
+ */
 QString VisCustom::getTarget(void) {
     return target;
 }

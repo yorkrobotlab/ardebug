@@ -24,8 +24,6 @@
 #include "vispath.h"
 #include "viscustom.h"
 
-using namespace cv;
-
 /* Constructor
  * Empty.
  */
@@ -55,7 +53,7 @@ Visualiser::Visualiser(DataModel *dataModelRef) {
 /* showImage
  * Display the supplied opencv image.
  */
-void Visualiser::showImage(const Mat& image) {
+void Visualiser::showImage(const cv::Mat& image) {
     // Iterate over the list of robots
     for (int i = 0; i < dataModelRef->getRobotCount(); i++) {
         // Get data
@@ -75,28 +73,21 @@ void Visualiser::showImage(const Mat& image) {
         int y = image.rows * dataModelRef->averageRobotPos.y;
 
         if (Settings::instance()->isRobotColourEnabled()) {
-            line(image, cv::Point(x - 2, y), cv::Point(x + 2, y), cv::Scalar(255, 0, 0), 1);
-            line(image, cv::Point(x, y - 2), cv::Point(x, y + 2), cv::Scalar(255, 0, 0), 1);
+            cv::line(image, cv::Point(x - 2, y), cv::Point(x + 2, y), cv::Scalar(255, 0, 0), 1);
+            cv::line(image, cv::Point(x, y - 2), cv::Point(x, y + 2), cv::Scalar(255, 0, 0), 1);
         } else {
-            line(image, cv::Point(x - 2, y), cv::Point(x + 2, y), cv::Scalar(255, 255, 255), 1);
-            line(image, cv::Point(x, y - 2), cv::Point(x, y + 2), cv::Scalar(255, 255, 255), 1);
+            cv::line(image, cv::Point(x - 2, y), cv::Point(x + 2, y), cv::Scalar(255, 255, 255), 1);
+            cv::line(image, cv::Point(x, y - 2), cv::Point(x, y + 2), cv::Scalar(255, 255, 255), 1);
         }
     }
-
-    // Draw click point
-    //int x = image.cols * click.x;
-    //int y = image.rows * click.y;
-
-    //line(image, cv::Point(x - 4, y), cv::Point(x + 4, y), cv::Scalar(255, 0, 0), 1);
-    //line(image, cv::Point(x, y - 4), cv::Point(x, y + 4), cv::Scalar(255, 0, 0), 1);
 
     // Convert to RGB
     switch (image.type()) {
         case CV_8UC1:
-            cvtColor(image, _tmp, CV_GRAY2RGB);
+            cv::cvtColor(image, _tmp, CV_GRAY2RGB);
             break;
         case CV_8UC3:
-            cvtColor(image, _tmp, CV_BGR2RGB);
+            cv::cvtColor(image, _tmp, CV_BGR2RGB);
             break;
         default:
             break;

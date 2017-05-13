@@ -10,6 +10,7 @@ class VisCustom : public VisElement
 {
 public:
     VisCustom();
+    ~VisCustom();
 
     virtual QString toString(void);
 

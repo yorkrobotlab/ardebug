@@ -1,6 +1,16 @@
+/* viscustom.cpp
+ *
+ * This class encapsulates the visualisation of state data.
+ *
+ * (C) Alistair Jewers Feb 2017
+ */
+
 #include "visstate.h"
 #include "settings.h"
 
+/* Constructor
+ * Initialise all setttings
+ */
 VisState::VisState() {
     setType(VisType::STATE);
     setEnabled(true);
@@ -8,6 +18,9 @@ VisState::VisState() {
     settingsDialog = NULL;
 }
 
+/* toString
+ * Generate a string describing all settings.
+ */
 QString VisState::toString(void) {
     QString str = "State. ";
 
@@ -20,7 +33,9 @@ QString VisState::toString(void) {
     return str;
 }
 
-
+/* render
+ * Render this visualisation for one robot.
+ */
 void VisState::render(cv::Mat image, RobotData *robot, bool selected) {
     if (!isEnabled() || (selectedOnly && !selected)) {
         return;
@@ -39,6 +54,9 @@ void VisState::render(cv::Mat image, RobotData *robot, bool selected) {
             colour);
 }
 
+/* getSettingsDialog
+ * Return a pointer to the settings dialog for this visualisation.
+ */
 QDialog* VisState::getSettingsDialog(void) {
     if (settingsDialog != NULL) {
         delete settingsDialog;
@@ -48,10 +66,16 @@ QDialog* VisState::getSettingsDialog(void) {
     return settingsDialog;
 }
 
+/* setSelectedOnly
+ * Enables or disables the selected robot only setting
+ */
 void VisState::setSelectedOnly(bool enable) {
     selectedOnly = enable;
 }
 
+/* getSelectedOnly
+ * Return the current state of the selected robot only setting
+ */
 bool VisState::getSelectedOnly(void) {
     return selectedOnly;
 }

@@ -1,8 +1,18 @@
+/* viscustom.cpp
+ *
+ * This class encapsulates the visualisation of IR data.
+ *
+ * (C) Alistair Jewers Feb 2017
+ */
+
 #include "visproximity.h"
 #include "settings.h"
 
 #define PI 3.14159265
 
+/* Constructor
+ * Initialise all setttings
+ */
 VisProximity::VisProximity() {
     setType(VisType::PROXIMITY);
     setEnabled(false);
@@ -11,12 +21,18 @@ VisProximity::VisProximity() {
     settingsDialog = NULL;
 }
 
+/* Destructor
+ * Release all memory
+ */
 VisProximity::~VisProximity() {
     if (settingsDialog != NULL) {
         delete settingsDialog;
     }
 }
 
+/* toString
+ * Generate a string describing all settings.
+ */
 QString VisProximity::toString(void) {
     QString str = "IR Sensors. ";
 
@@ -41,6 +57,9 @@ QString VisProximity::toString(void) {
     return str;
 }
 
+/* render
+ * Render this visualisation for one robot.
+ */
 void VisProximity::render(cv::Mat image, RobotData *robot, bool selected) {
     if (!isEnabled() || (selectedOnly && !selected)) {
         return;
@@ -89,6 +108,9 @@ void VisProximity::render(cv::Mat image, RobotData *robot, bool selected) {
     }
 }
 
+/* getSettingsDialog
+ * Return a pointer to the settings dialog for this visualisation.
+ */
 QDialog* VisProximity::getSettingsDialog(void) {
     if (settingsDialog != NULL) {
         delete settingsDialog;
@@ -98,18 +120,30 @@ QDialog* VisProximity::getSettingsDialog(void) {
     return settingsDialog;
 }
 
+/* setSelectedOnly
+ * Enables or disables the selected robot only setting
+ */
 void VisProximity::setSelectedOnly(bool enable) {
     selectedOnly = enable;
 }
 
+/* getSelectedOnly
+ * Return the current state of the selected robot only setting
+ */
 bool VisProximity::getSelectedOnly(void) {
     return selectedOnly;
 }
 
+/* setHeatMode
+ * Enable or disable heat mode display
+ */
 void VisProximity::setHeatMode(bool enable) {
     heatMode = enable;
 }
 
+/* getHeatMode
+ * Get the display mode setting
+ */
 bool VisProximity::getHeatMode(void) {
     return heatMode;
 }

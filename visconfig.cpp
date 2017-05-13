@@ -15,6 +15,9 @@ VisConfig::VisConfig() {
     elements.reserve(5);
 }
 
+/* Destructor
+ * Release all memory
+ */
 VisConfig::~VisConfig(void) {
     for (size_t i = 0; i < elements.size(); i++) {
         delete elements[i];

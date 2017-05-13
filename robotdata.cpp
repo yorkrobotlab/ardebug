@@ -33,7 +33,7 @@ RobotData::RobotData(int id, QString name) {
     bzero(this->posHistory, sizeof(Vector2D) * POS_HISTORY_COUNT);
 
     // Generate colour
-    setColour(colourGen());
+    setColour(cv::Scalar(255, 255, 255));
 
     // Zero out the proximity data array
     bzero(this->proximityData, sizeof(int) * PROX_SENS_COUNT);

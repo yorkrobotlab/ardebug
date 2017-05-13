@@ -1,17 +1,33 @@
+/* viscustom.cpp
+ *
+ * This class encapsulates the visualisation of robot direction.
+ *
+ * (C) Alistair Jewers Feb 2017
+ */
+
 #include "visdirection.h"
 #include "settings.h"
 
 #define PI 3.14159265
 
+/* Constructor
+ * Initialise all setttings
+ */
 VisDirection::VisDirection(void) {
     setType(VisType::DIRECTION);
     setEnabled(true);
 }
 
+/* toString
+ * Generate a string describing all settings.
+ */
 QString VisDirection::toString(void) {
     return QString("Direction");
 }
 
+/* render
+ * Render this visualisation for one robot.
+ */
 void VisDirection::render(cv::Mat image, RobotData *robot, bool selected) {
     if (!isEnabled()) {
         return;
@@ -32,6 +48,9 @@ void VisDirection::render(cv::Mat image, RobotData *robot, bool selected) {
          selected ? 2 : 1);
 }
 
+/* getSettingsDialog
+ * Return a pointer to the settings dialog for this visualisation.
+ */
 QDialog* VisDirection::getSettingsDialog(void) {
     return NULL;
 }
