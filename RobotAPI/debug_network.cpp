@@ -14,9 +14,9 @@ DebugNetwork::DebugNetwork(void) { }
 DebugNetwork::~DebugNetwork(void) { }
 
 void DebugNetwork::init(int port, std::string server_ip, int robot_id) {
-	// Networking setup
+    // Networking setup
 
-	// Initialise socket
+    // Initialise socket
     if ((sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
         return;
     }
@@ -40,7 +40,7 @@ void DebugNetwork::init(int port, std::string server_ip, int robot_id) {
 }
 
 void DebugNetwork::destroy(void) {
-	// Close the socket
+    // Close the socket
     close(sockfd);
 
     // Clear ready flag
@@ -48,64 +48,64 @@ void DebugNetwork::destroy(void) {
 }
 
 void DebugNetwork::sendData(std::string data) {
-	if (socket_ready) {
+    if (socket_ready) {
         // Send the data
         sendto(sockfd, data.c_str(), data.length(), 0, (struct sockaddr *)&sock_in, sizeof(sock_in));
     }
 }
 
 void DebugNetwork::sendWatchdogPacket(std::string name) {
-	std::ostringstream packet;
+    std::ostringstream packet;
 
-	packet << robot_id << PACKET_TYPE_STR_WATCHDOG << name;
+    packet << robot_id << PACKET_TYPE_STR_WATCHDOG << name;
 
-	sendData(packet.str());
+    sendData(packet.str());
 }
 
 void DebugNetwork::sendStatePacket(std::string state) {
-	std::ostringstream packet;
+    std::ostringstream packet;
 
-	packet << robot_id << PACKET_TYPE_STR_STATE << state;
+    packet << robot_id << PACKET_TYPE_STR_STATE << state;
 
-	sendData(packet.str());
+    sendData(packet.str());
 }
 
 void DebugNetwork::sendIRDataPacket(int* data, int count, bool background) {
-	std::ostringstream packet;
+    std::ostringstream packet;
 
-	if (background) {
-		packet << robot_id << PACKET_TYPE_STR_BACKGROUND_IR;
-	} else {
-		packet << robot_id << PACKET_TYPE_STR_PROXIMITY;
-	}	
+    if (background) {
+        packet << robot_id << PACKET_TYPE_STR_BACKGROUND_IR;
+    } else {
+        packet << robot_id << PACKET_TYPE_STR_PROXIMITY;
+    }	
 
-	for (int i = 0; i < count; i++) {
-		packet << " " << data[i];
-	}
+    for (int i = 0; i < count; i++) {
+        packet << " " << data[i];
+    }
 
-	sendData(packet.str());
+    sendData(packet.str());
 }
 
 void DebugNetwork::sendLogMessage(std::string message) {
-	std::ostringstream packet;
+    std::ostringstream packet;
 
-	packet << robot_id << PACKET_TYPE_STR_MSG << message;
+    packet << robot_id << PACKET_TYPE_STR_MSG << message;
 
-	sendData(packet.str());
+    sendData(packet.str());
 }
 
 void DebugNetwork::sendCustomData(std::string key, std::string value) {
-	std::ostringstream packet;
+    std::ostringstream packet;
 
-	packet << robot_id << PACKET_TYPE_STR_CUSTOM << key << " " << value;
+    packet << robot_id << PACKET_TYPE_STR_CUSTOM << key << " " << value;
 
-	sendData(packet.str());
+    sendData(packet.str());
 }
 
 int DebugNetwork::getRobotID(void) {
-	return robot_id;
+    return robot_id;
 }
 
 void DebugNetwork::setRobotID(int id) {
-	this->robot_id = id;
+    this->robot_id = id;
 }

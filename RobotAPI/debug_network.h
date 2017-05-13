@@ -36,29 +36,29 @@
 class DebugNetwork 
 {
 public:
-	DebugNetwork(void);
-	~DebugNetwork(void);
+    DebugNetwork(void);
+    ~DebugNetwork(void);
 
-	void init(int port, std::string server_ip, int robot_id);
-	void destroy(void);
+    void init(int port, std::string server_ip, int robot_id);
+    void destroy(void);
 
-	// Raw packet function
-	void sendData(std::string data);
+    // Raw packet function
+    void sendData(std::string data);
 
-	// Specific packet functions
-	void sendWatchdogPacket(std::string name);
-	void sendStatePacket(std::string state);
-	void sendIRDataPacket(int* data, int count, bool background);
-	void sendLogMessage(std::string message);
-	void sendCustomData(std::string key, std::string value);
+    // Specific packet functions
+    void sendWatchdogPacket(std::string name);
+    void sendStatePacket(std::string state);
+    void sendIRDataPacket(int* data, int count, bool background);
+    void sendLogMessage(std::string message);
+    void sendCustomData(std::string key, std::string value);
 
-	// Robot ID functions
-	int getRobotID(void);
-	void setRobotID(int id);
+    // Robot ID functions
+    int getRobotID(void);
+    void setRobotID(int id);
 
 private:
-	// Network variables
-	bool socket_ready;
+    // Network variables
+    bool socket_ready;
     struct sockaddr_in sock_in;
     int sockfd;
 
