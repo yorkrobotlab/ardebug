@@ -38,8 +38,6 @@ RobotData::RobotData(int id, QString name) {
     // Zero out the proximity data array
     bzero(this->proximityData, sizeof(int) * PROX_SENS_COUNT);
     bzero(this->backgroundIR, sizeof(int) * PROX_SENS_COUNT);
-
-    //customData[0] = QString("Test");
 }
 
 /* Destructor
@@ -297,14 +295,22 @@ int RobotData::getBackgroundIR(int sensor) {
     return -1;
 }
 
+/* insertCustomData
+ * Insert a custom data point into the robot data
+ */
 void RobotData::insertCustomData(QString key, QString value) {
     customData[key] = value;
 }
 
+/* populateCustomDataTable
+ * Fill the custom data table with the robot's custom data
+ */
 void RobotData::populateCustomDataTable(QTableWidget *table) {
+    // Clear the table contents
     table->clearContents();
     table->setRowCount(0);
 
+    // Iterate over the custom data, adding each point as a row
     for (std::map<QString, QString>::iterator it = customData.begin(); it != customData.end(); it++) {
         QTableWidgetItem* key = new QTableWidgetItem(it->first);
         QTableWidgetItem* value = new QTableWidgetItem(it->second);
@@ -316,14 +322,20 @@ void RobotData::populateCustomDataTable(QTableWidget *table) {
     }
 }
 
+/* getCustomData
+ * Retrieve the custom data value for a given key
+ */
 QString RobotData::getCustomData(QString key) {
     std::map<QString, QString>::iterator it;
 
+    // Check existance of the key
     it = customData.find(key);
 
     if (it != customData.end()) {
+        // Return the data
         return customData.find(key)->second;
     }
 
+    // Return empty
     return "";
 }

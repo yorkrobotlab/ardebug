@@ -21,6 +21,7 @@ class Settings
     bool showAverageRobotPos;
 
     Settings(void);
+    ~Settings(void);
 
 public:
     std::vector<ArucoIDPair*> idMapping;

@@ -41,8 +41,6 @@ public:
     int getRobotIndex(int id, bool create = true);
     int getRobotCount(void);
 
-    void resetRobotColours(void);
-
 private:
     void parsePositionPacket(RobotData* robot, QString xString, QString yString, QString aString);
     void parseProximityPacket(RobotData* robot, QStringList data, bool background);

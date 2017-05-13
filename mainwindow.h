@@ -27,6 +27,7 @@ class MainWindow : public QMainWindow
     IRDataView* irDataView;
 
     TestingWindow* testingWindow;
+    QDialog* addIDMappingDialog;
 
     int sockfd;
 

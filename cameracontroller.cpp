@@ -23,10 +23,14 @@ CameraController::CameraController(void) {
     readTimer = new QTimer(this);
     connect(readTimer, SIGNAL(timeout()), this, SLOT(readCamera()));
 
+    // Arbitrary non-zero initial frame size
     frameSize.x = 10;
     frameSize.y = 10;
 }
 
+/* Destructor
+ * Release all memory.
+ */
 CameraController::~CameraController(void) {
     delete machineVision;
     delete readTimer;

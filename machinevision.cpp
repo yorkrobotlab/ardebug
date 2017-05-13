@@ -47,41 +47,6 @@ Mat cvb_to_ocv_nocopy(IMG cvbImg)
     return image;
 }
 
-/* projectpoint_image_to_world
- * Taken from original tracking code. Converts point in image space to a
- * point in world space.
- */
-void projectpoint_image_to_world(cv::Mat cameraMatrix, double world_z, cv::Point_<float> undistort_imgpoint, cv::Point_<float> &undistort_worldpoint)
-{
-    double image_x = undistort_imgpoint.x;
-    double image_y = undistort_imgpoint.y;
-
-    double c_x = cameraMatrix.at<double>(0,2);
-    double c_y = cameraMatrix.at<double>(1,2);
-
-    double f_x = cameraMatrix.at<double>(0,0);
-    double f_y = cameraMatrix.at<double>(1,1);
-
-    /*
-     * ref: http://stackoverflow.com/questions/12007775/to-calculate-world-coordinates-from-screen-coordinates-with-opencv
-     x_screen = (x_world/z_world)*f_x + c_x
-     y_screen = (y_world/z_world)*f_y + c_y
-
-     x_world = (x_screen - c_x) * z_world / f_x
-     y_world = (y_screen - c_y) * z_world / f_y*/
-
-    double world_x = (image_x - c_x) * world_z / f_x;
-    double world_y = (image_y - c_y) * world_z / f_y;
-
-    undistort_worldpoint.x = world_x;
-    undistort_worldpoint.y = world_y;
-
-    /*
-     * But from my calculations, I think we should use the following:
-    double world_x = (image_x - c_x * world_z) / f_x;
-    double world_y = (image_y - c_y * world_z) / f_y;*/
-}
-
 /* setupCamera
  * Set up the camera data.
  */
@@ -116,16 +81,6 @@ bool MachineVision::setupCamera(void) {
  * Gets the latest video frame.
  */
 Mat MachineVision::getLatestFrame(Vector2D size, std::vector<TrackResult>* result) {
-    /*****Camera calibration parameters**********/
-    /*****Done on 18/08/2016 02:40:21 PM*********/
-    /*https://github.com/daneshtarapore/apriltags-cpp/blob/optimisation/out_camera_data.xml*/
-
-    double tmp_cameraMatrix[3][3] = {{1.6349274125326908e+03, 0.0, 1.2795000000000000e+03}, {0.0, 1.6349274125326908e+03, 1.0235000000000000e+03}, {0.0, 0.0, 1}};
-    Mat cameraMatrix = Mat(3, 3, CV_64FC1, &tmp_cameraMatrix);
-    double tmp_distCoeffs[5][1] = {-1.4790445043449291e-01, 7.8218565302159274e-02, 0.0, 0.0, -1.7646117392362880e-03};
-    Mat distCoeffs = Mat(5, 1, CV_64FC1, &tmp_distCoeffs);
-    /********************************************/
-
     Mat image;
 
     // Wait for next image to be acquired
@@ -244,8 +199,6 @@ Mat MachineVision::getLatestFrame(Vector2D size, std::vector<TrackResult>* resul
 
     r = (int)rf;
 
-
-
     // Fake some robot position and angle data
     TrackResult res;
     res.id = 1;
@@ -259,24 +212,6 @@ Mat MachineVision::getLatestFrame(Vector2D size, std::vector<TrackResult>* resul
     res.pos.y = 0.5;
     res.angle = 270;
     result->push_back(res);
-
-    /*res.id = 3;
-    res.pos.x = 0.5 + (0.1 * (float)sin(r * (PI/180)));
-    res.pos.y = 0.5 + (0.1 * (float)cos(r * (PI/180)));
-    res.angle = 360 - r;
-    result->push_back(res);
-
-    res.id = 4;
-    res.pos.x = 0.5 + (0.45 * (float)cos(r * (PI/180)));
-    res.pos.y = 0.5 + (0.45 * (float)sin(r * (PI/180)));
-    res.angle = (r > 269) ? r + -270 : r + 90;
-    result->push_back(res);
-
-    res.id = 5;
-    res.pos.x += + (0.1 * (float)cos(4 * r * (PI/180)));
-    res.pos.y += (0.1 * (float)sin(4 * r * (PI/180)));
-    res.angle = 360 - (4 * r);
-    result->push_back(res);*/
 
     // Camera is not present, fake the frame
     if (Settings::instance()->isVideoEnabled()) {

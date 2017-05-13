@@ -20,6 +20,9 @@ Q_DECLARE_METATYPE(cv::Mat)
 Settings *Settings::s_instance = 0;
 Log *Log::s_instance = 0;
 
+/* main
+ * Entry point for the whole application.
+ */
 int main(int argc, char *argv[])
 {
     // Show QT Application

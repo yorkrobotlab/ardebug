@@ -317,20 +317,19 @@ int DataModel::getRobotIndex(int id, bool create) {
     return idx;
 }
 
-void DataModel::resetRobotColours(void) {
-    for (int i = 0; i < (int)robotDataList.size(); i++) {
-        RobotData* d = (RobotData*)robotDataList.at(i);
-        d->setColour(colourGen());
-    }
-}
-
+/* deleteRobot
+ * Remove a robot from the data model, including all of its data.
+ */
 void DataModel::deleteRobot(int ID) {
+    // Reset the robot selection if it matches to avoid null pointer errors
     if (this->selectedRobotID == ID) {
         this->selectedRobotID = -1;
     }
 
+    // Retrieve the index of the robot to be deleted. Do not create it not found.
     int idx = getRobotIndex(ID, false);
 
+    // If index in range, erase the robot
     if (idx >= 0 && (size_t)idx < robotDataList.size()) {
         robotDataList.erase(robotDataList.begin() + idx);
     }

@@ -23,6 +23,17 @@ Settings::Settings(void) {
     idMapping.reserve(2);
 }
 
+/* Destructor
+ * Release all memory.
+ */
+Settings::~Settings(void) {
+    for (size_t i = 0; i < idMapping.size(); i++) {
+        delete idMapping[i];
+    }
+
+    idMapping.clear();
+}
+
 /* getCameraImageSize
  * Returns the camera image size setting.
  */
@@ -101,18 +112,30 @@ void Settings::setPosHistorySampleInterval(int interval) {
     this->posHistorySampleInterval = interval;
 }
 
+/* isImageFlipped
+ * Returns the current image flip setting
+ */
 bool Settings::isImageFlipped(void) {
     return this->imageFlip;
 }
 
+/* setImageFlipEnabled
+ * Enables or disables the image flip
+ */
 void Settings::setImageFlipEnabled(bool enable) {
     this->imageFlip = enable;
 }
 
+/* isShowAveragePos
+ * Returns the current show average position setting
+ */
 bool Settings::isShowAveragePos(void) {
     return this->showAverageRobotPos;
 }
 
+/* setShowAveragePos
+ * Enables or disables the average position display
+ */
 void Settings::setShowAveragePos(bool enable) {
     this->showAverageRobotPos = enable;
 }

@@ -93,7 +93,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Initalise the IR data view
     irDataView = new IRDataView(dataModel);
-
     QVBoxLayout* vertLayout = new QVBoxLayout();
     vertLayout->addWidget(irDataView);
     ui->proximityTab->setLayout(vertLayout);
@@ -104,6 +103,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->customDataTable->horizontalHeader()->setStretchLastSection(true);
 
     // Set up the ID mapping table
+    addIDMappingDialog = NULL;
     idMappingTableSetup();
 
     // Start the camera reading immediately
@@ -118,24 +118,36 @@ MainWindow::MainWindow(QWidget *parent) :
  */
 MainWindow::~MainWindow()
 {
+    // Send a packet to signal the network socket to close
     sendClosePacket(8888);
 
+    // Stop the camera controller
     stopReadingCamera();
 
+    // Release all memory
     delete ui;
     delete dataModel;
     delete visualiser;
 
+    // Delete the testing window if existing
     if (testingWindow != NULL) {
         delete testingWindow;
     }
 
+    // Delete the id mapping dialog if existing
+    if (addIDMappingDialog != NULL) {
+        delete addIDMappingDialog;
+    }
+
+    // Stop the network thread
     networkThread.quit();
     networkThread.wait();
 
+    // Stop the camera thread
     cameraThread.quit();
     cameraThread.wait();
 
+    // Delete the singletons
     Settings::deleteInstance();
     Log::deleteInstance();
 }
@@ -214,13 +226,20 @@ void MainWindow::robotListSelectionChanged(const QItemSelection &selection) {
     updateProximityTab();
 }
 
+/* on_robotList_doubleClicked
+ * Called when an item in the robot list is double clicked, to open the
+ * robot info dialog.
+ */
 void MainWindow::on_robotList_doubleClicked(const QModelIndex &index)
 {
+    // Get the ID
     int idx = index.row();
 
     if (idx >= 0 || idx < dataModel->getRobotCount()) {
+        // Get the robot
         RobotData* robot = dataModel->getRobotByIndex(idx);
 
+        // Create and show the robot info dialog
         RobotInfoDialog* robotInfoDialog = new RobotInfoDialog(robot);
         QObject::connect(robotInfoDialog, SIGNAL(deleteRobot(int)), dataModel, SLOT(deleteRobot(int)));
         QObject::connect(robotInfoDialog, SIGNAL(accepted()), this, SLOT(robotDeleted()));
@@ -262,10 +281,20 @@ void MainWindow::robotSelectedInVisualiser(int id) {
     updateCustomDataTab();
 }
 
+/* robotDeleted
+ * Called when a robot is deleted to update the UI.
+ */
 void MainWindow::robotDeleted(void) {
     dataModelUpdate(true);
 }
 
+/* dataModelUpdate
+ * Called when the data model has been updated so that the UI
+ * can be updated if necessary.
+ *
+ * params: listChanged - Indicates whether the contents of the robot list have
+ *         potentially changed.
+ */
 void MainWindow::dataModelUpdate(bool listChanged)
 {
     // Update the robot list
@@ -280,15 +309,15 @@ void MainWindow::dataModelUpdate(bool listChanged)
         }
     }
 
-    // Update the overview tab
+    // Update the necessary data tabs
     updateOverviewTab();
-
-    // Update the proximity sensor tab
     updateProximityTab();
-
     updateCustomDataTab();
 }
 
+/* updateOverviewTab
+ * Updates the contents of the overview tab in response to new data.
+ */
 void MainWindow::updateOverviewTab(void) {
     // Get the selected robot
     if (dataModel->selectedRobotID >= 0) {
@@ -307,6 +336,9 @@ void MainWindow::updateOverviewTab(void) {
     }
 }
 
+/* updateStateTab
+ * Updates the contents of the state tab in response to new data.
+ */
 void MainWindow::updateStateTab(void) {
     // Get the selected robot
     if (dataModel->selectedRobotID >= 0) {
@@ -318,10 +350,16 @@ void MainWindow::updateStateTab(void) {
     }
 }
 
+/* updateProximityTab
+ * Updates the contents of the IR data tab in response to new data.
+ */
 void MainWindow::updateProximityTab(void) {
     irDataView->repaint();
 }
 
+/* updateCustomDataTab
+ * Updates the contents of the custom data tab in response to new data.
+ */
 void MainWindow::updateCustomDataTab(void) {
     // Get the selected robot
     if (dataModel->selectedRobotID >= 0) {
@@ -331,6 +369,10 @@ void MainWindow::updateCustomDataTab(void) {
     }
 }
 
+/* visConfigUpdate
+ * Called when the settings of a visualisation have changed, and the
+ * visualiser config list should be updated.
+ */
 void MainWindow::visConfigUpdate(void) {
     visualiser->config.populateSettingsList(ui->visSettingsList);
 }
@@ -341,14 +383,18 @@ void MainWindow::visConfigUpdate(void) {
  */
 void MainWindow::on_networkListenButton_clicked()
 {
+    // Statics to monitor listening state and port
     static bool listening = false;
     static int openPort = -1;
 
+    // If not currently listening
     if (!listening) {
+        // Parse port number
         bool ok = false;
         int port = ui->networkPortBox->text().toInt(&ok);
 
         if (ok) {
+            // Start listening
             listening = true;
             openUDPSocket(port);
             openPort = port;
@@ -359,6 +405,7 @@ void MainWindow::on_networkListenButton_clicked()
         }
     } else {
         if (openPort >= 0) {
+            // Stop listening
             listening = false;
             sendClosePacket(openPort);
             openPort = -1;
@@ -387,6 +434,10 @@ void MainWindow::on_networkPortBox_textChanged(const QString &text)
     ui->networkPortBox->setText(newString);
 }
 
+/* on_imageXDimEdit_textChanged
+ * Called when the user types in the image x dimension box on the
+ * camera settings tab. Only allow numerical digits, no characters.
+ */
 void MainWindow::on_imageXDimEdit_textChanged(const QString &arg1)
 {
     bool ok = false;
@@ -399,6 +450,10 @@ void MainWindow::on_imageXDimEdit_textChanged(const QString &arg1)
     visualiser->checkFrameSize();
 }
 
+/* on_imageYDimEdit_textChanged
+ * Called when the user types in the image y dimension box on the
+ * camera settings tab. Only allow numerical digits, no characters.
+ */
 void MainWindow::on_imageYDimEdit_textChanged(const QString &arg1)
 {
     bool ok = false;
@@ -411,6 +466,10 @@ void MainWindow::on_imageYDimEdit_textChanged(const QString &arg1)
     visualiser->checkFrameSize();
 }
 
+/* on_visSettingsList_itemClicked
+ * Called when an item within the visualiser settings list is clicked.
+ * Checks that the visualisation is in the correct enable state.
+ */
 void MainWindow::on_visSettingsList_itemClicked(QListWidgetItem *item)
 {
     QVariant v = item->data(Qt::UserRole);
@@ -419,6 +478,10 @@ void MainWindow::on_visSettingsList_itemClicked(QListWidgetItem *item)
     e->setEnabled(item->checkState() == Qt::Checked);
 }
 
+/* on_visSettingsList_itemDoubleClicked
+ * Called when an item in the visualiser settings list is double clicked.
+ * Displays the detailed visualisation settings if they exist.
+ */
 void MainWindow::on_visSettingsList_itemDoubleClicked(QListWidgetItem *item)
 {
     QVariant v = item->data(Qt::UserRole);
@@ -432,16 +495,25 @@ void MainWindow::on_visSettingsList_itemDoubleClicked(QListWidgetItem *item)
     }
 }
 
+/* on_robotColoursCheckBox_stateChanged
+ * Called when the user changes the robot colour enabled setting.
+ */
 void MainWindow::on_robotColoursCheckBox_stateChanged()
 {
     Settings::instance()->setRobotColourEnabled(ui->robotColoursCheckBox->isChecked());
 }
 
+/* on_logFileButton_clicked
+ * Called when the user pressed the log file directory change button
+ */
 void MainWindow::on_logFileButton_clicked()
 {
     Log::instance()->setDirectory(this);
 }
 
+/* on_loggingButton_clicked
+ * Called when the user clicks the start/stop logging button
+ */
 void MainWindow::on_loggingButton_clicked()
 {
     Log::instance()->setLoggingEnabled(!Log::instance()->isLoggingEnabled());
@@ -449,6 +521,9 @@ void MainWindow::on_loggingButton_clicked()
     ui->loggingButton->setText(Log::instance()->isLoggingEnabled() ? "Stop Logging" : "Start Logging");
 }
 
+/* on_actionTesting_Window_triggered
+ * Called when the user presses the menu item to show the testing window
+ */
 void MainWindow::on_actionTesting_Window_triggered()
 {
     // If no testing window exists yet, create one
@@ -462,6 +537,9 @@ void MainWindow::on_actionTesting_Window_triggered()
     }
 }
 
+/* idMappingTableSetup
+ * Initilises the ID mapping table
+ */
 void MainWindow::idMappingTableSetup(void) {
     ui->tagMappingTable->setColumnCount(2);
 
@@ -474,11 +552,17 @@ void MainWindow::idMappingTableSetup(void) {
     idMappingUpdate();
 }
 
+/* idMappingUpdate
+ * Called when the ID mapping has been updated. Udates the table to match.
+ */
 void MainWindow::idMappingUpdate(void) {
+    // Clear the table
     ui->tagMappingTable->clearContents();
 
+    // Set the new row count
     ui->tagMappingTable->setRowCount(Settings::instance()->idMapping.size());
 
+    // For each mapping fill a row
     for (size_t i = 0; i < Settings::instance()->idMapping.size(); i++) {
         ArucoIDPair* p = Settings::instance()->idMapping.at(i);
 
@@ -493,21 +577,34 @@ void MainWindow::idMappingUpdate(void) {
     }
 }
 
+/* on_tagMappingDeleteButton_clicked
+ * Called when the user presses the button to delete an ID mapping
+ */
 void MainWindow::on_tagMappingDeleteButton_clicked() {
     if (ui->tagMappingTable->selectionModel()->hasSelection()) {
+        // Get the selected row
         QModelIndexList selection = ui->tagMappingTable->selectionModel()->selectedIndexes();
 
         for (int i = 0; i < selection.count(); i++) {
+            // Erase the mapping for that row
             Settings::instance()->idMapping.erase(Settings::instance()->idMapping.begin() + selection.at(i).row());
         }
 
+        // Update the table
         idMappingUpdate();
     }
 }
 
+/* on_tagMappingAddButton_clicked
+ * Called when the user presses the button to delete an ID mapping
+ */
 void MainWindow::on_tagMappingAddButton_clicked()
 {
-    QDialog* addIDMappingDialog = new AddIDMAppingDialog();
+    if (addIDMappingDialog != NULL) {
+        delete addIDMappingDialog;
+    }
+
+    addIDMappingDialog = new AddIDMAppingDialog();
 
     if (addIDMappingDialog != NULL) {
         QObject::connect(addIDMappingDialog, SIGNAL(accepted()), this, SLOT(idMappingUpdate(void)));
@@ -515,11 +612,17 @@ void MainWindow::on_tagMappingAddButton_clicked()
     }
 }
 
+/* on_flipImageCheckBox_stateChanged
+ * Called when the user changes the image flip setting
+ */
 void MainWindow::on_flipImageCheckBox_stateChanged(int checked)
 {
     Settings::instance()->setImageFlipEnabled(checked == Qt::Checked);
 }
 
+/* on_averagePositionCheckBox_stateChanged
+ * Called when the user changes the show average position setting
+ */
 void MainWindow::on_averagePositionCheckBox_stateChanged(int checked)
 {
     Settings::instance()->setShowAveragePos(checked == Qt::Checked);
