@@ -13,6 +13,9 @@
 DebugNetwork::DebugNetwork(void) { }
 DebugNetwork::~DebugNetwork(void) { }
 
+/* init
+ * Initialise the debugging system and network socket.
+ */
 void DebugNetwork::init(int port, std::string server_ip, int robot_id) {
     // Networking setup
 
@@ -39,6 +42,9 @@ void DebugNetwork::init(int port, std::string server_ip, int robot_id) {
     this->robot_id = robot_id;
 }
 
+/* destroy
+ * Shut down the network socket.
+ */
 void DebugNetwork::destroy(void) {
     // Close the socket
     close(sockfd);
@@ -47,6 +53,9 @@ void DebugNetwork::destroy(void) {
     socket_ready = false;
 }
 
+/* sendData
+ * Send an arbitrary string of data to the debugging application.
+ */
 void DebugNetwork::sendData(std::string data) {
     if (socket_ready) {
         // Send the data
@@ -54,6 +63,9 @@ void DebugNetwork::sendData(std::string data) {
     }
 }
 
+/* sendWatchdogPacket
+ * Send a watchdog data packet to the debugging application.
+ */
 void DebugNetwork::sendWatchdogPacket(std::string name) {
     std::ostringstream packet;
 
@@ -62,6 +74,9 @@ void DebugNetwork::sendWatchdogPacket(std::string name) {
     sendData(packet.str());
 }
 
+/* sendStatePacket
+ * Send a state data packet to the debugging application.
+ */
 void DebugNetwork::sendStatePacket(std::string state) {
     std::ostringstream packet;
 
@@ -70,6 +85,10 @@ void DebugNetwork::sendStatePacket(std::string state) {
     sendData(packet.str());
 }
 
+/* sendIRDataPacket
+ * Send an IR data packet to the debugging application. Can be active or
+ * background readings.
+ */
 void DebugNetwork::sendIRDataPacket(int* data, int count, bool background) {
     std::ostringstream packet;
 
@@ -86,6 +105,9 @@ void DebugNetwork::sendIRDataPacket(int* data, int count, bool background) {
     sendData(packet.str());
 }
 
+/* sendLogMessage
+ * Send a log message packet to the debugging application.
+ */
 void DebugNetwork::sendLogMessage(std::string message) {
     std::ostringstream packet;
 
@@ -94,6 +116,9 @@ void DebugNetwork::sendLogMessage(std::string message) {
     sendData(packet.str());
 }
 
+/* sendCustomData
+ * Send a custom data packet to the debugging application.
+ */
 void DebugNetwork::sendCustomData(std::string key, std::string value) {
     std::ostringstream packet;
 
@@ -102,10 +127,16 @@ void DebugNetwork::sendCustomData(std::string key, std::string value) {
     sendData(packet.str());
 }
 
+/* getRobotID
+ * Get the current robot ID value used when sending packets.
+ */
 int DebugNetwork::getRobotID(void) {
     return robot_id;
 }
 
+/* setRobotID
+ * Change the current robot ID value used when sending packets.
+ */
 void DebugNetwork::setRobotID(int id) {
     this->robot_id = id;
 }
