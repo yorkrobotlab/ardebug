@@ -9,6 +9,9 @@
 #include "debug_network.h"
 
 #include <sstream>
+#include <fstream>
+#include <string>
+#include <cstdlib>
 
 DebugNetwork::DebugNetwork(void) { }
 DebugNetwork::~DebugNetwork(void) { }
@@ -17,6 +20,26 @@ DebugNetwork::~DebugNetwork(void) { }
  * Initialise the debugging system and network socket.
  */
 void DebugNetwork::init(int port, std::string server_ip, int robot_id) {
+    // Open config file
+    std::ifstream file ("swarm_debug_config.txt");
+
+    // String for reading from config file
+    std::string config_string;
+
+    if (file.is_open()) {
+        // Config file open, acquire ID
+        getline(file,config_string);
+        this->robot_id = atoi(config_string.c_str());
+
+        // Acquire IP
+        getline(file,server_ip);
+
+        file.close();
+    } else {
+        // Config file failure, use supplied values
+        this->robot_id = robot_id;
+    }
+
     // Networking setup
 
     // Initialise socket
@@ -37,9 +60,6 @@ void DebugNetwork::init(int port, std::string server_ip, int robot_id) {
     }
 
     socket_ready = true;
-
-    // Set robot id
-    this->robot_id = robot_id;
 }
 
 /* destroy
@@ -96,7 +116,7 @@ void DebugNetwork::sendIRDataPacket(int* data, int count, bool background) {
         packet << robot_id << PACKET_TYPE_STR_BACKGROUND_IR;
     } else {
         packet << robot_id << PACKET_TYPE_STR_PROXIMITY;
-    }	
+    }   
 
     for (int i = 0; i < count; i++) {
         packet << " " << data[i];
