@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<argos-configuration>
+
+    <framework>
+        <experiment length="5000"
+                    ticks_per_second="10"/>
+    </framework>
+
+    <controllers>
+        <basic_dispersion_controller id="basic_dispersion_controller"
+                         library="build_linux/testing/libbasic_dispersion_controller.so">
+
+            <sensors>
+                <epuck_proximity implementation="default" show_rays="false"/>
+                <epuck_light implementation="default" show_rays="false"/>
+            </sensors>
+
+            <actuators>
+                <epuck_wheels implementation="default"/>
+                <epuck_base_leds implementation="default" medium="leds"/>
+            </actuators>
+
+            <params/>
+        </basic_dispersion_controller>
+    </controllers>
+
+    <arena size="5,5,1" center="0,0,0.5">
+        <e-puck id="ep0">
+            <body position="0,0,0" orientation="0,0,0"/>
+            <controller config="basic_dispersion_controller" />
+        </e-puck>
+    </arena>
+
+    <physics_engines>
+        <dynamics2d id="dyn2d" />
+    </physics_engines>
+
+    <media>
+        <led id="leds"/>
+    </media>
+
+    <visualization>
+        <qt-opengl/>
+    </visualization>
+
+</argos-configuration>
