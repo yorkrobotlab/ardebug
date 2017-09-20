@@ -39,7 +39,7 @@ public:
     DebugNetwork(void);
     ~DebugNetwork(void);
 
-    void init(int port, std::string server_ip, int robot_id);
+    void init(int port, std::string default_server_ip, int default_robot_id);
     void destroy(void);
 
     // Raw packet function

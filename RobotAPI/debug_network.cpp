@@ -18,8 +18,10 @@ DebugNetwork::~DebugNetwork(void) { }
 
 /* init
  * Initialise the debugging system and network socket.
+ * Must provide a port number, and fallback server IP and robot ID,
+ * in case swarm_debug_config.txt cannot be found. 
  */
-void DebugNetwork::init(int port, std::string server_ip, int robot_id) {
+void DebugNetwork::init(int port, std::string default_server_ip, int default_robot_id) {
     // Open config file
     std::ifstream file ("swarm_debug_config.txt");
 
@@ -32,12 +34,12 @@ void DebugNetwork::init(int port, std::string server_ip, int robot_id) {
         this->robot_id = atoi(config_string.c_str());
 
         // Acquire IP
-        getline(file,server_ip);
+        getline(file,default_server_ip);
 
         file.close();
     } else {
         // Config file failure, use supplied values
-        this->robot_id = robot_id;
+        this->robot_id = default_robot_id;
     }
 
     // Networking setup
@@ -55,7 +57,7 @@ void DebugNetwork::init(int port, std::string server_ip, int robot_id) {
     sock_in.sin_family = AF_INET;
 
     // Convert the server ip string to binary
-    if (inet_aton(server_ip.c_str(), &sock_in.sin_addr) <= 0) {
+    if (inet_aton(default_server_ip.c_str(), &sock_in.sin_addr) <= 0) {
         return;
     }
 
