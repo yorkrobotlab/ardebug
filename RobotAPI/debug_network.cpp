@@ -9,14 +9,39 @@
 #include "debug_network.h"
 
 #include <sstream>
+#include <fstream>
+#include <string>
+#include <cstdlib>
 
 DebugNetwork::DebugNetwork(void) { }
 DebugNetwork::~DebugNetwork(void) { }
 
 /* init
  * Initialise the debugging system and network socket.
+ * Must provide a port number, and fallback server IP and robot ID,
+ * in case swarm_debug_config.txt cannot be found. 
  */
-void DebugNetwork::init(int port, std::string server_ip, int robot_id) {
+void DebugNetwork::init(int port, std::string default_server_ip, int default_robot_id) {
+    // Open config file
+    std::ifstream file ("ar_debug_config.txt");
+
+    // String for reading from config file
+    std::string config_string;
+
+    if (file.is_open()) {
+        // Config file open, acquire ID
+        getline(file,config_string);
+        this->robot_id = atoi(config_string.c_str());
+
+        // Acquire IP
+        getline(file,default_server_ip);
+
+        file.close();
+    } else {
+        // Config file failure, use supplied values
+        this->robot_id = default_robot_id;
+    }
+
     // Networking setup
 
     // Initialise socket
@@ -32,14 +57,11 @@ void DebugNetwork::init(int port, std::string server_ip, int robot_id) {
     sock_in.sin_family = AF_INET;
 
     // Convert the server ip string to binary
-    if (inet_aton(server_ip.c_str(), &sock_in.sin_addr) <= 0) {
+    if (inet_aton(default_server_ip.c_str(), &sock_in.sin_addr) <= 0) {
         return;
     }
 
     socket_ready = true;
-
-    // Set robot id
-    this->robot_id = robot_id;
 }
 
 /* destroy
@@ -96,7 +118,7 @@ void DebugNetwork::sendIRDataPacket(int* data, int count, bool background) {
         packet << robot_id << PACKET_TYPE_STR_BACKGROUND_IR;
     } else {
         packet << robot_id << PACKET_TYPE_STR_PROXIMITY;
-    }	
+    }   
 
     for (int i = 0; i < count; i++) {
         packet << " " << data[i];
