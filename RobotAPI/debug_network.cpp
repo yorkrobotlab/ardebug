@@ -23,7 +23,7 @@ DebugNetwork::~DebugNetwork(void) { }
  */
 void DebugNetwork::init(int port, std::string default_server_ip, int default_robot_id) {
     // Open config file
-    std::ifstream file ("swarm_debug_config.txt");
+    std::ifstream file ("ar_debug_config.txt");
 
     // String for reading from config file
     std::string config_string;
