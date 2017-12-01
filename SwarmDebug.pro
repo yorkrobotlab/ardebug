@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui bluetooth
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -52,7 +52,8 @@ SOURCES += main.cpp\
     customsettingsdialog.cpp \
     testingwindow.cpp \
     addidmappingdialog.cpp \
-    robotinfodialog.cpp
+    robotinfodialog.cpp \
+    bluetoothdatathread.cpp
 
 HEADERS  += mainwindow.h \
     datathread.h \
@@ -84,16 +85,19 @@ HEADERS  += mainwindow.h \
     customsettingsdialog.h \
     testingwindow.h \
     addidmappingdialog.h \
-    robotinfodialog.h
+    robotinfodialog.h \
+    bluetoothdatathread.h
 
 FORMS    += mainwindow.ui
 
-CONFIG += link_pkgconfig
+CONFIG += link_pkgconfig \
+    c++11
 PKGCONFIG += opencv
 
-LIBS += -L/opt/cvb/lib/ -lCVCImg
-LIBS += -L/opt/cvb/lib/ -lCVCDriver
-LIBS += -L/opt/cvb/lib/ -lCVCUtilities
+
+#LIBS += -L/opt/cvb/lib/ -lCVCImg
+#LIBS += -L/opt/cvb/lib/ -lCVCDriver
+#LIBS += -L/opt/cvb/lib/ -lCVCUtilities
 
 INCLUDEPATH += /opt/cvb/include
 DEPENDPATH += /opt/cvb/include
