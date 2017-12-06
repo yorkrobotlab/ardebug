@@ -281,7 +281,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="robotTab">
          <attribute name="title">
@@ -299,111 +299,73 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
-           <widget class="QGroupBox" name="groupBox_2">
-            <property name="title">
-             <string>UDP-Server</string>
-            </property>
-            <property name="flat">
-             <bool>false</bool>
-            </property>
-            <widget class="QWidget" name="">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>28</y>
-               <width>256</width>
-               <height>171</height>
-              </rect>
-             </property>
-             <layout class="QFormLayout" name="formLayout_6">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_18">
-                <property name="text">
-                 <string>Port Number</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLineEdit" name="networkPortBox">
-                <property name="text">
-                 <string>8888</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QPushButton" name="networkListenButton">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>200</y>
-               <width>256</width>
-               <height>27</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string>Start Listening</string>
-             </property>
-            </widget>
-            <widget class="QGroupBox" name="groupBox">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>240</y>
-               <width>256</width>
-               <height>281</height>
-              </rect>
-             </property>
-             <property name="title">
-              <string>Bluetooth</string>
-             </property>
-             <property name="checkable">
-              <bool>false</bool>
-             </property>
-             <widget class="QWidget" name="verticalLayoutWidget">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>20</y>
-                <width>251</width>
-                <height>261</height>
-               </rect>
+           <layout class="QFormLayout" name="formLayout_6">
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="networkPortBox">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_9">
-               <item>
-                <widget class="QListView" name="bluetoothList"/>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_4">
-                 <item>
-                  <widget class="QPushButton" name="pushButton_2">
-                   <property name="text">
-                    <string>add</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="pushButton_3">
-                   <property name="text">
-                    <string>delete</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <widget class="QPushButton" name="bluetoothListenButton">
-                 <property name="text">
-                  <string>Connect Bluetooth</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <property name="text">
+               <string>8888</string>
+              </property>
              </widget>
-            </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_18">
+              <property name="text">
+               <string>Port Number</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QPushButton" name="networkListenButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Start Listening</string>
+            </property>
            </widget>
           </item>
          </layout>
+        </widget>
+        <widget class="QWidget" name="bluetoothTab">
+         <attribute name="title">
+          <string>Bluetooth</string>
+         </attribute>
+         <widget class="QWidget" name="verticalLayoutWidget">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>251</width>
+            <height>301</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_9">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetDefaultConstraint</enum>
+           </property>
+           <item>
+            <widget class="QListView" name="listView"/>
+           </item>
+           <item>
+            <widget class="QPushButton" name="bluetoothListenButton">
+             <property name="text">
+              <string>Connect Bluetooth</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </widget>
         <widget class="QWidget" name="loggingTab">
          <attribute name="title">

@@ -38,6 +38,7 @@ public:
 
 signals:
     void openUDPSocket(int port);
+    void connectBluetooth(void);
     void closeUDPSocket(void);
 
     void startReadingCamera(void);
@@ -94,6 +95,8 @@ private slots:
     void on_robotList_doubleClicked(const QModelIndex &index);
 
     void on_averagePositionCheckBox_stateChanged(int arg1);
+
+    void on_bluetoothListenButton_clicked();
 
 private:
     Ui::MainWindow *ui;

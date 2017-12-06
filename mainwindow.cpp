@@ -61,8 +61,8 @@ MainWindow::MainWindow(QWidget *parent) :
     bluetoothHandler->moveToThread(&bluetoothThread);
     connect(&bluetoothThread, SIGNAL(finished()), bluetoothHandler, SLOT(deleteLater()));
 
-    // Connect signals and sockets for starting and stopping the networking
-    connect(this, SIGNAL(openUDPSocket(int)), bluetoothHandler, SLOT(openSocket()));
+    // Connect signals and sockets for starting and stopping bluetooth
+    connect(this, SIGNAL(connectBluetooth()), bluetoothHandler, SLOT(openSocket()));
 
     // Connect signals and sockets for transferring the incoming data
     connect(bluetoothHandler, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
@@ -647,4 +647,37 @@ void MainWindow::on_flipImageCheckBox_stateChanged(int checked)
 void MainWindow::on_averagePositionCheckBox_stateChanged(int checked)
 {
     Settings::instance()->setShowAveragePos(checked == Qt::Checked);
+}
+
+/* on_bluetoothListenButton_clicked
+ * Called when the user changes clicks the bluetoothbutton
+ */
+void MainWindow::on_bluetoothListenButton_clicked()
+{
+    // Statics to monitor listening state and port
+    static bool connected = false;
+
+
+    // If not currently listening
+    if (!connected) {
+
+        // Start listening
+        //connected = true;
+        emit connectBluetooth();
+        //ui->networkListenButton->setText("Disconnect");
+
+
+        Log::instance()->logMessage(QString("Connecting to robots via bluetooth "), true);
+
+    } else {
+
+        // Stop listening
+        connected = false;
+        //sendClosePacket(openPort);
+        ui->networkListenButton->setText("Start Listening");
+
+
+        Log::instance()->logMessage("Disconnecting Bluetooth\n", true);
+
+    }
 }

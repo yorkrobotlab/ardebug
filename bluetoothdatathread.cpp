@@ -8,50 +8,11 @@
  */
 
 #include "bluetoothdatathread.h"
-//#include "sys/socket.h"
-//#include <unistd.h>
-
-
-
 #include <QString>
 #include <QtBluetooth/QBluetoothSocket>
 #include <QtBluetooth/QBluetoothServiceInfo>
 
-/* listenForPacket
- * Listens for data on the bluetooth socket. Blocking.
- */
-void BluetoothDataThread::listenForPacket(void) {
-    /*
-    int  recv_len;
-    char buffer[256];
 
-    // Pause the timer
-    readTimer->stop();
-
-    // Clear the buffer
-    bzero(buffer, 256);
-
-    // Receive a packet (blocking)
-    recv_len = read(btSocket, buffer, 255);
-    if (recv_len < 0) {
-        fprintf(stderr, "Error reading data\n");
-        return;
-    }
-
-    // Check if close packet received
-    if (strcmp(buffer, "close") == 0) {
-        close(btSocket);
-        delete readTimer;
-    } else {
-        // Emit received data through signal
-        QString str;
-        str.sprintf("%s", buffer);
-        emit dataFromThread(str);
-
-        // Restart the timer
-        readTimer->start(1);
-    }*/
-}
 BluetoothDataThread::~BluetoothDataThread(){
     stop();
 }
@@ -73,13 +34,16 @@ void BluetoothDataThread::stop(){
 
 }
 
-//! [connected]
+
 void BluetoothDataThread::connected()
 {
     qDebug()<<btSocket[0]->peerName();
 }
 
-//! [readSocket]
+
+/* openSocket
+ * Opens a RFCOMM bluetooth socket and begins listening for data.
+ */
 void BluetoothDataThread::readSocket()
 {
     qDebug() << "form socket";
@@ -95,7 +59,7 @@ void BluetoothDataThread::readSocket()
         }
     }
 }
-//! [readSocket]
+
 
 /* openSocket
  * Opens a RFCOMM bluetooth socket and begins listening for data.
@@ -116,24 +80,4 @@ void BluetoothDataThread::openSocket()
         connect(btSocket[i], SIGNAL(readyRead()), this, SLOT(readSocket()));
         connect(btSocket[i], SIGNAL(connected()), this, SLOT(connected()));
     }
-    //connect(btSocket, SIGNAL(disconnected()), this, SIGNAL(disconnected()));
-    /*
-    int s, status;
-    struct sockaddr_rc addr={0};
-    btSocket = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
-    addr.rc_family = AF_BLUETOOTH;
-    addr.rc_channel = 1;
-    str2ba(dest, &addr.rc_bdaddr);
-    status = connect(s,(struct sockaddr*)&addr, sizeof(addr));
-
-    // Signal that the socket was opened successfully
-    emit socketOpened(btSocket);
-
-    // Start the data read timer
-    readTimer = new QTimer(this);
-    connect(readTimer, SIGNAL(timeout()), this, SLOT(listenForPacket()));
-    readTimer->start(1);*/
-
-
-
 }

@@ -23,9 +23,6 @@ public slots:
 private slots:
     void connected();
 
-private slots:
-    void listenForPacket(void);
-
 
 signals:
     void socketOpened(const int &);
