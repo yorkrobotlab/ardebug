@@ -1,7 +1,7 @@
 #ifndef DATATHREAD_H
 #define DATATHREAD_H
 
-#include "QThread"
+//#include "QThread"
 #include "QTimer"
 
 class DataThread : public QObject

@@ -20,6 +20,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     QThread networkThread;
+    QThread bluetoothThread;
     QThread cameraThread;
     Visualiser* visualiser;
     CameraController* cameraController;

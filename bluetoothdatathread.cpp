@@ -57,33 +57,42 @@ BluetoothDataThread::~BluetoothDataThread(){
 }
 
 BluetoothDataThread::BluetoothDataThread(){
-    btSocket = 0;
+    for (int i = 0; i< 2; i++)
+    {
+        btSocket[i] = 0;
+    }
 }
 
 void BluetoothDataThread::stop(){
      qDebug() << "Delete socket";
-    delete btSocket;
-    btSocket = 0;
+     for (int i = 0; i< 2; i++)
+     {
+        delete btSocket[i];
+        btSocket[i] = 0;
+     }
 
 }
 
 //! [connected]
 void BluetoothDataThread::connected()
 {
-    qDebug()<<btSocket->peerName();
+    qDebug()<<btSocket[0]->peerName();
 }
 
 //! [readSocket]
 void BluetoothDataThread::readSocket()
 {
     qDebug() << "form socket";
-    if (!btSocket)
-      return;
+    for (int i = 0; i< 2; i++)
+    {
+        if (!btSocket[i])
+          continue;
 
-    while (btSocket->canReadLine()) {
-         qDebug() << "readline form socket";
-        QByteArray line = btSocket->readLine();
-        emit dataFromThread(QString::fromUtf8(line.constData(), line.length()));
+        while (btSocket[i]->canReadLine()) {
+             qDebug() << "readline form socket";
+            QByteArray line = btSocket[i]->readLine();
+            emit dataFromThread(QString::fromUtf8(line.constData(), line.length()));
+        }
     }
 }
 //! [readSocket]
@@ -93,13 +102,20 @@ void BluetoothDataThread::readSocket()
  */
 void BluetoothDataThread::openSocket()
 {
-    btSocket = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
-    qDebug() << "Create socket";
-    btSocket->connectToService(QBluetoothAddress(dest),0x0001,QIODevice::ReadWrite);
-    qDebug() << "socket connected";
+    for (int i = 0; i< 2; i++)
+    {
+        btSocket[i] = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
 
-    connect(btSocket, SIGNAL(readyRead()), this, SLOT(readSocket()));
-    connect(btSocket, SIGNAL(connected()), this, SLOT(connected()));
+        qDebug() << "Create socket";
+        if (i == 0)
+            btSocket[i]->connectToService(QBluetoothAddress(dest),0x0001,QIODevice::ReadWrite);
+        else
+             btSocket[i]->connectToService(QBluetoothAddress(dest2),0x0001,QIODevice::ReadWrite);
+        qDebug() << "socket connected";
+
+        connect(btSocket[i], SIGNAL(readyRead()), this, SLOT(readSocket()));
+        connect(btSocket[i], SIGNAL(connected()), this, SLOT(connected()));
+    }
     //connect(btSocket, SIGNAL(disconnected()), this, SIGNAL(disconnected()));
     /*
     int s, status;

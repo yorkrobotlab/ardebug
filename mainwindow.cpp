@@ -51,20 +51,28 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&networkThread, SIGNAL(finished()), dataHandler, SLOT(deleteLater()));
 
     // Connect signals and sockets for starting and stopping the networking
-    connect(this, SIGNAL(openUDPSocket(int)), dataHandler, SLOT(openUDPSocket(int)));
-
-    //Set up the bluetoothcommunication
-    BluetoothDataThread *bluetoothHandler = new BluetoothDataThread;
-
-    // Connect signals and sockets for starting and stopping the networking
-    connect(this, SIGNAL(openUDPSocket(int)), bluetoothHandler, SLOT(openSocket()));
-    // Connect signals and sockets for transferring the incoming data
-    connect(bluetoothHandler, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
+    connect(this, SIGNAL(openUDPSocket(int)), dataHandler, SLOT(openUDPSocket(int)));    
 
     // Connect signals and sockets for transferring the incoming data
     connect(dataHandler, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
+
+    //Set up the bluetoothcommunication
+    BluetoothDataThread *bluetoothHandler = new BluetoothDataThread;
+    bluetoothHandler->moveToThread(&bluetoothThread);
+    connect(&bluetoothThread, SIGNAL(finished()), bluetoothHandler, SLOT(deleteLater()));
+
+    // Connect signals and sockets for starting and stopping the networking
+    connect(this, SIGNAL(openUDPSocket(int)), bluetoothHandler, SLOT(openSocket()));
+
+    // Connect signals and sockets for transferring the incoming data
+    connect(bluetoothHandler, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
+
+
     connect(dataModel, SIGNAL(modelChanged(bool)), this, SLOT(dataModelUpdate(bool)));
     networkThread.start();
+    bluetoothThread.start();
+
+
 
     // Intantiate the visualiser
     visualiser = new Visualiser(dataModel);
@@ -151,6 +159,10 @@ MainWindow::~MainWindow()
     // Stop the network thread
     networkThread.quit();
     networkThread.wait();
+
+    // Stop the network thread
+    bluetoothThread.quit();
+    bluetoothThread.wait();
 
     // Stop the camera thread
     cameraThread.quit();
