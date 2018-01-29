@@ -11,6 +11,7 @@
 #include <QString>
 #include <QtBluetooth/QBluetoothSocket>
 #include <QtBluetooth/QBluetoothServiceInfo>
+#include <QFile>
 
 
 BluetoothDataThread::~BluetoothDataThread(){
@@ -18,66 +19,78 @@ BluetoothDataThread::~BluetoothDataThread(){
 }
 
 BluetoothDataThread::BluetoothDataThread(){
-    for (int i = 0; i< 2; i++)
+
+    /*
+    for (int i = 0; i< NUMBER_OF_BT_SOCKET; i++)
     {
         btSocket[i] = 0;
-    }
+    }*/
 }
 
 void BluetoothDataThread::stop(){
+    /*
      qDebug() << "Delete socket";
-     for (int i = 0; i< 2; i++)
+     for (int i = 0; i< NUMBER_OF_BT_SOCKET; i++)
      {
-        delete btSocket[i];
-        btSocket[i] = 0;
-     }
+        if(btSocket[i] != 0)
+        {
+            delete btSocket[i];
+            btSocket[i] = 0;
+        }
+     }*/
 
 }
 
 
 void BluetoothDataThread::connected()
 {
-    qDebug()<<btSocket[0]->peerName();
+ //   qDebug()<<btSocket[0]->peerName();
+}
+
+
+/* readSocket
+ * slot function, reads data from bt sockets when present
+ */
+void BluetoothDataThread::readSocket(int index)
+{
+
+    while (btSocket[index]->canReadLine()) {
+         qDebug() << "readline from socket";
+        QByteArray line = btSocket[index]->readLine();
+        emit dataFromThread(QString::fromUtf8(line.constData(), line.length()));
+    }
 }
 
 
 /* openSocket
  * Opens a RFCOMM bluetooth socket and begins listening for data.
  */
-void BluetoothDataThread::readSocket()
+int BluetoothDataThread::openSocket(QBluetoothAddress addr)
 {
-    qDebug() << "form socket";
-    for (int i = 0; i< 2; i++)
+    for (int i = 0; i< NUMBER_OF_BT_SOCKET; i++)
     {
-        if (!btSocket[i])
-          continue;
+        if (btSocket[i] != 0)
+        {
+            //btSocket[i] = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
+            btSocket[i] = new BluetoothSocketListed(addr, i);
 
-        while (btSocket[i]->canReadLine()) {
-             qDebug() << "readline form socket";
-            QByteArray line = btSocket[i]->readLine();
-            emit dataFromThread(QString::fromUtf8(line.constData(), line.length()));
+            qDebug() << "socket connected";
+
+            connect(btSocket[i], SIGNAL(readyRead_indexed(int)), this, SLOT(readSocket(int)));
+            //connect(btSocket[i], SIGNAL(readyRead(int)), this, SLOT(readSocket(int)));
+            //connect(btSocket[i], SIGNAL(connected()), this, SLOT(connected()));
+            //connect(btSocket[i], SIGNAL(disconnected()), this, SLOT(SocketDisconnected()));
+            //connect(btSocket[i], SIGNAL(error(QBluetoothSocket::SocketError)), this, SLOT(SocketError(QBluetoothSocket::SocketError)));
+            return 1;
         }
     }
+    return 0;
+
 }
 
 
-/* openSocket
- * Opens a RFCOMM bluetooth socket and begins listening for data.
- */
-void BluetoothDataThread::openSocket()
+void BluetoothDataThread::SocketDisconnected()
 {
-    for (int i = 0; i< 2; i++)
-    {
-        btSocket[i] = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
 
-        qDebug() << "Create socket";
-        if (i == 0)
-            btSocket[i]->connectToService(QBluetoothAddress(dest),0x0001,QIODevice::ReadWrite);
-        else
-             btSocket[i]->connectToService(QBluetoothAddress(dest2),0x0001,QIODevice::ReadWrite);
-        qDebug() << "socket connected";
-
-        connect(btSocket[i], SIGNAL(readyRead()), this, SLOT(readSocket()));
-        connect(btSocket[i], SIGNAL(connected()), this, SLOT(connected()));
-    }
 }
+

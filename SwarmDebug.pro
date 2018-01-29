@@ -53,7 +53,10 @@ SOURCES += main.cpp\
     testingwindow.cpp \
     addidmappingdialog.cpp \
     robotinfodialog.cpp \
-    bluetoothdatathread.cpp
+    bluetoothdatathread.cpp \
+    bluetoothconfig.cpp \
+    bluetoothdevicelistitem.cpp \
+    bluetoothsocketlisted.cpp
 
 HEADERS  += mainwindow.h \
     datathread.h \
@@ -86,7 +89,10 @@ HEADERS  += mainwindow.h \
     testingwindow.h \
     addidmappingdialog.h \
     robotinfodialog.h \
-    bluetoothdatathread.h
+    bluetoothdatathread.h \
+    bluetoothconfig.h \
+    bluetoothdevicelistitem.h \
+    bluetoothsocketlisted.h
 
 FORMS    += mainwindow.ui
 

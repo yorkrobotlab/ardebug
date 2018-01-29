@@ -2,27 +2,26 @@
 #define BLUETOOTHDATATHREAD
 
 
+#include "bluetoothsocketlisted.h"
 
-//#include "QTimer"
-#include <QtBluetooth/QBluetoothSocket>
+
+#define NUMBER_OF_BT_SOCKET 7
 
 class BluetoothDataThread : public QObject
 {
     Q_OBJECT
-    //QTimer* readTimer;
-    QBluetoothSocket *btSocket[6];
-    QString dest = "00:06:66:84:93:1E";
-    QString dest2 = "00:06:66:60:29:1D";
+    BluetoothSocketListed *btSocket[NUMBER_OF_BT_SOCKET];
    ~BluetoothDataThread();
     void stop();
 public:
     BluetoothDataThread();
-public slots:
-    void openSocket();
-     void readSocket();
+    int openSocket(QBluetoothAddress addr);
+public slots:    
+     void readSocket( int index);
 private slots:
     void connected();
-
+    void SocketDisconnected();
+    //void SocketError(BluetoothSocket::SocketError);
 
 signals:
     void socketOpened(const int &);

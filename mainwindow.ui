@@ -347,20 +347,31 @@
             <x>10</x>
             <y>10</y>
             <width>251</width>
-            <height>301</height>
+            <height>511</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_9">
-           <property name="sizeConstraint">
-            <enum>QLayout::SetDefaultConstraint</enum>
-           </property>
            <item>
             <widget class="QListView" name="listView"/>
            </item>
            <item>
             <widget class="QPushButton" name="bluetoothListenButton">
              <property name="text">
-              <string>Connect Bluetooth</string>
+              <string>Connect all</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton">
+             <property name="text">
+              <string>disconnect all</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_2">
+             <property name="text">
+              <string>devices ...</string>
              </property>
             </widget>
            </item>
