@@ -17,6 +17,7 @@
 #include "addidmappingdialog.h"
 #include "robotinfodialog.h"
 #include "bluetoothdatathread.h"
+#include "bluetoothconfig.h"
 
 #include <sys/socket.h>
 
@@ -57,12 +58,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(dataHandler, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
 
     //Set up the bluetoothcommunication
-    BluetoothDataThread *bluetoothHandler = new BluetoothDataThread;
+    Bluetoothconfig * btConfig = new Bluetoothconfig();
+    BluetoothDataThread *bluetoothHandler = new BluetoothDataThread(btConfig);
     bluetoothHandler->moveToThread(&bluetoothThread);
     connect(&bluetoothThread, SIGNAL(finished()), bluetoothHandler, SLOT(deleteLater()));
 
     // Connect signals and sockets for starting and stopping bluetooth
-    connect(this, SIGNAL(connectBluetooth()), bluetoothHandler, SLOT(openSocket()));
+    connect(this, SIGNAL(connectBluetooth()), bluetoothHandler, SLOT(connectAllSockets()));
+
+    //connect other bluetooth related buttons here
 
     // Connect signals and sockets for transferring the incoming data
     connect(bluetoothHandler, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));

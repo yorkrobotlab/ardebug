@@ -1,5 +1,6 @@
 #include <QBluetoothAddress>
 #include "bluetoothdevicelistitem.h"
+#include <QDebug>
 
 
 BluetoothDeviceListItem::BluetoothDeviceListItem(QString addr, QString name, bool state)
@@ -7,6 +8,7 @@ BluetoothDeviceListItem::BluetoothDeviceListItem(QString addr, QString name, boo
     this->name = name;
     this->bt_adress = QBluetoothAddress(addr);
     this->state = state;
+    //qDebug() << "new via string"<< addr<< " : "<<this->bt_adress;
 
 }
 
@@ -16,7 +18,7 @@ BluetoothDeviceListItem::BluetoothDeviceListItem(QBluetoothAddress addr, QString
     this->name = name;
     this->bt_adress = QBluetoothAddress(addr);
     this->state = state;
-
+     //qDebug() << "new via QBTadress" <<this->bt_adress;
 }
 
 QString BluetoothDeviceListItem::getName()
