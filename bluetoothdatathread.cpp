@@ -42,7 +42,7 @@ BluetoothDataThread::BluetoothDataThread(Bluetoothconfig * btConfig){
 
     }
     activeDeviceList.clear();
-
+     qDebug() << "btDatathread constructed";
 }
 
 //distructor method
@@ -68,7 +68,7 @@ void BluetoothDataThread::readSocket(int index)
 {
 
     while (btSocket[index]->canReadLine()) {
-        qDebug() << "readline from socket";
+        //qDebug() << "readline from socket";
         QByteArray line = btSocket[index]->readLine();
         emit dataFromThread(QString::fromUtf8(line.constData(), line.length()));
     }
@@ -87,8 +87,6 @@ int BluetoothDataThread::openSocket(QBluetoothAddress addr)
             btSocket[i] = new BluetoothSocketListed(addr, i);
             connect(btSocket[i], SIGNAL(readyRead_indexed(int)), this, SLOT(readSocket(int)));
            qDebug() << "opened";
-            //connect(btSocket[i], SIGNAL(readyRead(int)), this, SLOT(readSocket(int)));
-            //connect(btSocket[i], SIGNAL(disconnected()), this, SLOT(SocketDisconnected()));
             //connect(btSocket[i], SIGNAL(error(QBluetoothSocket::SocketError)), this, SLOT(SocketError(QBluetoothSocket::SocketError)));
             return 1;
         }
@@ -130,7 +128,7 @@ void BluetoothDataThread::connectAllSockets()
 
             qDebug() << "socket connected";
 
-        }
+        }      
     }
 }
 
@@ -138,8 +136,17 @@ void BluetoothDataThread::connectAllSockets()
 //Slot to handle ui signal
 void BluetoothDataThread::disconnectAllSockets()
 {
+    for (int i = 0; i< NUMBER_OF_BT_SOCKET; i++)
+    {
+        if (btSocket[i] != 0)
+        {
+            if(1) // socket not connected
+                btSocket[i]->disconnectSocket();
 
+            qDebug() << "socket disconnected";
 
+        }
+    }
 }
 
 //slot to handle socket signal
@@ -159,11 +166,8 @@ void BluetoothDataThread::updateSocketList()
 
         //update sockets somehow
 
-
         delete activeDeviceList[i];
     }
     activeDeviceList.clear();
-
-
 }
 

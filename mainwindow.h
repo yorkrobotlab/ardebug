@@ -37,9 +37,11 @@ public:
     ~MainWindow();
 
 signals:
-    void openUDPSocket(int port);
-    void connectBluetooth(void);
+    void openUDPSocket(int port);    
     void closeUDPSocket(void);
+
+    void connectBluetooth(void);
+    void disconnectBluetooth(void);
 
     void startReadingCamera(void);
     void stopReadingCamera(void);
@@ -97,6 +99,10 @@ private slots:
     void on_averagePositionCheckBox_stateChanged(int arg1);
 
     void on_bluetoothListenButton_clicked();
+
+    void on_bluetoothDisconnectAllButton_clicked();
+
+    void on_bluetoothlist_doubleClicked(const QModelIndex &index);
 
 private:
     Ui::MainWindow *ui;

@@ -19,14 +19,18 @@ public:
     QByteArray readLine();
     bool canReadLine();
     void connectSocket();
+    void disconnectSocket();
 
 
 signals:
     void readyRead_indexed( int index);
     void connectInternalSocket();
+    void disconnectInternalSocket();
 private slots:
     void socketReadyRead(void);
     void internalSocketConnector();
+    void internalSocketDisconnector();
+
 
 
 

@@ -22,11 +22,14 @@ void BluetoothSocketListed::connectSocket()
 
     connect(socket, SIGNAL(readyRead()), this, SLOT(socketReadyRead()));
     connect(this, SIGNAL(connectInternalSocket()), this, SLOT(internalSocketConnector()));
-    qDebug() << "vielleicht connected?";
     emit connectInternalSocket();
-    //connect(btSocket[i], SIGNAL(connected()), this, SLOT(connected()));
-    //connect(btSocket[i], SIGNAL(disconnected()), this, SLOT(SocketDisconnected()));
     //connect(btSocket[i], SIGNAL(error(QBluetoothSocket::SocketError)), this, SLOT(SocketError(QBluetoothSocket::SocketError)));
+}
+
+void BluetoothSocketListed::disconnectSocket()
+{
+    connect(this, SIGNAL(disconnectInternalSocket()), this, SLOT(internalSocketDisconnector()));
+    emit disconnectInternalSocket();
 }
 
 BluetoothSocketListed::~ BluetoothSocketListed()
@@ -47,5 +50,12 @@ bool BluetoothSocketListed::canReadLine()
 void BluetoothSocketListed::internalSocketConnector()
 {
     socket->connectToService(addr,0x0001,QIODevice::ReadWrite);
-    qDebug() << "connect slot?";
+    qDebug() << "socket connected";
+}
+
+
+void BluetoothSocketListed::internalSocketDisconnector()
+{
+    socket->disconnectFromService();
+    qDebug() << "socket disconnected";
 }

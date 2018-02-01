@@ -65,7 +65,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Connect signals and sockets for starting and stopping bluetooth
     connect(this, SIGNAL(connectBluetooth()), bluetoothHandler, SLOT(connectAllSockets()));
-
+    connect(this,SIGNAL(disconnectBluetooth()), bluetoothHandler, SLOT(disconnectAllSockets()));
+    ui->bluetoothlist->setModel(btConfig->getActiveDeviceList());
+    ui->bluetoothlist->setEditTriggers(QListView::NoEditTriggers);
     //connect other bluetooth related buttons here
 
     // Connect signals and sockets for transferring the incoming data
@@ -654,34 +656,27 @@ void MainWindow::on_averagePositionCheckBox_stateChanged(int checked)
 }
 
 /* on_bluetoothListenButton_clicked
- * Called when the user changes clicks the bluetoothbutton
+ * Called when the user clicks the bluetooth connection button
  */
 void MainWindow::on_bluetoothListenButton_clicked()
 {
-    // Statics to monitor listening state and port
-    static bool connected = false;
+
+    emit connectBluetooth();
+    Log::instance()->logMessage(QString("Connecting to all robots via bluetooth "), true);
 
 
-    // If not currently listening
-    if (!connected) {
+}
 
-        // Start listening
-        //connected = true;
-        emit connectBluetooth();
-        //ui->networkListenButton->setText("Disconnect");
+/* on_bluetoothListenButton_clicked
+ * Called when the user clicks the bluetooth disconnection button
+ */
+void MainWindow::on_bluetoothDisconnectAllButton_clicked()
+{
+    emit disconnectBluetooth();
+    Log::instance()->logMessage(QString("Disconnecting from all robots via bluetooth "), true);
+}
 
-
-        Log::instance()->logMessage(QString("Connecting to robots via bluetooth "), true);
-
-    } else {
-
-        // Stop listening
-        connected = false;
-        //sendClosePacket(openPort);
-        ui->networkListenButton->setText("Start Listening");
-
-
-        Log::instance()->logMessage("Disconnecting Bluetooth\n", true);
-
-    }
+void MainWindow::on_bluetoothlist_doubleClicked(const QModelIndex &index)
+{
+    //connect or disconnect specific robot
 }
