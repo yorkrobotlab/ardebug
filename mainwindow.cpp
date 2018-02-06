@@ -113,6 +113,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->imageXDimEdit->setValidator(new QIntValidator(1, 10000, this));
     ui->imageYDimEdit->setValidator(new QIntValidator(1, 10000, this));
+    ui->angleCorrectionEdit->setValidator(new QIntValidator(-180, 180, this));
 
     // Initalise the IR data view
     irDataView = new IRDataView(dataModel);
@@ -679,4 +680,14 @@ void MainWindow::on_bluetoothDisconnectAllButton_clicked()
 void MainWindow::on_bluetoothlist_doubleClicked(const QModelIndex &index)
 {
     //connect or disconnect specific robot
+}
+
+void MainWindow::on_angleCorrectionEdit_textChanged(const QString &arg1)
+{
+    bool ok = false;
+    int a = arg1.toInt(&ok);
+
+    if (ok) {
+        Settings::instance()->setTrackingAngleCorrection(a);
+    }
 }

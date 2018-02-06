@@ -104,6 +104,8 @@ private slots:
 
     void on_bluetoothlist_doubleClicked(const QModelIndex &index);
 
+    void on_angleCorrectionEdit_textChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
 

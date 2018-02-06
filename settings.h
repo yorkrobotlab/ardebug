@@ -13,6 +13,7 @@ class Settings
     static Settings* s_instance;
 
     Vector2D cameraImageSize;
+    int trackingAngleCorrection;
     bool videoEnabled;
     bool robotColourEnabled;
     bool imageFlip;
@@ -45,6 +46,9 @@ public:
     void setCameraImageSize(Vector2D size);
     void setCameraImageWidth(int width);
     void setCameraImageHeight(int height);
+
+    void setTrackingAngleCorrection(int angle);
+    int getTrackingAngleCorrection();
 
     bool isVideoEnabled(void);
     void setVideoEnabled(bool enable);
