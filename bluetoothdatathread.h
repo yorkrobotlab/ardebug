@@ -24,8 +24,7 @@ public slots:
      void updateSocketList(void);
      void disconnectAllSockets();
      void connectAllSockets();
-     void disconnectSocket(int index);
-     void connectSocket(int index);
+     void changeSocket(int index);
 private slots:
     void SocketDisconnected();
     //void SocketError(BluetoothSocket::SocketError);

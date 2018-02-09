@@ -41,7 +41,9 @@ signals:
     void closeUDPSocket(void);
 
     void connectBluetooth(void);
+    void changeStateBluetoothDevice(int);
     void disconnectBluetooth(void);
+
 
     void startReadingCamera(void);
     void stopReadingCamera(void);

@@ -48,7 +48,7 @@ BluetoothDataThread::BluetoothDataThread(Bluetoothconfig * btConfig){
 //distructor method
 void BluetoothDataThread::stop(){
 
-    qDebug() << "Delete socket";
+    qDebug() << "Delete sockets";
     for (int i = 0; i< NUMBER_OF_BT_SOCKET; i++)
     {
         if(btSocket[i] != 0)
@@ -86,13 +86,13 @@ int BluetoothDataThread::openSocket(QBluetoothAddress addr)
         {
             btSocket[i] = new BluetoothSocketListed(addr, i);
             connect(btSocket[i], SIGNAL(readyRead_indexed(int)), this, SLOT(readSocket(int)));
-           qDebug() << "opened";
+            //qDebug() << "opened";
             //connect(btSocket[i], SIGNAL(error(QBluetoothSocket::SocketError)), this, SLOT(SocketError(QBluetoothSocket::SocketError)));
             return 1;
         }
         else
         {
-            qDebug() << "socket already in use";
+            //qDebug() << "socket already in use";
         }
     }
     return 0;
@@ -100,21 +100,21 @@ int BluetoothDataThread::openSocket(QBluetoothAddress addr)
 }
 
 //Slot to handle ui signal
-void BluetoothDataThread::connectSocket(int index)
+void BluetoothDataThread::changeSocket(int index)
 {
+    if (btSocket[index] != 0)
+    {
+        btSocket[index]->changeState();
+
+        qDebug() << "socket "<< index<< " connected";
+
+    }
 
 
 
 
 }
 
-//Slot to handle ui signal
-void BluetoothDataThread::disconnectSocket(int index)
-{
-
-
-
-}
 
 //Slot to handle ui signal
 void BluetoothDataThread::connectAllSockets()
@@ -123,11 +123,7 @@ void BluetoothDataThread::connectAllSockets()
     {
         if (btSocket[i] != 0)
         {
-            if(1) // socket not connected
-                btSocket[i]->connectSocket();
-
-            qDebug() << "socket connected";
-
+            btSocket[i]->connectSocket();
         }      
     }
 }
@@ -140,11 +136,7 @@ void BluetoothDataThread::disconnectAllSockets()
     {
         if (btSocket[i] != 0)
         {
-            if(1) // socket not connected
-                btSocket[i]->disconnectSocket();
-
-            qDebug() << "socket disconnected";
-
+            btSocket[i]->disconnectSocket();
         }
     }
 }

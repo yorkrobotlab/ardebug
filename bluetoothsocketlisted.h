@@ -20,6 +20,7 @@ public:
     bool canReadLine();
     void connectSocket();
     void disconnectSocket();
+    void changeState();
 
 
 signals:

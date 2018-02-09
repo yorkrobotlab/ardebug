@@ -65,7 +65,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Connect signals and sockets for starting and stopping bluetooth
     connect(this, SIGNAL(connectBluetooth()), bluetoothHandler, SLOT(connectAllSockets()));
-    connect(this,SIGNAL(disconnectBluetooth()), bluetoothHandler, SLOT(disconnectAllSockets()));
+    connect(this, SIGNAL(disconnectBluetooth()), bluetoothHandler, SLOT(disconnectAllSockets()));
+    connect(this, SIGNAL(changeStateBluetoothDevice(int)), bluetoothHandler, SLOT(changeSocket(int)));
     ui->bluetoothlist->setModel(btConfig->getActiveDeviceList());
     ui->bluetoothlist->setEditTriggers(QListView::NoEditTriggers);
     //connect other bluetooth related buttons here
@@ -679,7 +680,7 @@ void MainWindow::on_bluetoothDisconnectAllButton_clicked()
 
 void MainWindow::on_bluetoothlist_doubleClicked(const QModelIndex &index)
 {
-    //connect or disconnect specific robot
+    emit changeStateBluetoothDevice(index.row());
 }
 
 void MainWindow::on_angleCorrectionEdit_textChanged(const QString &arg1)
