@@ -13,11 +13,15 @@
 #include <QFile>
 #include "bluetoothdatathread.h"
 
-
+/* Destructor
+ */
 BluetoothDataThread::~BluetoothDataThread(){
     stop();
 }
 
+/* Constructor
+ * sets up the initial settings
+ */
 BluetoothDataThread::BluetoothDataThread(Bluetoothconfig * btConfig){
     this->btConfig = btConfig;
     connect(this->btConfig, SIGNAL(deviceListChanged()),this,SLOT(updateSocketList()));
@@ -45,7 +49,9 @@ BluetoothDataThread::BluetoothDataThread(Bluetoothconfig * btConfig){
      qDebug() << "btDatathread constructed";
 }
 
-//distructor method
+/*  stop
+ *  destructor method
+ */
 void BluetoothDataThread::stop(){
 
     qDebug() << "Delete sockets";
@@ -99,7 +105,10 @@ int BluetoothDataThread::openSocket(QBluetoothAddress addr)
 
 }
 
-//Slot to handle ui signal
+/* changeSocket
+ * Slot to handle ui signal
+ * connect/disconnect a socket
+ */
 void BluetoothDataThread::changeSocket(int index)
 {
     if (btSocket[index] != 0)
@@ -116,7 +125,10 @@ void BluetoothDataThread::changeSocket(int index)
 }
 
 
-//Slot to handle ui signal
+/* connectAllSockets
+ * Slot to handle ui signal
+ * connect all sockets
+ */
 void BluetoothDataThread::connectAllSockets()
 {
     for (int i = 0; i< NUMBER_OF_BT_SOCKET; i++)
@@ -129,7 +141,10 @@ void BluetoothDataThread::connectAllSockets()
 }
 
 
-//Slot to handle ui signal
+/* disconnectAllSockets
+ * Slot to handle ui signal
+ * disconnect all sockets
+ */
 void BluetoothDataThread::disconnectAllSockets()
 {
     for (int i = 0; i< NUMBER_OF_BT_SOCKET; i++)
@@ -141,14 +156,18 @@ void BluetoothDataThread::disconnectAllSockets()
     }
 }
 
-//slot to handle socket signal
+/* SocketDisconnected
+ * Slot to handle signal from sockets
+ */
 void BluetoothDataThread::SocketDisconnected()
 {
 
 
 }
 
-//slot to handle socket list modification  from config
+/* updateSocketList
+ * Slot to handle signal config when socket list modified
+ */
 void BluetoothDataThread::updateSocketList()
 {
      std::vector<BluetoothDeviceListItem*> activeDeviceList;

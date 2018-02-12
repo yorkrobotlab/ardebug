@@ -1,7 +1,19 @@
+/* bluetoothconfig.cpp
+ *
+ * functions to configure the bluetooth connections.
+ * a config file is used to store known devices
+ * a scanner and modification functions are to be added
+ *
+ * Charlotte Arndt Feb 2018
+ */
+
 #include <QFile>
 #include "bluetoothconfig.h"
 #include <QDebug>
 
+/* Constructor
+ * initialisation
+ */
 Bluetoothconfig::Bluetoothconfig(QObject *parent) : QObject(parent)
 {    
     deviceList.reserve(10);
@@ -13,8 +25,10 @@ Bluetoothconfig::Bluetoothconfig(QObject *parent) : QObject(parent)
     readFile();
 
 }
-
-
+/* Deconstructor
+ * frees memory where needed
+ *
+ */
 Bluetoothconfig::~Bluetoothconfig()
 {
     for (size_t i = 0; i < deviceList.size(); i++) {
@@ -23,12 +37,19 @@ Bluetoothconfig::~Bluetoothconfig()
     deviceList.clear();
 }
 
+/* writeFile
+ * function to write the modified configfile
+ *
+ */
 int Bluetoothconfig::writeFile()
 {
     return 0;
 }
 
-
+/* readFile
+ * reads the config file and processes its content
+ *
+ */
 int Bluetoothconfig::readFile()
 {
 
@@ -78,6 +99,10 @@ int Bluetoothconfig::readFile()
     return 1;
 }
 
+
+/* getActiveDevices
+ * adds active devices to the given vector *
+ */
 void Bluetoothconfig::getActiveDevices( std::vector<BluetoothDeviceListItem*> * activedeviceList)
 {
     for (size_t i = 0; i < deviceList.size(); i++) {
@@ -89,6 +114,11 @@ void Bluetoothconfig::getActiveDevices( std::vector<BluetoothDeviceListItem*> * 
     }
 }
 
+/* getActiveDeviceList
+ * returns a Listmodel with current devices to be used for GUI
+ *
+ *
+ */
 QStringListModel* Bluetoothconfig::getActiveDeviceList(void) {
     QStringList list;
     qDebug() << "active device list";
