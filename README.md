@@ -1,11 +1,23 @@
 # ARDebug
-ARDebug is a tool for monitoring and debugging swarm robotics and multi-robot experiments in real time using augmented reality techniques. The software provides a GUI for displaying internal data reported wirelessly by each robot within the swarm or group, which includes a real-time video feed of the robots and their environment, augmented with graphical representations of the data. The software aims to reduce the time taken to develop and debug swarm robotics experiments and behaviours by giving the developer more immediate access to decision making varaibles, sensor readings, and other key data, as well as presenting it in a more rapidly readable format that standard console or log-based debugging output.
+ARDebug is a tool for monitoring and debugging swarm robotics and multi-robot experiments in real time using augmented reality techniques. The software provides a GUI for displaying internal data reported wirelessly by each robot within the swarm or group. This data is used to augment a real-time video feed of the robots and their environment, using graphical and textual representations of the data. The software aims to reduce the time taken to develop and debug swarm robotics experiments and behaviours by giving the developer more immediate access to decision making varaibles, sensor readings, and other key data, when compared to standard console or log-based debugging techniques. The software relies on a tracking system to locate the robots within the image in order to correctly overlay the graphical elements, and a modular software architecture is used to allow for easy integration with a variety of tracking systems. The tracking systen used in this reference implementation makes use of [ARuCo](https://www.uco.es/investiga/grupos/ava/node/26) fiducial markers and the associated [OpenCV](https://docs.opencv.org/3.1.0/d5/dae/tutorial_aruco_detection.html) image processing library.
 
 ## Installation
-Installation guide. Need to provide a built version? Instructions for downloading QTCreator?
+Currently ARDebug requires compiling from source, and may require minor modifications to work with your tracking set up. Luckily compiling and building the application is made easy by the Qt toolchain. Simply download QtCreator from [here](https://www.qt.io/download), choosing the open source option. Clone this repository, or download it as a zip file and extract it into a directory, then use QtCreator to open the directory containing the code as a Qt project, and hit *Run* to launch.
+
+Pre-built versions of the software are in the works.
 
 ## Features
-Summary of core features, maybe screenshots
+The primary feature of ARDebug is providing acces to internal robot data. A number of types of data are supported:
+- State
+⋅⋅⋅ A string describing the robot's current state within its state machine / the current action the robot is performing
+- IR Data
+⋅⋅⋅ Readings from infrared sensors, including one channel for active IR readings and one for passive IR, which are then displayed comparitively. The orientations of the sensors on the robot can be set to allow for simultaneous graphical representation of a number of sensors.
+- Messages
+⋅⋅⋅ Textual messages to be displayed to the user in a console-like window. Can be used similarly to debugging 'print' statements, without the need for a terminal or ssh connected to the robot.
+- Custom Data
+⋅⋅⋅ The software can receive custom data from the robots, in a key-value pair format. The researcher or developer writing the robot code can decide on a key to use for a given element of data, and the software will track the most recent value reported against each key.
+
+The second main feature of the software is taking this data and displaying it to the user in a nubmer of forms. This includes the augmented video view of the robots, which can be overalaid with all of the data mentioned above, as well as robot's names, IDs, position and orientation, and a track of their recent paths. Standard textual representations are alos available, including a history of state changes, and infrared sensor data displayed in both graph and numerical form.
 
 ## Interfacing with ARDebug
 In order to maximise performance and minimize latency ARDebug receives data from the robots in a simple string-literal format via UDP packets when using WiFi or a standard Bluetooth connection. The data-strings received should follow the standardised format outlined below, where each portion of the data string (referred to as a packet) is separated by a <i>space</i> character:
