@@ -19,6 +19,8 @@ The primary feature of ARDebug is providing acces to internal robot data. A numb
 
 The second main feature of the software is taking this data and displaying it to the user in a nubmer of forms. This includes the augmented video view of the robots, which can be overalaid with all of the data mentioned above, as well as robot's names, IDs, position and orientation, and a track of their recent paths. Standard textual representations are alos available, including a history of state changes, and infrared sensor data displayed in both graph and numerical form.
 
+For wireless communication ARDebug supports both WiFi and Bluetooth, as well as a combination of both, which can be useful for non-homogenous swarms.
+
 ## Interfacing with ARDebug
 In order to maximise performance and minimize latency ARDebug receives data from the robots in a simple string-literal format via UDP packets when using WiFi or a standard Bluetooth connection. The data-strings received should follow the standardised format outlined below, where each portion of the data string (referred to as a packet) is separated by a <i>space</i> character:
 
@@ -35,10 +37,17 @@ The packet type ID is an integer number identifying the type of data contained w
 | -------------- | ----------- | --------------- |
 | 0 | Watchdog | Notifies the application that the robot is still active. Contains a preferred name for the robot in the data field |
 | 1 | State | Reports the robots current state, contained as a string in the data field |
-| 2 | Position | Contains the x, y position of the robot within the experiment space, reported by the tracking system. The data field should contain the two numerical values separated by a space. |
+| 2 | Position | Contains the x, y position of the robot within the experiment space, as well as its orientation angle in degress, as reported by the tracking system. The data field should contain the two numerical values separated by a space. |
 | 3 | IR Sensor Data | Contains the robot's IR sensor readings as a series of space separated integers |
 | 4 | IR Background Data | Contains the robot's background (passive) IR sensor readings as a series of space separated integers |
 | 5 | Message | Used to send a string-based message to the application, which will be reported in the application console. The data field should contain a string, and may contain spaces. |
 | 6 | Custom Data | Used to send any custom data value, in the form of a key/value pair. Data field should include the key string, followed by the value string, separated by a space. Neither may contain spaces. |
 
 ode for communicating packets in this format via WiFi from a linux-based robot is provided in <i>ardebug/RobotAPI</i>, primarily for illustrative purposes. An example of how this can be integrated into an example robot controller is provided in <i>ardebug/ExampleRobotController</i>
+
+## Tracking System
+Tracking information regarding the position and orientation of each robot is passed through the same interface as the other data, meaning that the code can be easily extended to support a different tracking system from the ARuCo based one included, or even receive tracking data via the network from a seperate machine.
+
+Robot position is described using a simple 'proportional' coordinate system, where both the X and Y coordinate of the robot are stored as a value between 0 and 1, describing the robots position on that axis as a proportion of the length of the camera viewport in that direction. Orientation is simply an angle in degrees, measured clockwise from zero pointing straight up along the Y axis.
+
+In order to add code to support a different tracking system, simply add a new preprocessor-definition-guarded block to machinevision.cpp which implements the getLatestFrame function to acquire a frame from your tracking system, convert the robot positions to the correct format, place the converted positions into the result vector, and return the image.
