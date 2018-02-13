@@ -7,7 +7,7 @@ Currently ARDebug requires compiling from source, and may require minor modifica
 Pre-built versions of the software are in the works.
 
 ## Features
-The primary feature of ARDebug is providing acces to internal robot data. A number of types of data are supported:
+The primary feature of ARDebug is providing access to internal robot data. A number of types of data are supported:
 - State
 ⋅⋅⋅ A string describing the robot's current state within its state machine / the current action the robot is performing
 - IR Data
@@ -43,7 +43,7 @@ The packet type ID is an integer number identifying the type of data contained w
 | 5 | Message | Used to send a string-based message to the application, which will be reported in the application console. The data field should contain a string, and may contain spaces. |
 | 6 | Custom Data | Used to send any custom data value, in the form of a key/value pair. Data field should include the key string, followed by the value string, separated by a space. Neither may contain spaces. |
 
-ode for communicating packets in this format via WiFi from a linux-based robot is provided in <i>ardebug/RobotAPI</i>, primarily for illustrative purposes. An example of how this can be integrated into an example robot controller is provided in <i>ardebug/ExampleRobotController</i>
+Code for communicating packets in this format via WiFi from a linux-based robot is provided in <i>ardebug/RobotAPI</i>, primarily for illustrative purposes. An example of how this can be integrated into an example argos robot controller is provided in <i>ardebug/ExampleRobotController/e-puck</i>. An example controller for PsiSwarm robots using bluetooth communication is also provided in <i>ardebug/ExampleRobotController/psi-swarm</i>. Only the main file is provided here. Example projects for the PsiSwarm robot and the used libraries can be found at the [mbed team page](http://os.mbed.com/teams/Psi-Swarm-Robot/).
 
 ## Tracking System
 Tracking information regarding the position and orientation of each robot is passed through the same interface as the other data, meaning that the code can be easily extended to support a different tracking system from the ARuCo based one included, or even receive tracking data via the network from a seperate machine.
