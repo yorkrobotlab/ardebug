@@ -144,7 +144,8 @@ Mat MachineVision::getLatestFrame(Vector2D size, std::vector<TrackResult>* resul
             {
                 t.angle = 0;
             } else {
-                t.angle = int(ceil(bottom_line_angle - 90));
+                //maybe add range check for +/- 180 degree
+                t.angle = int(ceil(bottom_line_angle - Settings::instance()->getTrackingAngleCorrection()));
             }
 
             // Stash this result

@@ -7,6 +7,7 @@
 #include <QDialog>
 #include <QCheckBox>
 #include <QLineEdit>
+#include <QLabel>
 
 class RobotInfoDialog : public QDialog
 {
@@ -16,6 +17,8 @@ public:
 
 public slots:
     void deleteButtonPressed(void);
+private slots:
+    void setColour();
 
 signals:
     void deleteRobot(int robotID);
@@ -23,10 +26,8 @@ signals:
 private:
     int ID;
     RobotData* robot;
-
-    QLineEdit* redBox;
-    QLineEdit* greenBox;
-    QLineEdit* blueBox;
+    QLabel* colourLabel;
+    QColor colour;
 
     void accept(void);
     void reject(void);

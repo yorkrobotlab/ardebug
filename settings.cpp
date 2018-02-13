@@ -13,6 +13,8 @@ Settings::Settings(void) {
     cameraImageSize.x = 2096;
     cameraImageSize.y = 1180;
 
+    trackingAngleCorrection = 90;
+
     videoEnabled = true;
     robotColourEnabled = false;
     imageFlip = true;
@@ -138,4 +140,16 @@ bool Settings::isShowAveragePos(void) {
  */
 void Settings::setShowAveragePos(bool enable) {
     this->showAverageRobotPos = enable;
+}
+
+/* setTrackingAngleCorrection
+ * sets the correction angle for tracking tags
+ */
+void Settings::setTrackingAngleCorrection(int angle) {
+    this->trackingAngleCorrection = angle;
+}
+
+int Settings::getTrackingAngleCorrection()
+{
+    return this->trackingAngleCorrection;
 }

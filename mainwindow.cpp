@@ -16,6 +16,8 @@
 #include "log.h"
 #include "addidmappingdialog.h"
 #include "robotinfodialog.h"
+#include "bluetoothdatathread.h"
+#include "bluetoothconfig.h"
 
 #include <sys/socket.h>
 
@@ -50,12 +52,34 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&networkThread, SIGNAL(finished()), dataHandler, SLOT(deleteLater()));
 
     // Connect signals and sockets for starting and stopping the networking
-    connect(this, SIGNAL(openUDPSocket(int)), dataHandler, SLOT(openUDPSocket(int)));
+    connect(this, SIGNAL(openUDPSocket(int)), dataHandler, SLOT(openUDPSocket(int)));    
 
     // Connect signals and sockets for transferring the incoming data
     connect(dataHandler, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
+
+    //Set up the bluetoothcommunication
+    Bluetoothconfig * btConfig = new Bluetoothconfig();
+    BluetoothDataThread *bluetoothHandler = new BluetoothDataThread(btConfig);
+    bluetoothHandler->moveToThread(&bluetoothThread);
+    connect(&bluetoothThread, SIGNAL(finished()), bluetoothHandler, SLOT(deleteLater()));
+
+    // Connect signals and sockets for starting and stopping bluetooth
+    connect(this, SIGNAL(connectBluetooth()), bluetoothHandler, SLOT(connectAllSockets()));
+    connect(this, SIGNAL(disconnectBluetooth()), bluetoothHandler, SLOT(disconnectAllSockets()));
+    connect(this, SIGNAL(changeStateBluetoothDevice(int)), bluetoothHandler, SLOT(changeSocket(int)));
+    ui->bluetoothlist->setModel(btConfig->getActiveDeviceList());
+    ui->bluetoothlist->setEditTriggers(QListView::NoEditTriggers);
+    //connect other bluetooth related buttons here
+
+    // Connect signals and sockets for transferring the incoming data
+    connect(bluetoothHandler, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
+
+
     connect(dataModel, SIGNAL(modelChanged(bool)), this, SLOT(dataModelUpdate(bool)));
     networkThread.start();
+    bluetoothThread.start();
+
+
 
     // Intantiate the visualiser
     visualiser = new Visualiser(dataModel);
@@ -90,6 +114,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->imageXDimEdit->setValidator(new QIntValidator(1, 10000, this));
     ui->imageYDimEdit->setValidator(new QIntValidator(1, 10000, this));
+    ui->angleCorrectionEdit->setValidator(new QIntValidator(-180, 180, this));
 
     // Initalise the IR data view
     irDataView = new IRDataView(dataModel);
@@ -142,6 +167,10 @@ MainWindow::~MainWindow()
     // Stop the network thread
     networkThread.quit();
     networkThread.wait();
+
+    // Stop the network thread
+    bluetoothThread.quit();
+    bluetoothThread.wait();
 
     // Stop the camera thread
     cameraThread.quit();
@@ -626,4 +655,40 @@ void MainWindow::on_flipImageCheckBox_stateChanged(int checked)
 void MainWindow::on_averagePositionCheckBox_stateChanged(int checked)
 {
     Settings::instance()->setShowAveragePos(checked == Qt::Checked);
+}
+
+/* on_bluetoothListenButton_clicked
+ * Called when the user clicks the bluetooth connection button
+ */
+void MainWindow::on_bluetoothListenButton_clicked()
+{
+
+    emit connectBluetooth();
+    Log::instance()->logMessage(QString("Connecting to all robots via bluetooth "), true);
+
+
+}
+
+/* on_bluetoothListenButton_clicked
+ * Called when the user clicks the bluetooth disconnection button
+ */
+void MainWindow::on_bluetoothDisconnectAllButton_clicked()
+{
+    emit disconnectBluetooth();
+    Log::instance()->logMessage(QString("Disconnecting from all robots via bluetooth "), true);
+}
+
+void MainWindow::on_bluetoothlist_doubleClicked(const QModelIndex &index)
+{
+    emit changeStateBluetoothDevice(index.row());
+}
+
+void MainWindow::on_angleCorrectionEdit_textChanged(const QString &arg1)
+{
+    bool ok = false;
+    int a = arg1.toInt(&ok);
+
+    if (ok) {
+        Settings::instance()->setTrackingAngleCorrection(a);
+    }
 }

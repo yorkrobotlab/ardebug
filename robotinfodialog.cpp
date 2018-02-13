@@ -13,6 +13,8 @@
 #include <QFormLayout>
 #include <QLabel>
 #include <QIntValidator>
+#include <QColorDialog>
+
 
 /* Constructor
  * Creates the dialog
@@ -32,45 +34,48 @@ RobotInfoDialog::RobotInfoDialog(RobotData* robot)
     QPushButton* deleteButton = new QPushButton("Delete");
     QObject::connect(deleteButton, SIGNAL(clicked(bool)), this, SLOT(deleteButtonPressed()));
 
-    // Create colour controls
-    redBox = new QLineEdit(QString::number(robot->getColour()[2]));
-    greenBox = new QLineEdit(QString::number(robot->getColour()[1]));
-    blueBox = new QLineEdit(QString::number(robot->getColour()[0]));
 
-    // Validate colour control entries to integers, 0-255
-    QIntValidator* colourValidator = new QIntValidator(0, 255, this);
-    redBox->setValidator(colourValidator);
-    greenBox->setValidator(colourValidator);
-    blueBox->setValidator(colourValidator);
+    // Create delete button, and connect to slot
+    QPushButton* colourButton = new QPushButton("Choose Colour");
+    QObject::connect(colourButton, SIGNAL(clicked(bool)), this, SLOT(setColour()));
 
-    // Create colour labels
-    QLabel* r = new QLabel("R:");
-    QLabel* g = new QLabel("G:");
-    QLabel* b = new QLabel("B:");
+    //Set colour to current robot colour
+    colour.setRed(robot->getColour()[2]);
+    colour.setGreen(robot->getColour()[1]);
+    colour.setBlue(robot->getColour()[0]);
+
+
+    // Create colour label and initilise it with current colour
+    colourLabel = new QLabel("Colour");
+    colourLabel->setText(colour.name());
+    colourLabel->setPalette(QPalette(colour));
+    colourLabel->setAutoFillBackground(true);
 
     // Layout the colour controls in a row
-    QHBoxLayout* colour = new QHBoxLayout();
-    colour->addWidget(r);
-    colour->addWidget(redBox);
-    colour->addWidget(g);
-    colour->addWidget(greenBox);
-    colour->addWidget(b);
-    colour->addWidget(blueBox);
+    QHBoxLayout* colourLayout = new QHBoxLayout();
+    colourLayout->addWidget(colourLabel);
+    colourLayout->addWidget(colourButton);
+
+
 
     // Layout all controls in a form
     QFormLayout* form = new QFormLayout();
     form->addRow("ID:", new QLabel(QString::number(this->ID)));
-    form->addRow("Colour:", colour);
+    form->addRow("Colour:", colourLayout);
     form->addRow("Delete this robot", deleteButton);
 
     // Create the done button and connect it
-    QPushButton* doneButton = new QPushButton("Done");
+    QPushButton* doneButton = new QPushButton("Done");    
     QObject::connect(doneButton, SIGNAL(clicked(bool)), this, SLOT(accept()));
+
 
     // Combine all layouts vertically
     QVBoxLayout* vbox = new QVBoxLayout();
     vbox->addLayout(form);
     vbox->addWidget(doneButton);
+
+    //make sure deleteButton is not pressed when pressing enter
+    deleteButton->setAutoDefault(false);
 
     // Set main layout
     this->setLayout(vbox);
@@ -92,11 +97,7 @@ void RobotInfoDialog::deleteButtonPressed(void) {
  */
 void RobotInfoDialog::accept(void) {
     // Apply changes
-    int r = redBox->text().toInt();
-    int g = greenBox->text().toInt();
-    int b = blueBox->text().toInt();
-
-    robot->setColour(cv::Scalar(b, g, r));
+    robot->setColour(cv::Scalar(colour.blue(), colour.green(), colour.red()));//cv::Scalar(b, g, r));
 
     // Call superclass accept function
     QDialog::accept();
@@ -109,4 +110,17 @@ void RobotInfoDialog::accept(void) {
 void RobotInfoDialog::reject(void) {
     // Call the superclass reject function
     QDialog::reject();
+}
+
+void RobotInfoDialog::setColour()
+{
+
+    QColor new_colour = QColorDialog::getColor(colour, this, "Select Colour");
+
+    if (new_colour.isValid()) {
+        colourLabel->setText(new_colour.name());
+        colourLabel->setPalette(QPalette(new_colour));
+        colourLabel->setAutoFillBackground(true);
+        colour.setRgb( new_colour.rgb());
+    }
 }

@@ -20,6 +20,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     QThread networkThread;
+    QThread bluetoothThread;
     QThread cameraThread;
     Visualiser* visualiser;
     CameraController* cameraController;
@@ -36,8 +37,13 @@ public:
     ~MainWindow();
 
 signals:
-    void openUDPSocket(int port);
+    void openUDPSocket(int port);    
     void closeUDPSocket(void);
+
+    void connectBluetooth(void);
+    void changeStateBluetoothDevice(int);
+    void disconnectBluetooth(void);
+
 
     void startReadingCamera(void);
     void stopReadingCamera(void);
@@ -93,6 +99,14 @@ private slots:
     void on_robotList_doubleClicked(const QModelIndex &index);
 
     void on_averagePositionCheckBox_stateChanged(int arg1);
+
+    void on_bluetoothListenButton_clicked();
+
+    void on_bluetoothDisconnectAllButton_clicked();
+
+    void on_bluetoothlist_doubleClicked(const QModelIndex &index);
+
+    void on_angleCorrectionEdit_textChanged(const QString &arg1);
 
 private:
     Ui::MainWindow *ui;

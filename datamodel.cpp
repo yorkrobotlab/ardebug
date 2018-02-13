@@ -120,7 +120,7 @@ void DataModel::newData(const QString &dataString) {
 
     // Data packets must contain minimum of 3 elements; ID, type, content
     if (data.length() < 3) {
-        Log::instance()->logMessage("Invalid data pakcet: " + dataString, true);
+        Log::instance()->logMessage("Invalid data packet: " + dataString, true);
         return;
     }
 
