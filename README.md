@@ -2,9 +2,17 @@
 ARDebug is a tool for monitoring and debugging swarm robotics and multi-robot experiments in real time using augmented reality techniques. The software provides a GUI for displaying internal data reported wirelessly by each robot within the swarm or group. This data is used to augment a real-time video feed of the robots and their environment, using graphical and textual representations of the data. The software aims to reduce the time taken to develop and debug swarm robotics experiments and behaviours by giving the developer more immediate access to decision making varaibles, sensor readings, and other key data, when compared to standard console or log-based debugging techniques. The software relies on a tracking system to locate the robots within the image in order to correctly overlay the graphical elements, and a modular software architecture is used to allow for easy integration with a variety of tracking systems. The tracking systen used in this reference implementation makes use of [ARuCo](https://www.uco.es/investiga/grupos/ava/node/26) fiducial markers and the associated [OpenCV](https://docs.opencv.org/3.1.0/d5/dae/tutorial_aruco_detection.html) image processing library.
 
 ## Installation
-Currently ARDebug requires compiling from source, and may require minor modifications to work with your tracking set up. Luckily compiling and building the application is made easy by the Qt toolchain. Simply download QtCreator from [here](https://www.qt.io/download), choosing the open source option. Clone this repository, or download it as a zip file and extract it into a directory, then use QtCreator to open the directory containing the code as a Qt project, and hit *Run* to launch.
+Currently ARDebug requires compiling from source, and may require minor modifications to work with your tracking set up. Luckily compiling and building the application is made easy by the Qt toolchain. Simply download QtCreator from [here](https://www.qt.io/download), choosing the open source option. Clone this repository, or download it as a zip file and extract it into a directory, then use QtCreator to open the directory containing the code as a Qt project, and hit *Run* to launch. 
 
 Pre-built versions of the software are in the works.
+
+###Dependencies
+ARDebug depends on the presence of further software packages, which include 
+
++ OpenCV 3.X.X including opencv_contrib to handle ARuCo-tags
++ CVB camera libraries
+
+It is possible to build the software without a camera. This is mainly included to faciliate developement on a computer that is not connected to the tracking system. To achieve that, unavailable libraries can be commented in the Qt-project file <i>SwarmDebug.pro</i>. The file <i>Application/Core/appconfig.h</i> is used to define the presence of a camera through preprocessor definitions. When no camera is defined, a dummy tracking is shown and the software can be run on a developement machine without tracking camera.
 
 ## Features
 The primary feature of ARDebug is providing access to internal robot data. A number of types of data are supported:
