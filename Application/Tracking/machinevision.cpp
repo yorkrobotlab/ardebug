@@ -203,15 +203,13 @@ Mat MachineVision::getLatestFrame(Vector2D size, std::vector<TrackResult>* resul
     // Fake some robot position and angle data
     TrackResult res;
     res.id = 1;
-    res.pos.x = 0.2 + (0.1 * (float)cos(r * (PI/180)));
-    res.pos.y = 0.5 + (0.15 * (float)sin(r * (PI/180)));
-    res.angle = (r > 269) ? r + -275 : r + 95;
+    res.pose.position = {0.2 + (0.1 * (float)cos(r * (PI/180))), 0.5 + (0.15 * (float)sin(r * (PI/180)))};
+    res.pose.orientation = (r > 269) ? r + -275 : r + 95;
     result->push_back(res);
 
     res.id = 2;
-    res.pos.x = 0.7;
-    res.pos.y = 0.5;
-    res.angle = 270;
+    res.pose.position = {0.7, 0.5};
+    res.pose.orientation = 270;
     result->push_back(res);
 
     // Camera is not present, fake the frame
