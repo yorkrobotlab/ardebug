@@ -57,7 +57,7 @@ public slots:
 
     void robotListSelectionChanged(const QItemSelection &selection);
 
-    void robotSelectedInVisualiser(int id);
+    void robotSelectedInVisualiser(QString id);
 
     void socketOpened(const int &sockfd) { this->sockfd = sockfd; }
 

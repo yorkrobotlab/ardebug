@@ -43,8 +43,8 @@ void VisState::render(cv::Mat image, RobotData *robot, bool selected) {
 
     cv::Scalar colour = Settings::instance()->isRobotColourEnabled() ? robot->getColour() : cv::Scalar(255, 255, 255);
 
-    int x = image.cols * robot->getPos().x;
-    int y = image.rows * robot->getPos().y;
+    int x = image.cols * robot->getPos().position.x;
+    int y = image.rows * robot->getPos().position.y;
 
     putText(image,
             robot->getState().toStdString(),

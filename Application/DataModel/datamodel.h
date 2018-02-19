@@ -26,32 +26,33 @@ class DataModel : public QObject
     std::vector<RobotData*> robotDataList;
 
 public:
-    int selectedRobotID;
+    QString selectedRobotID;
 
     Vector2D averageRobotPos;
 
     explicit DataModel(QObject *parent = 0);
     ~DataModel(void);
 
-    RobotData* getRobotByIndex(int idx);
-    RobotData* getRobotByID(int id);
+    RobotData* getRobotByID(QString id);
+    RobotData* getRobotByIndex(int idx) { return robotDataList[idx]; }
 
     QStringListModel* getRobotList(void);
 
-    int getRobotIndex(int id, bool create = true);
     int getRobotCount(void);
+    RobotData* setSelectedRobot(int idx);
 
 private:
     void parsePositionPacket(RobotData* robot, QString xString, QString yString, QString aString);
     void parseProximityPacket(RobotData* robot, QStringList data, bool background);
     void updateAveragePosition(void);
+    void addRobotIfNotExist(QString id);
 
 signals:
     void modelChanged(bool listChanged);
 
 public slots:
     void newData(const QString &);
-    void deleteRobot(int ID);
+    void deleteRobot(QString ID);
 };
 
 #endif // DATAMODEL_H

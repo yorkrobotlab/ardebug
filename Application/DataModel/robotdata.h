@@ -18,8 +18,7 @@
 class RobotData
 {
     // Identifiers
-    int id;
-    QString name;
+    QString id;
 
     // State data
     QString state;
@@ -29,13 +28,10 @@ class RobotData
     int stateTransitionIndex;
 
     // Position
-    Vector2D pos;
-    Vector2D posHistory[POS_HISTORY_COUNT];
+    Pose pos;
+    Pose posHistory[POS_HISTORY_COUNT];
     int posHistoryIndex;
     int posHistoryFrameCount;
-
-    // Direction
-    int angle;
 
     // Colour
     cv::Scalar colour;
@@ -48,22 +44,20 @@ class RobotData
     std::map<QString, QString> customData;
 
 public:
-    RobotData(int id, QString name);
+    RobotData(QString id);
     ~RobotData(void);
 
-    int getID(void);
-    int getIDConst(void) const;
-
-    QString getName(void);
-    void setName(QString name);
+    QString getID(void);
+    void setID(QString newId);
+    QString getIDConst(void) const;
 
     QString getState(void);
     QStringListModel* getKnownStates(void);
     QStringListModel* getStateTransitionList(void);
     void setState(QString state);
 
-    Vector2D getPos(void);
-    void getPosHistory(Vector2D* result);
+    Pose getPos(void);
+    void getPosHistory(Pose* result);
     void setPos(float x, float y);
 
     int getAngle(void);

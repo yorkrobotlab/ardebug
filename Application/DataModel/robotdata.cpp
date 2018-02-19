@@ -16,10 +16,9 @@
  * Create a robot instance, with an ID and a name. Set other values to
  * defaults.
  */
-RobotData::RobotData(int id, QString name) {
+RobotData::RobotData(QString id) {
     // Initialise identifiers
     this->id = id;
-    this->name = name;
 
     // Initialise state data
     this->state = "Unknown";
@@ -52,8 +51,8 @@ RobotData::~RobotData(void) {
  */
 void RobotData::setPos(float x, float y) {
     // Then update the current position
-    this->pos.x = x;
-    this->pos.y = y;
+    this->pos.position.x = x;
+    this->pos.position.y = y;
 
     // First update the history
     updatePositionHistory();
@@ -62,14 +61,14 @@ void RobotData::setPos(float x, float y) {
 /* getPos
  * Get the position coords.
  */
-Vector2D RobotData::getPos(void) {
+Pose RobotData::getPos(void) {
     return this->pos;
 }
 
 /* getPosHistory
  * Gets the historical position data in order of ascending age
  */
-void RobotData::getPosHistory(Vector2D* result) {
+void RobotData::getPosHistory(Pose* result) {
     int i = 0;
     int idx = posHistoryIndex - 1;
 
@@ -97,8 +96,8 @@ void RobotData::getPosHistory(Vector2D* result) {
  */
 void RobotData::updatePositionHistory(void) {
     if (posHistoryFrameCount == 0) {
-        posHistory[posHistoryIndex].x = pos.x;
-        posHistory[posHistoryIndex].y = pos.y;
+        posHistory[posHistoryIndex].position.x = pos.position.x;
+        posHistory[posHistoryIndex].position.y = pos.position.y;
 
         posHistoryIndex++;
 
@@ -198,28 +197,21 @@ QStringListModel* RobotData::getStateTransitionList(void) {
 /* getID
  * Get the robot ID number.
  */
-int RobotData::getID(void) {
+QString RobotData::getID(void) {
     return this->id;
-}
-
-/* getName
- * Get the robots name string.
- */
-QString RobotData::getName(void) {
-    return this->name;
 }
 
 /* setName
  * Set the robot name string;
  */
-void RobotData::setName(QString name) {
-    this->name = name;
+void RobotData::setID(QString newId) {
+    this->id = newId;
 }
 
 /* getIDConst
  * Copy of getID, declared cost. Used for list sorting.
  */
-int RobotData::getIDConst(void) const {
+QString RobotData::getIDConst(void) const {
     return this->id;
 }
 
@@ -227,14 +219,14 @@ int RobotData::getIDConst(void) const {
  * Get the angle the robot is facing.
  */
 int RobotData::getAngle(void) {
-    return this->angle;
+    return this->pos.orientation;
 }
 
 /* setAngle
  * Set the robot's angle.
  */
 void RobotData::setAngle(int angle) {
-    this->angle = angle;
+    this->pos.orientation = angle;
 }
 
 /* getColour

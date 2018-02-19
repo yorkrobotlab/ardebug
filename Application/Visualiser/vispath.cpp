@@ -52,15 +52,15 @@ void VisPath::render(cv::Mat image, RobotData *robot, bool selected) {
 
     cv::Scalar colour = Settings::instance()->isRobotColourEnabled() ? robot->getColour() : cv::Scalar(255, 255, 255);
 
-    int x = image.cols * robot->getPos().x;
-    int y = image.rows * robot->getPos().y;
+    int x = image.cols * robot->getPos().position.x;
+    int y = image.rows * robot->getPos().position.y;
 
-    Vector2D posHistory[POS_HISTORY_COUNT];
+    Pose posHistory[POS_HISTORY_COUNT];
     robot->getPosHistory(posHistory);
 
     for (int i = 0; i < POS_HISTORY_COUNT; i++) {
-        int ex = image.cols * posHistory[i].x;
-        int ey = image.rows * posHistory[i].y;
+        int ex = image.cols * posHistory[i].position.x;
+        int ey = image.rows * posHistory[i].position.y;
 
         if (x != 0 && y != 0 && ex != 0 && ey != 0) {
             line(image,

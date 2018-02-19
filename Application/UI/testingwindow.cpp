@@ -104,9 +104,9 @@ bool nameDataTestFunction(TestingWindow* window) {
     window->dataModel->newData("0 0 Name_Zero");
     window->dataModel->newData("1 0 Name_One");
     window->dataModel->newData("2 0 Name_Two");
-    window->console->append("ASSERT: Robot 0 Name = Name_Zero: " + assertTrue(window->dataModel->getRobotByID(0)->getName() == "Name_Zero", &pass));
-    window->console->append("ASSERT: Robot 1 Name = Name_One: " + assertTrue(window->dataModel->getRobotByID(1)->getName() == "Name_One", &pass));
-    window->console->append("ASSERT: Robot 2 Name = Name_Two: " + assertTrue(window->dataModel->getRobotByID(2)->getName() == "Name_Two", &pass));
+    window->console->append("ASSERT: Robot 0 Name = Name_Zero: " + assertTrue(window->dataModel->getRobotByIndex(0)->getID() == "Name_Zero", &pass));
+    window->console->append("ASSERT: Robot 1 Name = Name_One: " + assertTrue(window->dataModel->getRobotByIndex(1)->getID() == "Name_One", &pass));
+    window->console->append("ASSERT: Robot 2 Name = Name_Two: " + assertTrue(window->dataModel->getRobotByIndex(2)->getID() == "Name_Two", &pass));
 
     window->console->append("Insert Watchdog Packet [0 0 New_Name_Zero].");
     window->console->append("Insert Watchdog Packet [1 0 New_Name_One].");
@@ -114,9 +114,9 @@ bool nameDataTestFunction(TestingWindow* window) {
     window->dataModel->newData("0 0 New_Name_Zero");
     window->dataModel->newData("1 0 New_Name_One");
     window->dataModel->newData("2 0 New_Name_Two");
-    window->console->append("ASSERT: Robot 0 Name = New_Name_Zero: " + assertTrue(window->dataModel->getRobotByID(0)->getName() == "New_Name_Zero", &pass));
-    window->console->append("ASSERT: Robot 1 Name = New_Name_One: " + assertTrue(window->dataModel->getRobotByID(1)->getName() == "New_Name_One", &pass));
-    window->console->append("ASSERT: Robot 2 Name = New_Name_Two: " + assertTrue(window->dataModel->getRobotByID(2)->getName() == "New_Name_Two", &pass));
+    window->console->append("ASSERT: Robot 0 Name = New_Name_Zero: " + assertTrue(window->dataModel->getRobotByIndex(0)->getID() == "New_Name_Zero", &pass));
+    window->console->append("ASSERT: Robot 1 Name = New_Name_One: " + assertTrue(window->dataModel->getRobotByIndex(1)->getID() == "New_Name_One", &pass));
+    window->console->append("ASSERT: Robot 2 Name = New_Name_Two: " + assertTrue(window->dataModel->getRobotByIndex(2)->getID() == "New_Name_Two", &pass));
 
     window->console->append("Delete data model.");
     delete window->dataModel;
@@ -139,9 +139,9 @@ bool stateDataTestFunction(TestingWindow* window) {
     window->dataModel->newData("0 1 STATE_1");
     window->dataModel->newData("1 1 STATE_2");
     window->dataModel->newData("2 1 STATE_3");
-    window->console->append("ASSERT: Robot 0 State = STATE_1: " + assertTrue(window->dataModel->getRobotByID(0)->getState() == "STATE_1", &pass));
-    window->console->append("ASSERT: Robot 1 State = STATE_2: " + assertTrue(window->dataModel->getRobotByID(1)->getState() == "STATE_2", &pass));
-    window->console->append("ASSERT: Robot 2 State = STATE_3: " + assertTrue(window->dataModel->getRobotByID(2)->getState() == "STATE_3", &pass));
+    window->console->append("ASSERT: Robot 0 State = STATE_1: " + assertTrue(window->dataModel->getRobotByIndex(0)->getState() == "STATE_1", &pass));
+    window->console->append("ASSERT: Robot 1 State = STATE_2: " + assertTrue(window->dataModel->getRobotByIndex(1)->getState() == "STATE_2", &pass));
+    window->console->append("ASSERT: Robot 2 State = STATE_3: " + assertTrue(window->dataModel->getRobotByIndex(2)->getState() == "STATE_3", &pass));
 
     window->console->append("Insert State Packet [0 1 STATE_4].");
     window->console->append("Insert State Packet [1 1 STATE_5].");
@@ -149,9 +149,9 @@ bool stateDataTestFunction(TestingWindow* window) {
     window->dataModel->newData("0 1 STATE_4");
     window->dataModel->newData("1 1 STATE_5");
     window->dataModel->newData("2 1 STATE_6");
-    window->console->append("ASSERT: Robot 0 State = STATE_4: " + assertTrue(window->dataModel->getRobotByID(0)->getState() == "STATE_4", &pass));
-    window->console->append("ASSERT: Robot 1 State = STATE_5: " + assertTrue(window->dataModel->getRobotByID(1)->getState() == "STATE_5", &pass));
-    window->console->append("ASSERT: Robot 2 State = STATE_6: " + assertTrue(window->dataModel->getRobotByID(2)->getState() == "STATE_6", &pass));
+    window->console->append("ASSERT: Robot 0 State = STATE_4: " + assertTrue(window->dataModel->getRobotByIndex(0)->getState() == "STATE_4", &pass));
+    window->console->append("ASSERT: Robot 1 State = STATE_5: " + assertTrue(window->dataModel->getRobotByIndex(1)->getState() == "STATE_5", &pass));
+    window->console->append("ASSERT: Robot 2 State = STATE_6: " + assertTrue(window->dataModel->getRobotByIndex(2)->getState() == "STATE_6", &pass));
 
     window->console->append("Delete data model.");
     delete window->dataModel;
@@ -174,15 +174,15 @@ bool positionDataTestFunction(TestingWindow* window) {
     window->dataModel->newData("0 2 0.1 0.2 45");
     window->dataModel->newData("1 2 0.3 0.4 60");
     window->dataModel->newData("2 2 0.7 0.8 110");
-    window->console->append("ASSERT: Robot 0 position.x = 0.1: " + assertTrue(fabs(window->dataModel->getRobotByID(0)->getPos().x - 0.1f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 position.y = 0.2: " + assertTrue(fabs(window->dataModel->getRobotByID(0)->getPos().y - 0.2f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 angle = 45: " + assertTrue(window->dataModel->getRobotByID(0)->getAngle() == 45, &pass));
-    window->console->append("ASSERT: Robot 1 position.x = 0.3: " + assertTrue(fabs(window->dataModel->getRobotByID(1)->getPos().x - 0.3f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 1 position.y = 0.4: " + assertTrue(fabs(window->dataModel->getRobotByID(1)->getPos().y - 0.4f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 1 angle = 60: " + assertTrue(window->dataModel->getRobotByID(1)->getAngle() == 60, &pass));
-    window->console->append("ASSERT: Robot 2 position.x = 0.7: " + assertTrue(fabs(window->dataModel->getRobotByID(2)->getPos().x - 0.7f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 2 position.y = 0.8: " + assertTrue(fabs(window->dataModel->getRobotByID(2)->getPos().y - 0.8f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 2 angle = 110: " + assertTrue(window->dataModel->getRobotByID(2)->getAngle() == 110, &pass));
+    window->console->append("ASSERT: Robot 0 position.x = 0.1: " + assertTrue(fabs(window->dataModel->getRobotByIndex(0)->getPos().position.x - 0.1f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 position.y = 0.2: " + assertTrue(fabs(window->dataModel->getRobotByIndex(0)->getPos().position.y - 0.2f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 angle = 45: " + assertTrue(window->dataModel->getRobotByIndex(0)->getAngle() == 45, &pass));
+    window->console->append("ASSERT: Robot 1 position.x = 0.3: " + assertTrue(fabs(window->dataModel->getRobotByIndex(1)->getPos().position.x - 0.3f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 1 position.y = 0.4: " + assertTrue(fabs(window->dataModel->getRobotByIndex(1)->getPos().position.y - 0.4f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 1 angle = 60: " + assertTrue(window->dataModel->getRobotByIndex(1)->getAngle() == 60, &pass));
+    window->console->append("ASSERT: Robot 2 position.x = 0.7: " + assertTrue(fabs(window->dataModel->getRobotByIndex(2)->getPos().position.x - 0.7f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 2 position.y = 0.8: " + assertTrue(fabs(window->dataModel->getRobotByIndex(2)->getPos().position.y - 0.8f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 2 angle = 110: " + assertTrue(window->dataModel->getRobotByIndex(2)->getAngle() == 110, &pass));
 
     window->console->append("Insert Position Packet [0 2 0.9 0.8 315].");
     window->console->append("Insert Position Packet [1 2 0.7 0.6 300].");
@@ -190,15 +190,15 @@ bool positionDataTestFunction(TestingWindow* window) {
     window->dataModel->newData("0 2 0.9 0.8 315");
     window->dataModel->newData("1 2 0.7 0.6 300");
     window->dataModel->newData("2 2 0.3 0.2 250");
-    window->console->append("ASSERT: Robot 0 position.x = 0.9: " + assertTrue(fabs(window->dataModel->getRobotByID(0)->getPos().x - 0.9f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 position.y = 0.8: " + assertTrue(fabs(window->dataModel->getRobotByID(0)->getPos().y - 0.8f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 angle = 315: " + assertTrue(window->dataModel->getRobotByID(0)->getAngle() == 315, &pass));
-    window->console->append("ASSERT: Robot 1 position.x = 0.7: " + assertTrue(fabs(window->dataModel->getRobotByID(1)->getPos().x - 0.7f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 1 position.y = 0.6: " + assertTrue(fabs(window->dataModel->getRobotByID(1)->getPos().y - 0.6f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 1 angle = 300: " + assertTrue(window->dataModel->getRobotByID(1)->getAngle() == 300, &pass));
-    window->console->append("ASSERT: Robot 2 position.x = 0.3: " + assertTrue(fabs(window->dataModel->getRobotByID(2)->getPos().x - 0.3f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 2 position.y = 0.2: " + assertTrue(fabs(window->dataModel->getRobotByID(2)->getPos().y - 0.2f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 2 angle = 250: " + assertTrue(window->dataModel->getRobotByID(2)->getAngle() == 250, &pass));
+    window->console->append("ASSERT: Robot 0 position.x = 0.9: " + assertTrue(fabs(window->dataModel->getRobotByIndex(0)->getPos().position.x - 0.9f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 position.y = 0.8: " + assertTrue(fabs(window->dataModel->getRobotByIndex(0)->getPos().position.y - 0.8f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 angle = 315: " + assertTrue(window->dataModel->getRobotByIndex(0)->getAngle() == 315, &pass));
+    window->console->append("ASSERT: Robot 1 position.x = 0.7: " + assertTrue(fabs(window->dataModel->getRobotByIndex(1)->getPos().position.x - 0.7f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 1 position.y = 0.6: " + assertTrue(fabs(window->dataModel->getRobotByIndex(1)->getPos().position.y - 0.6f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 1 angle = 300: " + assertTrue(window->dataModel->getRobotByIndex(1)->getAngle() == 300, &pass));
+    window->console->append("ASSERT: Robot 2 position.x = 0.3: " + assertTrue(fabs(window->dataModel->getRobotByIndex(2)->getPos().position.x - 0.3f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 2 position.y = 0.2: " + assertTrue(fabs(window->dataModel->getRobotByIndex(2)->getPos().position.y - 0.2f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 2 angle = 250: " + assertTrue(window->dataModel->getRobotByIndex(2)->getAngle() == 250, &pass));
 
     window->console->append("Delete data model.");
     delete window->dataModel;
@@ -258,9 +258,9 @@ bool customDataTestFunction(TestingWindow* window) {
     window->dataModel->newData("0 6 Key1 Value1");
     window->dataModel->newData("1 6 Key1 Value2");
     window->dataModel->newData("2 6 Key1 Value3");
-    window->console->append("ASSERT: Robot 0 Custom data for key Key1 = Value1: " + assertTrue(window->dataModel->getRobotByID(0)->getCustomData("Key1") == "Value1", &pass));
-    window->console->append("ASSERT: Robot 1 Custom data for key Key1 = Value2: " + assertTrue(window->dataModel->getRobotByID(1)->getCustomData("Key1") == "Value2", &pass));
-    window->console->append("ASSERT: Robot 2 Custom data for key Key1 = Value3: " + assertTrue(window->dataModel->getRobotByID(2)->getCustomData("Key1") == "Value3", &pass));
+    window->console->append("ASSERT: Robot 0 Custom data for key Key1 = Value1: " + assertTrue(window->dataModel->getRobotByIndex(0)->getCustomData("Key1") == "Value1", &pass));
+    window->console->append("ASSERT: Robot 1 Custom data for key Key1 = Value2: " + assertTrue(window->dataModel->getRobotByIndex(1)->getCustomData("Key1") == "Value2", &pass));
+    window->console->append("ASSERT: Robot 2 Custom data for key Key1 = Value3: " + assertTrue(window->dataModel->getRobotByIndex(2)->getCustomData("Key1") == "Value3", &pass));
 
     window->console->append("Insert Custom Data Packet [0 6 Key2 Value4].");
     window->console->append("Insert Custom Data Packet [1 6 Key2 Value5].");
@@ -268,9 +268,9 @@ bool customDataTestFunction(TestingWindow* window) {
     window->dataModel->newData("0 6 Key2 Value4");
     window->dataModel->newData("1 6 Key2 Value5");
     window->dataModel->newData("2 6 Key2 Value6");
-    window->console->append("ASSERT: Robot 0 Custom data for key Key2 = Value4: " + assertTrue(window->dataModel->getRobotByID(0)->getCustomData("Key2") == "Value4", &pass));
-    window->console->append("ASSERT: Robot 1 Custom data for key Key2 = Value5: " + assertTrue(window->dataModel->getRobotByID(1)->getCustomData("Key2") == "Value5", &pass));
-    window->console->append("ASSERT: Robot 2 Custom data for key Key2 = Value6: " + assertTrue(window->dataModel->getRobotByID(2)->getCustomData("Key2") == "Value6", &pass));
+    window->console->append("ASSERT: Robot 0 Custom data for key Key2 = Value4: " + assertTrue(window->dataModel->getRobotByIndex(0)->getCustomData("Key2") == "Value4", &pass));
+    window->console->append("ASSERT: Robot 1 Custom data for key Key2 = Value5: " + assertTrue(window->dataModel->getRobotByIndex(1)->getCustomData("Key2") == "Value5", &pass));
+    window->console->append("ASSERT: Robot 2 Custom data for key Key2 = Value6: " + assertTrue(window->dataModel->getRobotByIndex(2)->getCustomData("Key2") == "Value6", &pass));
 
     window->console->append("Insert Custom Data Packet [0 6 Key1 Value7].");
     window->console->append("Insert Custom Data Packet [1 6 Key1 Value8].");
@@ -278,13 +278,13 @@ bool customDataTestFunction(TestingWindow* window) {
     window->dataModel->newData("0 6 Key1 Value7");
     window->dataModel->newData("1 6 Key1 Value8");
     window->dataModel->newData("2 6 Key1 Value9");
-    window->console->append("ASSERT: Robot 0 Custom data for key Key1 = Value7: " + assertTrue(window->dataModel->getRobotByID(0)->getCustomData("Key1") == "Value7", &pass));
-    window->console->append("ASSERT: Robot 1 Custom data for key Key1 = Value8: " + assertTrue(window->dataModel->getRobotByID(1)->getCustomData("Key1") == "Value8", &pass));
-    window->console->append("ASSERT: Robot 2 Custom data for key Key1 = Value9: " + assertTrue(window->dataModel->getRobotByID(2)->getCustomData("Key1") == "Value9", &pass));
+    window->console->append("ASSERT: Robot 0 Custom data for key Key1 = Value7: " + assertTrue(window->dataModel->getRobotByIndex(0)->getCustomData("Key1") == "Value7", &pass));
+    window->console->append("ASSERT: Robot 1 Custom data for key Key1 = Value8: " + assertTrue(window->dataModel->getRobotByIndex(1)->getCustomData("Key1") == "Value8", &pass));
+    window->console->append("ASSERT: Robot 2 Custom data for key Key1 = Value9: " + assertTrue(window->dataModel->getRobotByIndex(2)->getCustomData("Key1") == "Value9", &pass));
 
-    window->console->append("ASSERT: Robot 0 Custom data for key Key2 = Value4: " + assertTrue(window->dataModel->getRobotByID(0)->getCustomData("Key2") == "Value4", &pass));
-    window->console->append("ASSERT: Robot 1 Custom data for key Key2 = Value5: " + assertTrue(window->dataModel->getRobotByID(1)->getCustomData("Key2") == "Value5", &pass));
-    window->console->append("ASSERT: Robot 2 Custom data for key Key2 = Value6: " + assertTrue(window->dataModel->getRobotByID(2)->getCustomData("Key2") == "Value6", &pass));
+    window->console->append("ASSERT: Robot 0 Custom data for key Key2 = Value4: " + assertTrue(window->dataModel->getRobotByIndex(0)->getCustomData("Key2") == "Value4", &pass));
+    window->console->append("ASSERT: Robot 1 Custom data for key Key2 = Value5: " + assertTrue(window->dataModel->getRobotByIndex(1)->getCustomData("Key2") == "Value5", &pass));
+    window->console->append("ASSERT: Robot 2 Custom data for key Key2 = Value6: " + assertTrue(window->dataModel->getRobotByIndex(2)->getCustomData("Key2") == "Value6", &pass));
 
     window->console->append("Delete data model.");
     delete window->dataModel;
@@ -348,28 +348,28 @@ bool positionHistoryTestFunction(TestingWindow* window) {
     window->dataModel->newData("0 2 0.90 0.90 90");
     window->dataModel->newData("0 2 0.95 0.95 90");
 
-    Vector2D posHistory[POS_HISTORY_COUNT];
+    Pose posHistory[POS_HISTORY_COUNT];
     window->dataModel->getRobotByID(0)->getPosHistory(posHistory);
-    window->console->append("ASSERT: Robot 0 x-position at history sample N = 0.90: " + assertTrue(fabs(posHistory[0].x - 0.90f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 y-position at history sample N = 0.90: " + assertTrue(fabs(posHistory[0].y - 0.90f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 x-position at history sample N-1 = 0.80: " + assertTrue(fabs(posHistory[1].x - 0.80f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 y-position at history sample N-1 = 0.80: " + assertTrue(fabs(posHistory[1].y - 0.80f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 x-position at history sample N-2 = 0.70: " + assertTrue(fabs(posHistory[2].x - 0.70f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 y-position at history sample N-2 = 0.70: " + assertTrue(fabs(posHistory[2].y - 0.70f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 x-position at history sample N-3 = 0.60: " + assertTrue(fabs(posHistory[3].x - 0.60f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 y-position at history sample N-3 = 0.60: " + assertTrue(fabs(posHistory[3].y - 0.60f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 x-position at history sample N-4 = 0.50: " + assertTrue(fabs(posHistory[4].x - 0.50f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 y-position at history sample N-4 = 0.50: " + assertTrue(fabs(posHistory[4].y - 0.50f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 x-position at history sample N-5 = 0.40: " + assertTrue(fabs(posHistory[5].x - 0.40f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 y-position at history sample N-5 = 0.40: " + assertTrue(fabs(posHistory[5].y - 0.40f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 x-position at history sample N-6 = 0.40: " + assertTrue(fabs(posHistory[6].x - 0.30f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 y-position at history sample N-6 = 0.40: " + assertTrue(fabs(posHistory[6].y - 0.30f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 x-position at history sample N-7 = 0.40: " + assertTrue(fabs(posHistory[7].x - 0.20f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 y-position at history sample N-7 = 0.40: " + assertTrue(fabs(posHistory[7].y - 0.20f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 x-position at history sample N-8 = 0.40: " + assertTrue(fabs(posHistory[8].x - 0.10f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 y-position at history sample N-8 = 0.40: " + assertTrue(fabs(posHistory[8].y - 0.10f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 x-position at history sample N-9 = 0.40: " + assertTrue(fabs(posHistory[9].x - 0.00f) < 0.0000001, &pass));
-    window->console->append("ASSERT: Robot 0 y-position at history sample N-9 = 0.40: " + assertTrue(fabs(posHistory[9].y - 0.00f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 x-position at history sample N = 0.90: " + assertTrue(fabs(posHistory[0].position.x - 0.90f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 y-position at history sample N = 0.90: " + assertTrue(fabs(posHistory[0].position.y - 0.90f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 x-position at history sample N-1 = 0.80: " + assertTrue(fabs(posHistory[1].position.x - 0.80f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 y-position at history sample N-1 = 0.80: " + assertTrue(fabs(posHistory[1].position.y - 0.80f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 x-position at history sample N-2 = 0.70: " + assertTrue(fabs(posHistory[2].position.x - 0.70f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 y-position at history sample N-2 = 0.70: " + assertTrue(fabs(posHistory[2].position.y - 0.70f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 x-position at history sample N-3 = 0.60: " + assertTrue(fabs(posHistory[3].position.x - 0.60f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 y-position at history sample N-3 = 0.60: " + assertTrue(fabs(posHistory[3].position.y - 0.60f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 x-position at history sample N-4 = 0.50: " + assertTrue(fabs(posHistory[4].position.x - 0.50f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 y-position at history sample N-4 = 0.50: " + assertTrue(fabs(posHistory[4].position.y - 0.50f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 x-position at history sample N-5 = 0.40: " + assertTrue(fabs(posHistory[5].position.x - 0.40f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 y-position at history sample N-5 = 0.40: " + assertTrue(fabs(posHistory[5].position.y - 0.40f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 x-position at history sample N-6 = 0.40: " + assertTrue(fabs(posHistory[6].position.x - 0.30f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 y-position at history sample N-6 = 0.40: " + assertTrue(fabs(posHistory[6].position.y - 0.30f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 x-position at history sample N-7 = 0.40: " + assertTrue(fabs(posHistory[7].position.x - 0.20f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 y-position at history sample N-7 = 0.40: " + assertTrue(fabs(posHistory[7].position.y - 0.20f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 x-position at history sample N-8 = 0.40: " + assertTrue(fabs(posHistory[8].position.x - 0.10f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 y-position at history sample N-8 = 0.40: " + assertTrue(fabs(posHistory[8].position.y - 0.10f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 x-position at history sample N-9 = 0.40: " + assertTrue(fabs(posHistory[9].position.x - 0.00f) < 0.0000001, &pass));
+    window->console->append("ASSERT: Robot 0 y-position at history sample N-9 = 0.40: " + assertTrue(fabs(posHistory[9].position.y - 0.00f) < 0.0000001, &pass));
 
     window->console->append("Delete data model.");
     delete window->dataModel;

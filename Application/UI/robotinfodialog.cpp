@@ -60,7 +60,7 @@ RobotInfoDialog::RobotInfoDialog(RobotData* robot)
 
     // Layout all controls in a form
     QFormLayout* form = new QFormLayout();
-    form->addRow("ID:", new QLabel(QString::number(this->ID)));
+    form->addRow("ID:", new QLabel(this->ID));
     form->addRow("Colour:", colourLayout);
     form->addRow("Delete this robot", deleteButton);
 

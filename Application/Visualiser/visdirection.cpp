@@ -35,8 +35,8 @@ void VisDirection::render(cv::Mat image, RobotData *robot, bool selected) {
 
     cv::Scalar colour = Settings::instance()->isRobotColourEnabled() ? robot->getColour() : cv::Scalar(255, 255, 255);
 
-    int x = image.cols * robot->getPos().x;
-    int y = image.rows * robot->getPos().y;
+    int x = image.cols * robot->getPos().position.x;
+    int y = image.rows * robot->getPos().position.y;
     int a = robot->getAngle();
 
     cv::Point end = cv::Point(x + (int)(12 * cos(a * PI/180)), y + (int)(12 * sin(a * PI/180)));

@@ -39,7 +39,7 @@ void IRDataView::paintEvent(QPaintEvent*) {
         RobotData* robot = dataModelRef->getRobotByID(dataModelRef->selectedRobotID);
 
         // Robot name
-        painter.drawText(10, 22, 300, 20, 0, QString::number(robot->getID()) + ": " + robot->getName());
+        painter.drawText(10, 22, 300, 20, 0, robot->getID());
 
         // Draw a bar for each of the IR sensors on the robot
         for (int i = 0; i < PROX_SENS_COUNT; i++) {

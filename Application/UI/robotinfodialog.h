@@ -21,10 +21,10 @@ private slots:
     void setColour();
 
 signals:
-    void deleteRobot(int robotID);
+    void deleteRobot(QString robotID);
 
 private:
-    int ID;
+    QString ID;
     RobotData* robot;
     QLabel* colourLabel;
     QColor colour;

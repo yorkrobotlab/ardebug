@@ -54,28 +54,16 @@ DataModel::~DataModel(void) {
     robotDataList.clear();
 }
 
-/* getRobotByIndex
- * Return a pointer to the data of the robot at the given index. Returns null
- * if index is invalid.
- */
-RobotData* DataModel::getRobotByIndex(int idx) {
-    return robotDataList.at(idx);
-}
-
 /* getRobotByID
  * Return a pointer to the data of the robot with the given ID. Returns null
  * if ID cannot be found.
  */
-RobotData* DataModel::getRobotByID(int id) {
-    for (size_t i = 0; i < robotDataList.size(); i++) {
-        RobotData* robot = (RobotData*)robotDataList.at(i);
+RobotData* DataModel::getRobotByID(QString id) {
+    auto matchingRobot = std::find_if(robotDataList.begin(), robotDataList.end(), [&id](RobotData* r){return r->getID() == id;});
+    if(matchingRobot != robotDataList.end())
+        return *matchingRobot;
 
-        if (robot->getID() == id) {
-            return robot;
-        }
-    }
-
-    return 0;
+    return nullptr;
 }
 
 /* getRobotList
@@ -89,13 +77,19 @@ QStringListModel* DataModel::getRobotList(void) {
         RobotData* d = (RobotData*)robotDataList.at(i);
 
         // Append the robots ID and name
-        QString str(QString::number(d->getID()) + ": " + d->getName());
+        QString str(d->getID());
         list.append(str);
     }
 
     // Return the list model
     robotListModel->setStringList(list);
     return robotListModel;
+}
+
+RobotData* DataModel::setSelectedRobot(int idx)
+{
+    selectedRobotID = robotDataList[idx]->getID();
+    return robotDataList[idx];
 }
 
 /* getRobotCount
@@ -110,8 +104,7 @@ int DataModel::getRobotCount(void) {
  * Slot. Called when new data arrives.
  */
 void DataModel::newData(const QString &dataString) {
-    int id, type;
-    int idx;
+    int type;
     size_t oldListSize = robotDataList.size();
     bool listChanged = false;
 
@@ -125,15 +118,10 @@ void DataModel::newData(const QString &dataString) {
     }
 
     // Try to obtain the ID from the first element
-    bool ok;
-    id = data[0].toInt(&ok, 10);
-
-    if (!ok || id < 0) {
-        Log::instance()->logMessage("Invalid robot ID: " + data[0] + ", Data ignored.", true);
-        return;
-    }
+    QString id = data[0];
 
     // Try to obtain the packet type from the second element
+    bool ok;
     type = data[1].toInt(&ok, 10);
 
     if (!ok || type < 0 || type >= PACKET_TYPE_INVALID) {
@@ -156,22 +144,20 @@ void DataModel::newData(const QString &dataString) {
         }
     }
 
+    // If this is the first time we have had a message about this robot then register it
+    addRobotIfNotExist(id);
+
     // Get the list index of the given robot. New robot added if index not found
-    idx = getRobotIndex(id, true);
-    RobotData* robot = robotDataList.at(idx);
+    RobotData* robot = getRobotByID(id);
 
     // Handle the packet data
     switch(type) {
     case PACKET_TYPE_WATCHDOG:
-        if (!(robot->getName() == data[2])) {
-            robot->setName(data[2]);
-            listChanged = true;
-        }
-        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + " - Watchdog Packet. Name: " + data[2], false);
+        Log::instance()->logMessage("Robot " + robot->getID() + " - Watchdog Packet.", false);
         break;
     case PACKET_TYPE_STATE:
         robot->setState(data[2]);
-        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + " - State: " + data[2], false);
+        Log::instance()->logMessage("Robot " + robot->getID() + " - State: " + data[2], false);
         break;
     case PACKET_TYPE_POSITION:
         if (data.length() > 4) {
@@ -188,12 +174,12 @@ void DataModel::newData(const QString &dataString) {
     case PACKET_TYPE_MSG:
         data.removeFirst();
         data.removeFirst();
-        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + " - Message: " + data.join(" "), true);
+        Log::instance()->logMessage("Robot " + robot->getID() + " - Message: " + data.join(" "), true);
         break;
     case PACKET_TYPE_CUSTOM:
         if (data.length() > 3) {
             robot->insertCustomData(data[2], data[3]);
-            Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + " - Custom Data: " + data[2] + " " + data[3], false);
+            Log::instance()->logMessage("Robot " + robot->getID() + " - Custom Data: " + data[2] + " " + data[3], false);
         }
     default:
         break;
@@ -206,6 +192,13 @@ void DataModel::newData(const QString &dataString) {
 
     // Signal to the UI that new data is available
     emit modelChanged(listChanged);
+}
+
+void DataModel::addRobotIfNotExist(QString id)
+{
+    RobotData* r = getRobotByID(id);
+    if(r == nullptr)
+        robotDataList.push_back(new RobotData{id});
 }
 
 /* parsePositionPacket
@@ -270,69 +263,23 @@ void DataModel::parseProximityPacket(RobotData *robot, QStringList data, bool ba
     data.removeFirst();
     data.removeFirst();
     if (background) {
-        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + " - Background IR Data: " + data.join(" "), false);
+        Log::instance()->logMessage("Robot " + robot->getID() + " - Background IR Data: " + data.join(" "), false);
     } else {
-        Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + " - IR Data: " + data.join(" "), false);
+        Log::instance()->logMessage("Robot " + robot->getID() + " - IR Data: " + data.join(" "), false);
     }
-}
-
-/* getRobotIndex
- * Finds the index of the robot with the given id. If create is set to true, and a robot with
- * the corresponding id is not found, one will be created. If not, -1 is returned to indicate that
- * the robot does not exist.
- */
-int DataModel::getRobotIndex(int id, bool create) {
-    bool found = false;
-    int idx;
-
-    // Check if the data is related to a known robot
-    for (idx = 0; idx < (int)robotDataList.size(); idx++) {
-        RobotData* d = (RobotData*)robotDataList.at(idx);
-
-        if (d->getID() == id) {
-            found = true;
-            break;
-        }
-    }
-
-    // Robot was not found
-    if (!found) {
-        // If create is false, return -1 to indicate robot not found.
-        if (!create) {
-            return -1;
-        }
-
-        // Add the robot to the list
-        RobotData* newRobot = new RobotData(id, "Unknown");
-        robotDataList.push_back(newRobot);
-
-        // Sort
-        sort(robotDataList.begin(), robotDataList.end(), sortRobotDataByID);
-
-        // Use recursion to get the index
-        idx = getRobotIndex(id);
-    }
-
-    // Return the index
-    return idx;
 }
 
 /* deleteRobot
  * Remove a robot from the data model, including all of its data.
  */
-void DataModel::deleteRobot(int ID) {
+void DataModel::deleteRobot(QString id) {
     // Reset the robot selection if it matches to avoid null pointer errors
-    if (this->selectedRobotID == ID) {
-        this->selectedRobotID = -1;
+    if (this->selectedRobotID == id) {
+        this->selectedRobotID = "";
     }
 
     // Retrieve the index of the robot to be deleted. Do not create it not found.
-    int idx = getRobotIndex(ID, false);
-
-    // If index in range, erase the robot
-    if (idx >= 0 && (size_t)idx < robotDataList.size()) {
-        robotDataList.erase(robotDataList.begin() + idx);
-    }
+    std::remove_if(robotDataList.begin(), robotDataList.end(), [&id](RobotData* r){ return r->getID() == id; });
 }
 
 /* updateAveragePosition
@@ -346,8 +293,8 @@ void DataModel::updateAveragePosition(void) {
     for (int idx = 0; idx < robotCount; idx++) {
         RobotData* d = (RobotData*)robotDataList.at(idx);
 
-        x += d->getPos().x;
-        y += d->getPos().y;
+        x += d->getPos().position.x;
+        y += d->getPos().position.y;
     }
 
     averageRobotPos.x = x/robotCount;

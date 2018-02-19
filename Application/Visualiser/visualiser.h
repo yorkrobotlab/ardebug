@@ -31,7 +31,7 @@ public slots:
 signals:
     void frameSizeChanged(int width, int height);
 
-    void robotSelectedInVisualiser(int id);
+    void robotSelectedInVisualiser(QString id);
 
 protected:
     void paintEvent(QPaintEvent*);

@@ -142,8 +142,8 @@ void Visualiser::mousePressEvent(QMouseEvent* event) {
     for (int i = 0; i < dataModelRef->getRobotCount(); i++) {
         RobotData* robot = dataModelRef->getRobotByIndex(i);
 
-        float dx = std::abs(robot->getPos().x - click.x);
-        float dy = std::abs(robot->getPos().y - click.y);
+        float dx = std::abs(robot->getPos().position.x - click.x);
+        float dy = std::abs(robot->getPos().position.y - click.y);
 
         if (dx < 0.02 && dy < 0.02) {
             // Signal that a robot has been selected

@@ -101,7 +101,7 @@ MainWindow::MainWindow(QWidget *parent) :
     qRegisterMetaType< cv::Mat >("cv::Mat");
     connect(cameraController, SIGNAL(dataFromCamera(cv::Mat)), visualiser, SLOT(showImage(cv::Mat)));
     connect(visualiser, SIGNAL(frameSizeChanged(int, int)), cameraController, SLOT(updateFrameSize(int, int)));
-    connect(visualiser, SIGNAL(robotSelectedInVisualiser(int)), this, SLOT(robotSelectedInVisualiser(int)));
+    connect(visualiser, SIGNAL(robotSelectedInVisualiser(QString)), this, SLOT(robotSelectedInVisualiser(QString)));
 
     // Connect tracking position data signal to data model
     connect(cameraController, SIGNAL(posData(QString)), dataModel, SLOT(newData(QString)));
@@ -234,13 +234,11 @@ void MainWindow::robotListSelectionChanged(const QItemSelection &selection) {
     // Get the data of the robot selected
     int idx = selection.indexes().at(0).row();
     if (idx >= 0 || idx < dataModel->getRobotCount()) {
-        RobotData* robot = dataModel->getRobotByIndex(idx);
-
         // Update the selected robot id
-        dataModel->selectedRobotID = robot->getID();
+        RobotData* robot = dataModel->setSelectedRobot(idx);
 
         // Show a status bar message
-        ui->statusBar->showMessage(robot->getName(), 3000);
+        ui->statusBar->showMessage(robot->getID(), 3000);
     } else {
         dataModel->selectedRobotID = -1;
     }
@@ -259,28 +257,28 @@ void MainWindow::robotListSelectionChanged(const QItemSelection &selection) {
  * Called when an item in the robot list is double clicked, to open the
  * robot info dialog.
  */
-void MainWindow::on_robotList_doubleClicked(const QModelIndex &index)
+void MainWindow::on_robotList_doubleClicked(const QModelIndex &)
 {
     // Get the ID
-    int idx = index.row();
+//    int idx = index.row();
 
-    if (idx >= 0 || idx < dataModel->getRobotCount()) {
-        // Get the robot
-        RobotData* robot = dataModel->getRobotByIndex(idx);
+//    if (idx >= 0 || idx < dataModel->getRobotCount()) {
+//        // Get the robot
+//        RobotData* robot = dataModel->getRobotByIndex(idx);
 
-        // Create and show the robot info dialog
-        RobotInfoDialog* robotInfoDialog = new RobotInfoDialog(robot);
-        QObject::connect(robotInfoDialog, SIGNAL(deleteRobot(int)), dataModel, SLOT(deleteRobot(int)));
-        QObject::connect(robotInfoDialog, SIGNAL(accepted()), this, SLOT(robotDeleted()));
-        robotInfoDialog->show();
-    }
+//        // Create and show the robot info dialog
+//        RobotInfoDialog* robotInfoDialog = new RobotInfoDialog(robot);
+//        QObject::connect(robotInfoDialog, SIGNAL(deleteRobot(int)), dataModel, SLOT(deleteRobot(int)));
+//        QObject::connect(robotInfoDialog, SIGNAL(accepted()), this, SLOT(robotDeleted()));
+//        robotInfoDialog->show();
+//    }
 }
 
 /* robotSelectedInVisualiser
  * Slot. Called when a robot is selected by clicking the visualiser. Updates
  * the relevent model data and changes the selected item in the list.
  */
-void MainWindow::robotSelectedInVisualiser(int id) {
+void MainWindow::robotSelectedInVisualiser(QString id) {
     // Update selected ID
     dataModel->selectedRobotID = id;
 
@@ -292,7 +290,7 @@ void MainWindow::robotSelectedInVisualiser(int id) {
     for (int i = 0; i < stringList.size(); i++) {
         QString str = stringList.at(i);
 
-        if (str.startsWith(QString::number(id) + ":")) {
+        if (str.startsWith(id + ":")) {
             // Update selection
             ui->robotList->setCurrentIndex(ui->robotList->model()->index(i, 0));
         }
@@ -330,12 +328,12 @@ void MainWindow::dataModelUpdate(bool listChanged)
     if (listChanged) {
         ui->robotList->setModel(dataModel->getRobotList());
 
-        int idx = dataModel->getRobotIndex(dataModel->selectedRobotID, false);
+//        int idx = dataModel->getRobotIndex(dataModel->selectedRobotID, false);
 
-        if (idx != -1) {
-            QModelIndex qidx = ui->robotList->model()->index(idx, 0);
-            ui->robotList->setCurrentIndex(qidx);
-        }
+//        if (idx != -1) {
+//            QModelIndex qidx = ui->robotList->model()->index(idx, 0);
+//            ui->robotList->setCurrentIndex(qidx);
+//        }
     }
 
     // Update the necessary data tabs
@@ -349,14 +347,12 @@ void MainWindow::dataModelUpdate(bool listChanged)
  */
 void MainWindow::updateOverviewTab(void) {
     // Get the selected robot
-    if (dataModel->selectedRobotID >= 0) {
-        RobotData* robot = dataModel->getRobotByID(dataModel->selectedRobotID);
-
+    RobotData* robot = dataModel->getRobotByID(dataModel->selectedRobotID);
+    if (robot) {
         // Update the overview text
-        ui->robotIDLabel->setText(QString::number(robot->getID()));
-        ui->robotNameLabel->setText(robot->getName());
+        ui->robotIDLabel->setText(robot->getID());
         ui->robotStateLabel->setText(robot->getState());
-        ui->robotPosLabel->setText("X: " + QString::number(robot->getPos().x) + ", Y: " + QString::number(robot->getPos().y) + ", A: " + QString::number(robot->getAngle()));
+        ui->robotPosLabel->setText("X: " + QString::number(robot->getPos().position.x) + ", Y: " + QString::number(robot->getPos().position.y) + ", A: " + QString::number(robot->getAngle()));
     } else {
         ui->robotIDLabel->setText("-");
         ui->robotNameLabel->setText("-");
@@ -391,8 +387,8 @@ void MainWindow::updateProximityTab(void) {
  */
 void MainWindow::updateCustomDataTab(void) {
     // Get the selected robot
-    if (dataModel->selectedRobotID >= 0) {
-        RobotData* robot = dataModel->getRobotByID(dataModel->selectedRobotID);
+    RobotData* robot = dataModel->getRobotByID(dataModel->selectedRobotID);
+    if (robot) {
 
         robot->populateCustomDataTable(ui->customDataTable);
     }
