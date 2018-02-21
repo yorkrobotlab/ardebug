@@ -12,16 +12,17 @@
 #include "log.h"
 #include "../Networking/Wifi/datathread.h"
 #include "../Networking/Bluetooth/bluetoothdatathread.h"
-#include "../Networking/Bluetooth/bluetoothconfig.h"
 #include "../Tracking/machinevision.h"
 #include "../DataModel/datamodel.h"
 #include "../DataModel/robotdata.h"
 #include "../UI/addidmappingdialog.h"
 #include "../UI/robotinfodialog.h"
+#include "../UI/bluetoothconfigdialog.h"
 
 #include <sys/socket.h>
 
 #include <QLayout>
+#include <QStandardItemModel>
 
 /* Constructor.
  * Do UI set up tasks.
@@ -58,8 +59,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(dataHandler, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
 
     //Set up the bluetoothcommunication
-    Bluetoothconfig * btConfig = new Bluetoothconfig();
+    btConfig = new Bluetoothconfig();
     BluetoothDataThread *bluetoothHandler = new BluetoothDataThread(btConfig);
+    bluetoothConfigDialog = NULL;
     bluetoothHandler->moveToThread(&bluetoothThread);
     connect(&bluetoothThread, SIGNAL(finished()), bluetoothHandler, SLOT(deleteLater()));
 
@@ -67,8 +69,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(connectBluetooth()), bluetoothHandler, SLOT(connectAllSockets()));
     connect(this, SIGNAL(disconnectBluetooth()), bluetoothHandler, SLOT(disconnectAllSockets()));
     connect(this, SIGNAL(changeStateBluetoothDevice(int)), bluetoothHandler, SLOT(changeSocket(int)));
+
+
     ui->bluetoothlist->setModel(btConfig->getActiveDeviceList());
-    ui->bluetoothlist->setEditTriggers(QListView::NoEditTriggers);
+    ui->bluetoothlist->setEditTriggers(QListWidget::NoEditTriggers);
     //connect other bluetooth related buttons here
 
     // Connect signals and sockets for transferring the incoming data
@@ -680,6 +684,7 @@ void MainWindow::on_bluetoothDisconnectAllButton_clicked()
 
 void MainWindow::on_bluetoothlist_doubleClicked(const QModelIndex &index)
 {
+
     emit changeStateBluetoothDevice(index.row());
 }
 
@@ -690,5 +695,19 @@ void MainWindow::on_angleCorrectionEdit_textChanged(const QString &arg1)
 
     if (ok) {
         Settings::instance()->setTrackingAngleCorrection(a);
+    }
+}
+
+void MainWindow::on_bluetoothConfigButton_clicked()
+{
+    if (bluetoothConfigDialog != NULL) {
+        delete bluetoothConfigDialog;
+    }
+
+    bluetoothConfigDialog = new BluetoothConfigDialog(btConfig);
+
+    if (bluetoothConfigDialog != NULL) {
+        //QObject::connect(addIDMappingDialog, SIGNAL(accepted()), this, SLOT(idMappingUpdate(void)));
+        bluetoothConfigDialog->show();
     }
 }

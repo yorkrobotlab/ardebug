@@ -6,6 +6,7 @@
 #include <QThread>
 #include <QItemSelection>
 
+#include "../Networking/Bluetooth/bluetoothconfig.h"
 #include "../Visualiser/visualiser.h"
 #include "../Tracking/cameracontroller.h"
 #include "../DataModel/datamodel.h"
@@ -26,9 +27,11 @@ class MainWindow : public QMainWindow
     CameraController* cameraController;
     DataModel* dataModel;
     IRDataView* irDataView;
+    Bluetoothconfig * btConfig;
 
     TestingWindow* testingWindow;
     QDialog* addIDMappingDialog;
+    QDialog* bluetoothConfigDialog;
 
     int sockfd;
 
@@ -107,6 +110,8 @@ private slots:
     void on_bluetoothlist_doubleClicked(const QModelIndex &index);
 
     void on_angleCorrectionEdit_textChanged(const QString &arg1);
+
+    void on_bluetoothConfigButton_clicked();
 
 private:
     Ui::MainWindow *ui;

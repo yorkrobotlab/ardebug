@@ -56,7 +56,8 @@ SOURCES += Application/Core/main.cpp\
     Application/UI/customsettingsdialog.cpp \
     Application/UI/testingwindow.cpp \
     Application/UI/addidmappingdialog.cpp \
-    Application/UI/robotinfodialog.cpp
+    Application/UI/robotinfodialog.cpp \
+    Application/UI/bluetoothconfigdialog.cpp
 
 HEADERS  += Application/Core/mainwindow.h \
     Application/Core/util.h \
@@ -92,7 +93,8 @@ HEADERS  += Application/Core/mainwindow.h \
     Application/UI/customsettingsdialog.h \
     Application/UI/testingwindow.h \
     Application/UI/addidmappingdialog.h \
-    Application/UI/robotinfodialog.h
+    Application/UI/robotinfodialog.h \
+    Application/UI/bluetoothconfigdialog.h
 
 FORMS    += Application/UI/mainwindow.ui
 
