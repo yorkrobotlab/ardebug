@@ -11,17 +11,15 @@
 #include "../Core/log.h"
 #include "../Core/settings.h"
 
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonValue>
+
 #include <iostream>
 #include <stdio.h>
 
 using namespace  std;
-
-/* sortRobotDataByID
- * Helper function used when sorting the robots.
- */
-bool sortRobotDataByID(RobotData* lhs, RobotData* rhs) {
-    return lhs->getID() < rhs->getID();
-}
 
 /* Constructor
  * Set up the list of robot data (vector).
@@ -104,94 +102,25 @@ int DataModel::getRobotCount(void) {
  * Slot. Called when new data arrives.
  */
 void DataModel::newData(const QString &dataString) {
-    int type;
-    size_t oldListSize = robotDataList.size();
-    bool listChanged = false;
 
-    // Split into individual data elements
-    QStringList data = dataString.split(QRegExp("\\s+"));
+    if(dataString[0]=='{')
+        Log::instance()->logMessage("Got message: " + dataString, true);
 
-    // Data packets must contain minimum of 3 elements; ID, type, content
-    if (data.length() < 3) {
-        Log::instance()->logMessage("Invalid data packet: " + dataString, true);
+    // Parse the received data as a JSON string
+    QJsonDocument j = QJsonDocument::fromJson(dataString.toUtf8());
+    QJsonObject message = j.object();
+
+    // Check that
+    if(!message.contains("id"))
         return;
-    }
 
-    // Try to obtain the ID from the first element
-    QString id = data[0];
+    QString robotId = message["id"].toString();
+    RobotData* robot = getRobotByID(robotId);
 
-    // Try to obtain the packet type from the second element
-    bool ok;
-    type = data[1].toInt(&ok, 10);
-
-    if (!ok || type < 0 || type >= PACKET_TYPE_INVALID) {
-        Log::instance()->logMessage("Invalid packet type: " + data[1] + ", Data ignored.", true);
-        return;
-    }
-
-    /* If this is a position packet the ID will be an ARuCo ID. Check the ID mapping table to see if
-     * this needs to be mapped to a different robot ID.
-     */
-    if (type == PACKET_TYPE_POSITION) {
-        for (size_t i = 0; i < Settings::instance()->idMapping.size(); i++) {
-            ArucoIDPair* pair = Settings::instance()->idMapping.at(i);
-
-            // If there is a match in the map, swap for the correct robot ID
-            if (pair->arucoID == id) {
-                id = pair->robotID;
-                break;
-            }
-        }
-    }
-
-    // If this is the first time we have had a message about this robot then register it
-    addRobotIfNotExist(id);
-
-    // Get the list index of the given robot. New robot added if index not found
-    RobotData* robot = getRobotByID(id);
-
-    // Handle the packet data
-    switch(type) {
-    case PACKET_TYPE_WATCHDOG:
-        Log::instance()->logMessage("Robot " + robot->getID() + " - Watchdog Packet.", false);
-        break;
-    case PACKET_TYPE_STATE:
-        robot->setState(data[2]);
-        Log::instance()->logMessage("Robot " + robot->getID() + " - State: " + data[2], false);
-        break;
-    case PACKET_TYPE_POSITION:
-        if (data.length() > 4) {
-            parsePositionPacket(robot, data[2], data[3], data[4]);
-            //Log::instance()->logMessage("Robot " + QString::number(robot->getID()) + ": Position X:" + data[2] + ", Y:" + data[3] + ", A:" + data[4], false);
-        }
-        break;
-    case PACKET_TYPE_PROXIMITY:
-        parseProximityPacket(robot, data, false);
-        break;
-    case PACKET_TYPE_BACKGROUND_IR:
-        parseProximityPacket(robot, data, true);
-        break;
-    case PACKET_TYPE_MSG:
-        data.removeFirst();
-        data.removeFirst();
-        Log::instance()->logMessage("Robot " + robot->getID() + " - Message: " + data.join(" "), true);
-        break;
-    case PACKET_TYPE_CUSTOM:
-        if (data.length() > 3) {
-            robot->insertCustomData(data[2], data[3]);
-            Log::instance()->logMessage("Robot " + robot->getID() + " - Custom Data: " + data[2] + " " + data[3], false);
-        }
-    default:
-        break;
-    }
-
-    // Check if the list of robots has changed size and needs updating
-    if (robotDataList.size() != oldListSize) {
-        listChanged = true;
-    }
+    Log::instance()->logMessage("Message from robot " + robotId, true);
 
     // Signal to the UI that new data is available
-    emit modelChanged(listChanged);
+    emit modelChanged(true);
 }
 
 void DataModel::addRobotIfNotExist(QString id)

@@ -36,7 +36,7 @@ bool robotInsertionTestFunction(TestingWindow* window) {
     window->dataModel = new DataModel();
 
     window->console->append("Insert Watchdog Packet [0 0 Robot0].");
-    window->dataModel->newData("0 0 Robot0");
+    window->dataModel->newData("{\"id\":\"testRobotId\"}");
     window->console->append("ASSERT: Robot Count = 1: " + assertTrue(window->dataModel->getRobotCount() == 1, &pass));
 
     window->console->append("Insert State Packet [1 1 STATE].");
@@ -101,6 +101,7 @@ bool nameDataTestFunction(TestingWindow* window) {
     window->console->append("Insert Watchdog Packet [0 0 Name_Zero].");
     window->console->append("Insert Watchdog Packet [1 0 Name_One].");
     window->console->append("Insert Watchdog Packet [2 0 Name_Two].");
+    window->dataModel->newData("{\"id\":\"testRobotId\"}");
     window->dataModel->newData("0 0 Name_Zero");
     window->dataModel->newData("1 0 Name_One");
     window->dataModel->newData("2 0 Name_Two");
@@ -136,6 +137,7 @@ bool stateDataTestFunction(TestingWindow* window) {
     window->console->append("Insert State Packet [0 1 STATE_1].");
     window->console->append("Insert State Packet [1 1 STATE_2].");
     window->console->append("Insert State Packet [2 1 STATE_3].");
+    window->dataModel->newData("{\"id\":\"testRobotId\"}");
     window->dataModel->newData("0 1 STATE_1");
     window->dataModel->newData("1 1 STATE_2");
     window->dataModel->newData("2 1 STATE_3");
@@ -171,6 +173,7 @@ bool positionDataTestFunction(TestingWindow* window) {
     window->console->append("Insert Position Packet [0 2 0.1 0.2 45].");
     window->console->append("Insert Position Packet [1 2 0.3 0.4 60].");
     window->console->append("Insert Position Packet [2 2 0.7 0.8 110].");
+    window->dataModel->newData("{\"id\":\"testRobotId\"}");
     window->dataModel->newData("0 2 0.1 0.2 45");
     window->dataModel->newData("1 2 0.3 0.4 60");
     window->dataModel->newData("2 2 0.7 0.8 110");
@@ -216,6 +219,7 @@ bool irDataTestFunction(TestingWindow* window) {
     window->dataModel = new DataModel();
 
     window->console->append("Insert IR Data Packet [0 3 101 102 103 104 105 106 107 108].");
+    window->dataModel->newData("{\"id\":\"testRobotId\"}");
     window->dataModel->newData("0 3 101 102 103 104 105 106 107 108");
     window->console->append("ASSERT: Robot 0 IR data 1 = 101: " + assertTrue(window->dataModel->getRobotByID(0)->getProximitySensorData(0) == 101, &pass));
     window->console->append("ASSERT: Robot 0 IR data 2 = 102: " + assertTrue(window->dataModel->getRobotByID(0)->getProximitySensorData(1) == 102, &pass));
@@ -255,6 +259,7 @@ bool customDataTestFunction(TestingWindow* window) {
     window->console->append("Insert Custom Data Packet [0 6 Key1 Value1].");
     window->console->append("Insert Custom Data Packet [1 6 Key1 Value2].");
     window->console->append("Insert Custom Data Packet [2 6 Key1 Value3].");
+    window->dataModel->newData("{\"id\":\"testRobotId\"}");
     window->dataModel->newData("0 6 Key1 Value1");
     window->dataModel->newData("1 6 Key1 Value2");
     window->dataModel->newData("2 6 Key1 Value3");
@@ -327,6 +332,7 @@ bool positionHistoryTestFunction(TestingWindow* window) {
     window->console->append("Insert Position Packet [0 2 0.85 0.85 90].");
     window->console->append("Insert Position Packet [0 2 0.90 0.90 90] (Sampled).");
     window->console->append("Insert Position Packet [0 2 0.95 0.95 90].");
+    window->dataModel->newData("{\"id\":\"testRobotId\"}");
     window->dataModel->newData("0 2 0.00 0.00 90");
     window->dataModel->newData("0 2 0.05 0.05 90");
     window->dataModel->newData("0 2 0.10 0.10 90");
@@ -393,6 +399,7 @@ bool stateTransitionHistoryTestFunction(TestingWindow* window) {
     window->console->append("Insert State Packet [0 1 STATE_2].");
     window->console->append("Insert State Packet [0 1 STATE_3].");
     window->console->append("Insert State Packet [0 1 STATE_4].");
+    window->dataModel->newData("{\"id\":\"testRobotId\"}");
     window->dataModel->newData("0 1 STATE_1");
     window->dataModel->newData("0 1 STATE_2");
     window->dataModel->newData("0 1 STATE_3");

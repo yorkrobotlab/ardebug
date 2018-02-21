@@ -90,7 +90,8 @@ void CameraController::readCamera(void) {
 
     // Iterate over all tracking results and emit position data signals as necessary
     for (size_t i = 0; i < result.size(); i++) {
-        TrackResult res = (TrackResult)result.at(i);
-        emit posData(QString::number(res.id) + " 2 " + QString::number(res.pose.position.x) + " " + QString::number(res.pose.position.y) + " " + QString::number(res.pose.orientation));
+//        TrackResult res = (TrackResult)result.at(i);
+        emit posData("{\"id\":\"testRobotId\"}");
+//        emit posData(QString::number(res.id) + " 2 " + QString::number(res.pose.position.x) + " " + QString::number(res.pose.position.y) + " " + QString::number(res.pose.orientation));
     }
 }
