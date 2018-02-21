@@ -17,7 +17,7 @@ struct Pose
 };
 
 struct TrackResult {
-    int id;
+    QString id;
     Pose pose;
 };
 

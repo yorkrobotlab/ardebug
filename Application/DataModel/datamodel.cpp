@@ -102,10 +102,6 @@ int DataModel::getRobotCount(void) {
  * Slot. Called when new data arrives.
  */
 void DataModel::newData(const QString &dataString) {
-
-    if(dataString[0]=='{')
-        Log::instance()->logMessage("Got message: " + dataString, true);
-
     // Parse the received data as a JSON string
     QJsonDocument j = QJsonDocument::fromJson(dataString.toUtf8());
     QJsonObject message = j.object();
@@ -115,9 +111,21 @@ void DataModel::newData(const QString &dataString) {
         return;
 
     QString robotId = message["id"].toString();
+    addRobotIfNotExist(robotId);
     RobotData* robot = getRobotByID(robotId);
 
     Log::instance()->logMessage("Message from robot " + robotId, true);
+
+    if(message.contains("pose"))
+    {
+        QJsonObject jsonPose = message["pose"].toObject();
+        Pose p;
+        p.orientation = jsonPose["orientation"].toDouble();
+        p.position.x = jsonPose["x"].toDouble();
+        p.position.y = jsonPose["y"].toDouble();
+        robot->setPos(p.position.x, p.position.y);
+        robot->setAngle(p.orientation);
+    }
 
     // Signal to the UI that new data is available
     emit modelChanged(true);
