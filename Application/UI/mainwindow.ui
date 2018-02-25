@@ -33,7 +33,7 @@
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <widget class="QTabWidget" name="visualizerTabWidget">
+       <widget class="QTabWidget" name="visualiserTabWidget">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>4</horstretch>
@@ -49,7 +49,7 @@
         <property name="currentIndex">
          <number>0</number>
         </property>
-        <widget class="QWidget" name="visualizerTab">
+        <widget class="QWidget" name="visualiserTab">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -57,18 +57,18 @@
           </sizepolicy>
          </property>
          <attribute name="title">
-          <string>Visualizer</string>
+          <string>Visualiser</string>
          </attribute>
         </widget>
         <widget class="QWidget" name="visSettingsTab">
          <attribute name="title">
-          <string>Visualizer Settings</string>
+          <string>Visualiser Settings</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <item>
            <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>Visualizer Settings</string>
+             <string>Visualiser Settings</string>
             </property>
            </widget>
           </item>
@@ -450,7 +450,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="consoleTab">
         <attribute name="title">
@@ -566,14 +566,14 @@
     </property>
     <addaction name="actionExit"/>
    </widget>
-   <widget class="QMenu" name="menuVisualizer">
+   <widget class="QMenu" name="menuVisualiser">
     <property name="title">
-     <string>Visualizer</string>
+     <string>Visualiser</string>
     </property>
     <addaction name="actionEnable_Video"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuVisualizer"/>
+   <addaction name="menuVisualiser"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionExit">

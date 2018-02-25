@@ -88,7 +88,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Embed the visualiser in the tab
     QHBoxLayout* horizLayout = new QHBoxLayout();
     horizLayout->addWidget(visualiser);
-    ui->visualizerTab->setLayout(horizLayout);
+    ui->visualiserTab->setLayout(horizLayout);
 
     // Instantiate the camera controller and move it to the camera thread
     cameraController = new CameraController();
@@ -185,7 +185,7 @@ void MainWindow::on_actionEnable_Video_changed()
 }
 
 /* on_videoEnChbx_stateChanged
- * The video enabled checkbox on the visualizer settings tab changed state.
+ * The video enabled checkbox on the visualiser settings tab changed state.
  */
 void MainWindow::on_videoEnChbx_stateChanged()
 {
