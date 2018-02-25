@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui bluetooth
+QT       += core gui bluetooth network multimediawidgets multimedia avwidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -35,8 +35,6 @@ SOURCES += Application/Core/main.cpp\
     Application/Networking/Bluetooth/bluetoothdevicelistitem.cpp \
     Application/Networking/Bluetooth/bluetoothsocketlisted.cpp \
     Application/Networking/Bluetooth/bluetoothconfig.cpp \
-    Application/Tracking/machinevision.cpp \
-    Application/Tracking/cameracontroller.cpp \
     Application/Visualiser/visualiser.cpp \
     Application/Visualiser/visconfig.cpp \
     Application/Visualiser/visposition.cpp \
@@ -62,8 +60,6 @@ HEADERS  += Application/Core/mainwindow.h \
     Application/Networking/Bluetooth/bluetoothsocketlisted.h \
     Application/Networking/Bluetooth/bluetoothdatathread.h \
     Application/Networking/Bluetooth/bluetoothconfig.h \
-    Application/Tracking/machinevision.h \
-    Application/Tracking/cameracontroller.h \
     Application/Visualiser/visualiser.h \
     Application/Visualiser/visconfig.h \
     Application/Visualiser/viselement.h \
@@ -82,12 +78,5 @@ FORMS    += Application/UI/mainwindow.ui
 
 CONFIG += link_pkgconfig \
     c++11
+
 PKGCONFIG += opencv
-
-
-#LIBS += -L/opt/cvb/lib/ -lCVCImg
-#LIBS += -L/opt/cvb/lib/ -lCVCDriver
-#LIBS += -L/opt/cvb/lib/ -lCVCUtilities
-
-INCLUDEPATH += /opt/cvb/include
-DEPENDPATH += /opt/cvb/include

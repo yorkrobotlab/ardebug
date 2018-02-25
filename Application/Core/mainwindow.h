@@ -5,9 +5,9 @@
 #include <QStringListModel>
 #include <QThread>
 #include <QItemSelection>
+#include <QVideoWidget>
 
 #include "../Visualiser/visualiser.h"
-#include "../Tracking/cameracontroller.h"
 #include "../DataModel/datamodel.h"
 
 namespace Ui {
@@ -21,7 +21,6 @@ class MainWindow : public QMainWindow
     QThread bluetoothThread;
     QThread cameraThread;
     Visualiser* visualiser;
-    CameraController* cameraController;
     DataModel* dataModel;
 
     QDialog* addIDMappingDialog;
@@ -49,8 +48,6 @@ public slots:
 
     void dataModelUpdate(bool listChanged);
 
-    void visConfigUpdate(void);
-
     void robotListSelectionChanged(const QItemSelection &selection);
 
     void robotSelectedInVisualiser(QString id);
@@ -61,10 +58,6 @@ public slots:
 
 private slots:
     void on_actionExit_triggered();
-
-    void on_actionEnable_Video_changed();
-
-    void on_videoEnChbx_stateChanged();
 
     void on_networkListenButton_clicked();
 
@@ -77,8 +70,6 @@ private slots:
     void on_visSettingsList_itemClicked(QListWidgetItem *item);
 
     void on_visSettingsList_itemDoubleClicked(QListWidgetItem *item);
-
-    void on_robotColoursCheckBox_stateChanged();
 
     void on_logFileButton_clicked();
 

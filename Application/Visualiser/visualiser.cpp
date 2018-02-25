@@ -7,7 +7,6 @@
  */
 
 #include "visualiser.h"
-#include "../Tracking/machinevision.h"
 #include "../Core/settings.h"
 
 #include <stdio.h>

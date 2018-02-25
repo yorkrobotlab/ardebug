@@ -13,7 +13,6 @@
 #include "../Networking/Wifi/datathread.h"
 #include "../Networking/Bluetooth/bluetoothdatathread.h"
 #include "../Networking/Bluetooth/bluetoothconfig.h"
-#include "../Tracking/machinevision.h"
 #include "../DataModel/datamodel.h"
 #include "../DataModel/robotdata.h"
 #include "../UI/addidmappingdialog.h"
@@ -22,6 +21,7 @@
 #include <sys/socket.h>
 
 #include <QLayout>
+#include <QMediaPlayer>
 
 /* Constructor.
  * Do UI set up tasks.
@@ -90,31 +90,10 @@ MainWindow::MainWindow(QWidget *parent) :
     horizLayout->addWidget(visualiser);
     ui->visualiserTab->setLayout(horizLayout);
 
-    // Instantiate the camera controller and move it to the camera thread
-    cameraController = new CameraController();
-    cameraController->moveToThread(&cameraThread);
-    connect(&cameraThread, SIGNAL(finished()), cameraController, SLOT(deleteLater()));
-    connect(this, SIGNAL(startReadingCamera(void)), cameraController, SLOT(startReadingCamera(void)));
-    connect(this, SIGNAL(stopReadingCamera(void)), cameraController, SLOT(stopReadingCamera(void)));
-
-    // Connect image related signals to the visualiser and vice versa
-    qRegisterMetaType< cv::Mat >("cv::Mat");
-    connect(cameraController, SIGNAL(dataFromCamera(cv::Mat)), visualiser, SLOT(showImage(cv::Mat)));
-    connect(visualiser, SIGNAL(frameSizeChanged(int, int)), cameraController, SLOT(updateFrameSize(int, int)));
     connect(visualiser, SIGNAL(robotSelectedInVisualiser(QString)), this, SLOT(robotSelectedInVisualiser(QString)));
-
-    // Connect tracking position data signal to data model
-    connect(cameraController, SIGNAL(posData(QString)), dataModel, SLOT(newData(QString)));
-    cameraThread.start();
 
     // Have the visualiser pass its initial frame size to the camera controller
     visualiser->checkFrameSize();
-
-    visualiser->config.populateSettingsList(ui->visSettingsList);
-
-    ui->imageXDimEdit->setValidator(new QIntValidator(1, 10000, this));
-    ui->imageYDimEdit->setValidator(new QIntValidator(1, 10000, this));
-    ui->angleCorrectionEdit->setValidator(new QIntValidator(-180, 180, this));
 
     // Set up the custom data table
     ui->customDataTable->setColumnCount(2);
@@ -125,8 +104,18 @@ MainWindow::MainWindow(QWidget *parent) :
     addIDMappingDialog = NULL;
     idMappingTableSetup();
 
-    // Start the camera reading immediately
-    startReadingCamera();    
+    auto mediaPlayer = new QMediaPlayer;
+
+    auto placeholder = ui->videoPlaceholder;
+    QVideoWidget* videoWidget = new QVideoWidget{placeholder};
+
+    mediaPlayer->setVideoOutput(videoWidget);
+    mediaPlayer->setMedia(QMediaContent(QUrl("file:///home/richard/Downloads/BigBuckBunny_320x180.mp4")));
+
+    videoWidget->resize(640, 480);
+
+    mediaPlayer->play();
+    videoWidget->show();
 }
 
 /* Destructor.
@@ -173,44 +162,6 @@ MainWindow::~MainWindow()
 void MainWindow::on_actionExit_triggered()
 {
     QCoreApplication::exit();
-}
-
-/* on_actionEnableVideo_changed
- * The menu item 'Enable Video' changed state.
- */
-void MainWindow::on_actionEnable_Video_changed()
-{
-    // Update the video enabled state
-    setVideo(ui->actionEnable_Video->isChecked());
-}
-
-/* on_videoEnChbx_stateChanged
- * The video enabled checkbox on the visualiser settings tab changed state.
- */
-void MainWindow::on_videoEnChbx_stateChanged()
-{
-    // Update the video enabled state.
-    setVideo(ui->videoEnChbx->isChecked());
-}
-
-/* setVideo
- * Video can be enabled/disabled from multiple places. This function keeps
- * the related controls in sync, and performs the actual enable/disable.
- */
-void MainWindow::setVideo(bool enabled) {
-    // Update setting
-    Settings::instance()->setVideoEnabled(enabled);
-
-    // Update UI controls to new state
-    ui->actionEnable_Video->setChecked(enabled);
-    ui->videoEnChbx->setChecked(enabled);
-
-    // Display a message
-    if(enabled) {
-        ui->statusBar->showMessage("Viedo Enabled.", 3000);
-    } else {
-        ui->statusBar->showMessage("Video Disabled.", 3000);
-    }
 }
 
 /* on_robotList_selectionChanged
@@ -325,14 +276,6 @@ void MainWindow::updateOverviewTab(void) {
         ui->robotStateLabel->setText("-");
         ui->robotPosLabel->setText("-");
     }
-}
-
-/* visConfigUpdate
- * Called when the settings of a visualisation have changed, and the
- * visualiser config list should be updated.
- */
-void MainWindow::visConfigUpdate(void) {
-    visualiser->config.populateSettingsList(ui->visSettingsList);
 }
 
 /* on_networkListenButton_clicked
@@ -451,14 +394,6 @@ void MainWindow::on_visSettingsList_itemDoubleClicked(QListWidgetItem *item)
         QObject::connect(settingsDialog, SIGNAL(accepted()), this, SLOT(visConfigUpdate(void)));
         settingsDialog->show();
     }
-}
-
-/* on_robotColoursCheckBox_stateChanged
- * Called when the user changes the robot colour enabled setting.
- */
-void MainWindow::on_robotColoursCheckBox_stateChanged()
-{
-    Settings::instance()->setRobotColourEnabled(ui->robotColoursCheckBox->isChecked());
 }
 
 /* on_logFileButton_clicked
