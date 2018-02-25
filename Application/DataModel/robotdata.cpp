@@ -20,10 +20,6 @@ RobotData::RobotData(QString id) {
     // Initialise identifiers
     this->id = id;
 
-    // Initialise state data
-    this->state = "Unknown";
-    this->stateTransitionIndex = 0;
-
     // Initialise odometry
     setPos(0.0f, 0.0f);
     setAngle(0);
@@ -33,10 +29,6 @@ RobotData::RobotData(QString id) {
 
     // Generate colour
     setColour(cv::Scalar(255, 255, 255));
-
-    // Zero out the proximity data array
-    bzero(this->proximityData, sizeof(int) * PROX_SENS_COUNT);
-    bzero(this->backgroundIR, sizeof(int) * PROX_SENS_COUNT);
 }
 
 /* Destructor
@@ -113,87 +105,6 @@ void RobotData::updatePositionHistory(void) {
     }
 }
 
-/* setState
- * Update the current state string.
- */
-void RobotData::setState(QString state) {
-    if (this->state != state) {
-        // If this state has not been seen before add it to the list of known states
-        if (!this->knownStates.stringList().contains(state)) {
-            QStringList list = this->knownStates.stringList();
-            list.append(state);
-            this->knownStates.setStringList(list);
-        }
-
-        // Update the state transition history
-        updateStateTransitionHistory(state);
-
-        // Update the current state
-        this->state = state;
-    }
-}
-
-/* updateStateTransitionHistory
- * Add an entry to the transition history from the old state
- * to the new one, at the current time.
- */
-void RobotData::updateStateTransitionHistory(QString newState) {
-    // Create the transition
-    StateTransition trans;
-    trans.oldState = this->state;
-    trans.newState = newState;
-    trans.time = QTime::currentTime();
-
-    // Add it to the circular queue
-    this->stateTransitionHistory[this->stateTransitionIndex] = trans;
-    this->stateTransitionIndex++;
-    if (this->stateTransitionIndex == 10) {
-        this->stateTransitionIndex = 0;
-    }
-
-    // Update the transition list
-    QStringList list;
-
-    // Iterate over list
-    for(int i = 0; i < 10; i++) {
-        // Start from the most recent transition and work backwards
-        int idx = this->stateTransitionIndex - i - 1;
-
-        // Adhere to the circular queue structure
-        if (idx < 0) idx += 10;
-
-        // If the transition at idx is not null, add it to the list
-        StateTransition trans = this->stateTransitionHistory[idx];
-        if (!trans.time.isNull()) {
-            list.append("[" + trans.time.toString("HH:mm:ss:zzz") + "]   " + trans.oldState + " -> " + trans.newState);
-        }
-    }
-
-    // Update the string list model
-    this->stateTransitionList.setStringList(list);
-}
-
-/* getState
- * Get the current state.
- */
-QString RobotData::getState(void) {
-    return this->state;
-}
-
-/* getKnownStates
- * Get the list of known states for this robot.
- */
-QStringListModel* RobotData::getKnownStates(void) {
-    return &this->knownStates;
-}
-
-/* getStateTransitionList
- * Get the state transition history in a list form.
- */
-QStringListModel* RobotData::getStateTransitionList(void) {
-    return &this->stateTransitionList;
-}
-
 /* getID
  * Get the robot ID number.
  */
@@ -241,93 +152,4 @@ cv::Scalar RobotData::getColour(void) {
  */
 void RobotData::setColour(cv::Scalar colour) {
     this->colour = colour;
-}
-
-/* updateProximitySensorData
- * Insert new data into the proximity sensor data array.
- */
-void RobotData::updateProximitySensorData(int* data, int mask) {
-    for (int i = 0; i < PROX_SENS_COUNT; i++) {
-        if (1 << i & mask) {
-            this->proximityData[i] = data[i];
-        }
-    }
-}
-
-/* getProximitySensorData
- * Returns the current value for one of the proximity sensors.
- */
-int RobotData::getProximitySensorData(int sensor) {
-    if (sensor < PROX_SENS_COUNT && sensor >= 0) {
-        return this->proximityData[sensor];
-    }
-
-    return -1;
-}
-
-/* updateBackgroundIR
- * Insert new data into the background IR data array.
- */
-void RobotData::updateBackgroundIR(int* data, int mask) {
-    for (int i = 0; i < PROX_SENS_COUNT; i++) {
-        if (1 << i & mask) {
-            this->backgroundIR[i] = data[i];
-        }
-    }
-}
-
-/* getBackgroundIR
- * Returns the current background IR value for one of the IR sensors.
- */
-int RobotData::getBackgroundIR(int sensor) {
-    if (sensor < PROX_SENS_COUNT && sensor >= 0) {
-        return this->backgroundIR[sensor];
-    }
-
-    return -1;
-}
-
-/* insertCustomData
- * Insert a custom data point into the robot data
- */
-void RobotData::insertCustomData(QString key, QString value) {
-    customData[key] = value;
-}
-
-/* populateCustomDataTable
- * Fill the custom data table with the robot's custom data
- */
-void RobotData::populateCustomDataTable(QTableWidget *table) {
-    // Clear the table contents
-    table->clearContents();
-    table->setRowCount(0);
-
-    // Iterate over the custom data, adding each point as a row
-    for (std::map<QString, QString>::iterator it = customData.begin(); it != customData.end(); it++) {
-        QTableWidgetItem* key = new QTableWidgetItem(it->first);
-        QTableWidgetItem* value = new QTableWidgetItem(it->second);
-
-        int row = table->rowCount();
-        table->setRowCount(table->rowCount() + 1);
-        table->setItem(row, 0, key);
-        table->setItem(row, 1, value);
-    }
-}
-
-/* getCustomData
- * Retrieve the custom data value for a given key
- */
-QString RobotData::getCustomData(QString key) {
-    std::map<QString, QString>::iterator it;
-
-    // Check existance of the key
-    it = customData.find(key);
-
-    if (it != customData.end()) {
-        // Return the data
-        return customData.find(key)->second;
-    }
-
-    // Return empty
-    return "";
 }

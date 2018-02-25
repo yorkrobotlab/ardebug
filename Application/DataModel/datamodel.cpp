@@ -98,6 +98,181 @@ int DataModel::getRobotCount(void) {
     return robotDataList.size();
 }
 
+ValueType typeOfJsonValue(QJsonValue val)
+{
+    if(val.isString())
+        return String;
+
+    if(val.isArray())
+        return Array;
+
+    if(val.isBool())
+        return Bool;
+
+    if(val.isDouble())
+        return Double;
+
+    if(val.isObject())
+        return Object;
+
+    return Unknown;
+}
+
+void parseBoolValue(QMap<QString, RobotStateValue>& dict, QString name, QJsonValueRef val);
+void parseDoubleValue(QMap<QString, RobotStateValue>& dict, QString name, QJsonValueRef val);
+void parseStringValue(QMap<QString, RobotStateValue>& dict, QString name, QJsonValueRef val);
+void populateListFromJson(QList<RobotStateValue>& array, QJsonArray vals);
+void populateObjectFromJson(QMap<QString,RobotStateValue>& obj, QJsonObject jsonObj);
+
+
+void parseBoolValue(QMap<QString, RobotStateValue>& dict, QString name, QJsonValueRef val)
+{
+    RobotStateValue v;
+    v.type = Bool;
+    v.boolValue = val.toBool();
+    dict[name] = v;
+}
+
+void parseDoubleValue(QMap<QString, RobotStateValue>& dict, QString name, QJsonValueRef val)
+{
+    RobotStateValue v;
+    v.type = Double;
+    v.doubleValue = val.toDouble();
+    dict[name] = v;
+}
+
+void parseStringValue(QMap<QString, RobotStateValue>& dict, QString name, QJsonValueRef val)
+{
+    RobotStateValue v;
+    v.type = String;
+    v.stringValue = val.toString();
+    dict[name] = v;
+}
+
+void populateListFromJson(QList<RobotStateValue>& array, QJsonArray vals)
+{
+    auto type = typeOfJsonValue(vals[0]);
+    switch(type)
+    {
+    case Double:
+    {
+        for(auto v_a : vals)
+        {
+            RobotStateValue v_i;
+            v_i.type = Double;
+            v_i.doubleValue = v_a.toDouble();
+            array.push_back(v_i);
+        }
+        break;
+    }
+    case Bool:
+    {
+        for(auto v_a : vals)
+        {
+            RobotStateValue v_i;
+            v_i.type = Bool;
+            v_i.boolValue = v_a.toBool();
+            array.push_back(v_i);
+        }
+        break;
+    }
+    case String:
+    {
+        for(auto v_a : vals)
+        {
+            RobotStateValue v_i;
+            v_i.type = String;
+            v_i.stringValue = v_a.toString();
+            array.push_back(v_i);
+        }
+        break;
+    }
+    case Array:
+    {
+        for(auto v_a : vals)
+        {
+            RobotStateValue v_i;
+            v_i.type = Array;
+            v_i.arrayValue = {};
+            populateListFromJson(v_i.arrayValue, v_a.toArray());
+        }
+        break;
+    }
+    case Object:
+    {
+        for(auto v_a : vals)
+        {
+            RobotStateValue v_i;
+            v_i.type = Object;
+            v_i.objectValue = {};
+            populateObjectFromJson(v_i.objectValue, v_a.toObject());
+        }
+        break;
+    }
+    default:
+    {
+
+    }
+    }
+}
+
+void populateObjectFromJson(QMap<QString,RobotStateValue>& obj, QJsonObject jsonObj)
+{
+    for(auto key : jsonObj.keys())
+    {
+        auto type = typeOfJsonValue(jsonObj[key]);
+        switch(type)
+        {
+        case Double:
+        {
+            RobotStateValue v_i;
+            v_i.type = Double;
+            v_i.doubleValue = jsonObj[key].toDouble();
+            obj[key] = v_i;
+            break;
+        }
+        case String:
+        {
+            RobotStateValue v_i;
+            v_i.type = String;
+            v_i.stringValue = jsonObj[key].toString();
+            obj[key] = v_i;
+            break;
+        }
+        case Bool:
+        {
+            RobotStateValue v_i;
+            v_i.type = Bool;
+            v_i.boolValue = jsonObj[key].toBool();
+            obj[key] = v_i;
+            break;
+        }
+        case Array:
+        {
+            RobotStateValue v_i;
+            v_i.type = Array;
+            v_i.arrayValue = {};
+            populateListFromJson(v_i.arrayValue, jsonObj[key].toArray());
+            obj[key] = v_i;
+            break;
+        }
+        case Object:
+        {
+            RobotStateValue v_i;
+            v_i.type = Object;
+            v_i.objectValue = {};
+            populateObjectFromJson(v_i.objectValue, jsonObj[key].toObject());
+            obj[key] = v_i;
+            break;
+        }
+        default:
+        {
+
+        }
+        }
+    }
+}
+
 /* newData
  * Slot. Called when new data arrives.
  */
@@ -125,6 +300,47 @@ void DataModel::newData(const QString &dataString) {
         p.position.y = jsonPose["y"].toDouble();
         robot->setPos(p.position.x, p.position.y);
         robot->setAngle(p.orientation);
+
+        message.remove("pose");
+    }
+
+    for(QString key : message.keys())
+    {
+        auto val = message[key];
+        switch(typeOfJsonValue(val))
+        {
+        case Bool:
+        {
+            robot->setBoolValue(key, val.toBool());
+            break;
+        }
+        case Double:
+        {
+            robot->setDoubleValue(key, val.toDouble());
+            break;
+        }
+        case String:
+        {
+            robot->setStringValue(key, val.toString());
+            break;
+        }
+        case Object:
+        {
+            auto& v = robot->getObjectValue(key);
+            populateObjectFromJson(v, val.toObject());
+            break;
+        }
+        case Array:
+        {
+            auto& v = robot->getArrayValue(key);
+            populateListFromJson(v, val.toArray());
+            break;
+        }
+        default:
+        {
+
+        }
+        }
     }
 
     // Signal to the UI that new data is available
@@ -165,45 +381,6 @@ void DataModel::parsePositionPacket(RobotData* robot, QString xString, QString y
     robot->setAngle(a);
 
     updateAveragePosition();
-}
-
-/* parseProximityPacket
- * Parses raw proximity sensor data values into the data model
- */
-void DataModel::parseProximityPacket(RobotData *robot, QStringList data, bool background) {
-    int proxData[PROX_SENS_COUNT] = {0};
-    int mask = 0;
-
-    // data 0 and 1 are ID and Type. Iterate from data 2 onwards
-    for (int i = 2; i < data.length() && i < PROX_SENS_COUNT + 2; i++) {
-        // Read string into int
-        bool ok = false;
-        int prox = data[i].toInt(&ok);
-
-        // If valid value, store in priximity data array
-        if (ok && prox >= 0) {
-            proxData[i - 2] = prox;
-
-            // Set mask bit to show value at i is valid
-            mask |= 1 << (i-2);
-        }
-    }
-
-    // Update the robots
-    if (background) {
-        robot->updateBackgroundIR(proxData, mask);
-    } else {
-        robot->updateProximitySensorData(proxData, mask);
-    }
-
-    // Log the data
-    data.removeFirst();
-    data.removeFirst();
-    if (background) {
-        Log::instance()->logMessage("Robot " + robot->getID() + " - Background IR Data: " + data.join(" "), false);
-    } else {
-        Log::instance()->logMessage("Robot " + robot->getID() + " - IR Data: " + data.join(" "), false);
-    }
 }
 
 /* deleteRobot

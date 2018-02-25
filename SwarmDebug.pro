@@ -42,19 +42,11 @@ SOURCES += Application/Core/main.cpp\
     Application/Visualiser/visposition.cpp \
     Application/Visualiser/visdirection.cpp \
     Application/Visualiser/visname.cpp \
-    Application/Visualiser/visstate.cpp \
-    Application/Visualiser/visproximity.cpp \
     Application/Visualiser/vispath.cpp \
     Application/Visualiser/visid.cpp \
-    Application/Visualiser/viscustom.cpp \
-    Application/UI/irdataview.cpp \
-    Application/UI/proximitysettingsdialog.cpp \
     Application/UI/pathsettingsdialog.cpp \
     Application/UI/idsettingsdialog.cpp \
     Application/UI/namesettingsdialog.cpp \
-    Application/UI/statesettingsdialog.cpp \
-    Application/UI/customsettingsdialog.cpp \
-    Application/UI/testingwindow.cpp \
     Application/UI/addidmappingdialog.cpp \
     Application/UI/robotinfodialog.cpp
 
@@ -78,19 +70,11 @@ HEADERS  += Application/Core/mainwindow.h \
     Application/Visualiser/visposition.h \
     Application/Visualiser/visdirection.h \
     Application/Visualiser/visname.h \
-    Application/Visualiser/visstate.h \
-    Application/Visualiser/visproximity.h \
     Application/Visualiser/vispath.h \
     Application/Visualiser/visid.h \
-    Application/Visualiser/viscustom.h \
-    Application/UI/irdataview.h \
-    Application/UI/proximitysettingsdialog.h \
     Application/UI/pathsettingsdialog.h \
     Application/UI/idsettingsdialog.h \
     Application/UI/namesettingsdialog.h \
-    Application/UI/statesettingsdialog.h \
-    Application/UI/customsettingsdialog.h \
-    Application/UI/testingwindow.h \
     Application/UI/addidmappingdialog.h \
     Application/UI/robotinfodialog.h
 

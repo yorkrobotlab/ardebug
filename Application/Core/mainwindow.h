@@ -9,8 +9,6 @@
 #include "../Visualiser/visualiser.h"
 #include "../Tracking/cameracontroller.h"
 #include "../DataModel/datamodel.h"
-#include "../UI/irdataview.h"
-#include "../UI/testingwindow.h"
 
 namespace Ui {
 class MainWindow;
@@ -25,9 +23,7 @@ class MainWindow : public QMainWindow
     Visualiser* visualiser;
     CameraController* cameraController;
     DataModel* dataModel;
-    IRDataView* irDataView;
 
-    TestingWindow* testingWindow;
     QDialog* addIDMappingDialog;
 
     int sockfd;
@@ -88,8 +84,6 @@ private slots:
 
     void on_loggingButton_clicked();
 
-    void on_actionTesting_Window_triggered();
-
     void on_tagMappingDeleteButton_clicked();
 
     void on_tagMappingAddButton_clicked();
@@ -113,9 +107,6 @@ private:
 
     void setVideo(bool enabled);
     void updateOverviewTab(void);
-    void updateStateTab(void);
-    void updateProximityTab(void);
-    void updateCustomDataTab(void);
 
     void idMappingTableSetup(void);
 };

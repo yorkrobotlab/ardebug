@@ -116,12 +116,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->imageYDimEdit->setValidator(new QIntValidator(1, 10000, this));
     ui->angleCorrectionEdit->setValidator(new QIntValidator(-180, 180, this));
 
-    // Initalise the IR data view
-    irDataView = new IRDataView(dataModel);
-    QVBoxLayout* vertLayout = new QVBoxLayout();
-    vertLayout->addWidget(irDataView);
-    ui->proximityTab->setLayout(vertLayout);
-
     // Set up the custom data table
     ui->customDataTable->setColumnCount(2);
     ui->customDataTable->setHorizontalHeaderLabels(QStringList("Key") << QString("Value"));
@@ -133,9 +127,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Start the camera reading immediately
     startReadingCamera();    
-
-    // Initialise the testing window to null
-    testingWindow = NULL;
 }
 
 /* Destructor.
@@ -153,11 +144,6 @@ MainWindow::~MainWindow()
     delete ui;
     delete dataModel;
     delete visualiser;
-
-    // Delete the testing window if existing
-    if (testingWindow != NULL) {
-        delete testingWindow;
-    }
 
     // Delete the id mapping dialog if existing
     if (addIDMappingDialog != NULL) {
@@ -242,15 +228,6 @@ void MainWindow::robotListSelectionChanged(const QItemSelection &selection) {
     } else {
         dataModel->selectedRobotID = -1;
     }
-
-    // Update the overview tab
-    updateOverviewTab();
-
-    // Update the state tab
-    updateStateTab();
-
-    // Update the proximiy sensor tab
-    updateProximityTab();
 }
 
 /* on_robotList_doubleClicked
@@ -298,14 +275,6 @@ void MainWindow::robotSelectedInVisualiser(QString id) {
 
     // Update the overview tab
     updateOverviewTab();
-
-    // Update the state tab
-    updateStateTab();
-
-    // Update the proximiy sensor tab
-    updateProximityTab();
-
-    updateCustomDataTab();
 }
 
 /* robotDeleted
@@ -338,8 +307,6 @@ void MainWindow::dataModelUpdate(bool listChanged)
 
     // Update the necessary data tabs
     updateOverviewTab();
-    updateProximityTab();
-    updateCustomDataTab();
 }
 
 /* updateOverviewTab
@@ -351,46 +318,12 @@ void MainWindow::updateOverviewTab(void) {
     if (robot) {
         // Update the overview text
         ui->robotIDLabel->setText(robot->getID());
-        ui->robotStateLabel->setText(robot->getState());
         ui->robotPosLabel->setText("X: " + QString::number(robot->getPos().position.x) + ", Y: " + QString::number(robot->getPos().position.y) + ", A: " + QString::number(robot->getAngle()));
     } else {
         ui->robotIDLabel->setText("-");
         ui->robotNameLabel->setText("-");
         ui->robotStateLabel->setText("-");
         ui->robotPosLabel->setText("-");
-    }
-}
-
-/* updateStateTab
- * Updates the contents of the state tab in response to new data.
- */
-void MainWindow::updateStateTab(void) {
-    // Get the selected robot
-    if (dataModel->selectedRobotID >= 0) {
-        RobotData* robot = dataModel->getRobotByID(dataModel->selectedRobotID);
-
-        // Update the state lists
-        ui->stateList->setModel(robot->getKnownStates());
-        ui->stateTransitionList->setModel(robot->getStateTransitionList());
-    }
-}
-
-/* updateProximityTab
- * Updates the contents of the IR data tab in response to new data.
- */
-void MainWindow::updateProximityTab(void) {
-    irDataView->repaint();
-}
-
-/* updateCustomDataTab
- * Updates the contents of the custom data tab in response to new data.
- */
-void MainWindow::updateCustomDataTab(void) {
-    // Get the selected robot
-    RobotData* robot = dataModel->getRobotByID(dataModel->selectedRobotID);
-    if (robot) {
-
-        robot->populateCustomDataTable(ui->customDataTable);
     }
 }
 
@@ -544,22 +477,6 @@ void MainWindow::on_loggingButton_clicked()
     Log::instance()->setLoggingEnabled(!Log::instance()->isLoggingEnabled());
 
     ui->loggingButton->setText(Log::instance()->isLoggingEnabled() ? "Stop Logging" : "Start Logging");
-}
-
-/* on_actionTesting_Window_triggered
- * Called when the user presses the menu item to show the testing window
- */
-void MainWindow::on_actionTesting_Window_triggered()
-{
-    // If no testing window exists yet, create one
-    if (testingWindow == NULL) {
-        testingWindow = new TestingWindow();
-    }
-
-    // If the testing window exists show it
-    if (testingWindow != NULL) {
-        testingWindow->show();
-    }
 }
 
 /* idMappingTableSetup

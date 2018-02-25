@@ -15,17 +15,34 @@
 
 #define POS_HISTORY_INTERVAL    10
 
+enum ValueType
+{
+    String,
+    Double,
+    Bool,
+    Object,
+    Array,
+    Unknown
+};
+
+struct RobotStateValue
+{
+    ValueType type;
+
+    QString stringValue = "";
+    double doubleValue = 0;
+    bool boolValue = false;
+    QList<RobotStateValue> arrayValue = {};
+    QMap<QString, RobotStateValue> objectValue;
+};
+
 class RobotData
 {
     // Identifiers
     QString id;
 
     // State data
-    QString state;
-    QStringListModel knownStates;
-    QStringListModel stateTransitionList;
-    StateTransition stateTransitionHistory[STATE_HISTORY_COUNT];
-    int stateTransitionIndex;
+    QMap<QString, RobotStateValue> values;
 
     // Position
     Pose pos;
@@ -36,13 +53,6 @@ class RobotData
     // Colour
     cv::Scalar colour;
 
-    // Sensor Data
-    int proximityData[PROX_SENS_COUNT];
-    int backgroundIR[PROX_SENS_COUNT];
-
-    // Custom Data
-    std::map<QString, QString> customData;
-
 public:
     RobotData(QString id);
     ~RobotData(void);
@@ -50,11 +60,6 @@ public:
     QString getID(void);
     void setID(QString newId);
     QString getIDConst(void) const;
-
-    QString getState(void);
-    QStringListModel* getKnownStates(void);
-    QStringListModel* getStateTransitionList(void);
-    void setState(QString state);
 
     Pose getPos(void);
     void getPosHistory(Pose* result);
@@ -66,18 +71,47 @@ public:
     cv::Scalar getColour(void);
     void setColour(cv::Scalar colour);
 
-    void updateProximitySensorData(int* data, int mask);
-    int getProximitySensorData(int sensor);
+    void setBoolValue(QString name, bool value)
+    {
+        auto& val = values[name];
+        val.type = Bool;
+        val.boolValue = value;
+    }
 
-    void updateBackgroundIR(int* data, int mask);
-    int getBackgroundIR(int sensor);
+    void setDoubleValue(QString name, double value)
+    {
+        auto& val = values[name];
+        val.type = Double;
+        val.doubleValue = value;
+    }
 
-    void insertCustomData(QString key, QString value);
-    void populateCustomDataTable(QTableWidget* table);
-    QString getCustomData(QString key);
+    void setStringValue(QString name, QString value)
+    {
+        auto& val = values[name];
+        val.type = String;
+        val.stringValue = value;
+    }
 
+    bool getBoolValue(QString name) { return values[name].boolValue; }
+    double getDoubleValue(QString name) { return values[name].doubleValue; }
+    QString getStringValue(QString name) { return values[name].stringValue; }
+
+    QList<RobotStateValue>& getArrayValue(QString name)
+    {
+        if(!values.contains(name))
+            values[name].arrayValue = {};
+
+        return values[name].arrayValue;
+    }
+
+    QMap<QString, RobotStateValue>& getObjectValue(QString name)
+    {
+        if(!values.contains(name))
+            values[name].objectValue = {};
+
+        return values[name].objectValue;
+    }
 private:
-    void updateStateTransitionHistory(QString newState);
     void updatePositionHistory(void);
 };
 

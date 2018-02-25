@@ -17,12 +17,9 @@
 
 #include "visid.h"
 #include "visname.h"
-#include "visstate.h"
 #include "visposition.h"
 #include "visdirection.h"
-#include "visproximity.h"
 #include "vispath.h"
-#include "viscustom.h"
 
 /* Constructor
  * Empty.
@@ -39,12 +36,9 @@ Visualiser::Visualiser(DataModel *dataModelRef) {
     this->config = VisConfig();
     this->config.elements.push_back(new VisID());
     this->config.elements.push_back(new VisName());
-    this->config.elements.push_back(new VisState());
     this->config.elements.push_back(new VisPosition());
     this->config.elements.push_back(new VisDirection());
-    this->config.elements.push_back(new VisProximity());
     this->config.elements.push_back(new VisPath());
-    this->config.elements.push_back(new VisCustom());
 
     this->click.x = 0.0;
     this->click.y = 0.0;
