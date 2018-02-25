@@ -99,7 +99,10 @@ public:
     QList<RobotStateValue>& getArrayValue(QString name)
     {
         if(!values.contains(name))
+        {
+            values[name].type = Array;
             values[name].arrayValue = {};
+        }
 
         return values[name].arrayValue;
     }
@@ -107,7 +110,10 @@ public:
     QMap<QString, RobotStateValue>& getObjectValue(QString name)
     {
         if(!values.contains(name))
+        {
+            values[name].type = Object;
             values[name].objectValue = {};
+        }
 
         return values[name].objectValue;
     }

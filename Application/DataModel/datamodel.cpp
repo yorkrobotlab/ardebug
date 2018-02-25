@@ -286,6 +286,7 @@ void DataModel::newData(const QString &dataString) {
         return;
 
     QString robotId = message["id"].toString();
+    message.remove("id");
     addRobotIfNotExist(robotId);
     RobotData* robot = getRobotByID(robotId);
 
