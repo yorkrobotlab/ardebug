@@ -46,12 +46,12 @@ void VisName::render(cv::Mat image, RobotData *robot, bool selected) {
     int x = image.cols * robot->getPos().position.x;
     int y = image.rows * robot->getPos().position.y;
 
-    putText(image,
-            robot->getID().toStdString(),
-            cv::Point(x + 12, y),
-            cv::FONT_HERSHEY_SIMPLEX,
-            0.3,
-            colour);
+//    cv::putText(image,
+//            robot->getID().toStdString(),
+//            cv::Point(x + 12, y),
+//            cv::FONT_HERSHEY_SIMPLEX,
+//            0.3,
+//            colour);
 }
 
 /* getSettingsDialog

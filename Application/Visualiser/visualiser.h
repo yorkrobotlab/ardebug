@@ -26,7 +26,7 @@ public:
     void checkFrameSize(void);
 
 public slots:
-    void showImage(const cv::Mat& image);
+    void showImage(cv::Mat& image);
 
 signals:
     void frameSizeChanged(int width, int height);

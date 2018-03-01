@@ -55,7 +55,7 @@ void VisID::render(cv::Mat image, RobotData *robot, bool selected) {
     int x = image.cols * robot->getPos().position.x;
     int y = image.rows * robot->getPos().position.y;
 
-    putText(image,
+    cv::putText(image,
             robot->getID().toStdString(),
             cv::Point(x - 24, y),
             cv::FONT_HERSHEY_SIMPLEX,

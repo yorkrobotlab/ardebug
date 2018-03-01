@@ -46,7 +46,7 @@ Visualiser::Visualiser(DataModel *dataModelRef) {
 /* showImage
  * Display the supplied opencv image.
  */
-void Visualiser::showImage(const cv::Mat& image) {
+void Visualiser::showImage(cv::Mat& image) {
     // Iterate over the list of robots
     for (int i = 0; i < dataModelRef->getRobotCount(); i++) {
         // Get data

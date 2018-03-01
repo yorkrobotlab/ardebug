@@ -14,412 +14,47 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Swarm Debug</string>
+   <string>ARDebug</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QWidget" name="widget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>500</height>
+       </size>
+      </property>
+     </widget>
+    </item>
     <item>
      <widget class="QSplitter" name="splitter_2">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
-      <widget class="QSplitter" name="splitter">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>6</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <widget class="QTabWidget" name="visualiserTabWidget">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>4</horstretch>
-          <verstretch>4</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>200</height>
-         </size>
-        </property>
-        <property name="currentIndex">
-         <number>0</number>
-        </property>
-        <widget class="QWidget" name="visualiserTab">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <attribute name="title">
-          <string>Visualiser</string>
-         </attribute>
-         <widget class="QWidget" name="videoPlaceholder" native="true">
-          <property name="geometry">
-           <rect>
-            <x>30</x>
-            <y>10</y>
-            <width>640</width>
-            <height>480</height>
-           </rect>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-         </widget>
-        </widget>
-        <widget class="QWidget" name="cameraTab">
-         <attribute name="title">
-          <string>Tracking Camera Settings</string>
-         </attribute>
-         <layout class="QFormLayout" name="formLayout_8">
-          <item row="0" column="0">
-           <layout class="QFormLayout" name="formLayout_7">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_8">
-              <property name="text">
-               <string>Camera Options</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_10">
-              <property name="text">
-               <string>Flip Image</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QCheckBox" name="flipImageCheckBox">
-              <property name="text">
-               <string/>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="Line" name="line_2">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="label_9">
-              <property name="text">
-               <string>ARuCo Tracking Options</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="label_20">
-              <property name="text">
-               <string>Angle Correction (in °)</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="1">
-             <widget class="QLineEdit" name="angleCorrectionEdit">
-              <property name="text">
-               <string>90</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0">
-             <widget class="QLabel" name="label_7">
-              <property name="text">
-               <string>Tag ID Mapping</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="1">
-             <widget class="QTableWidget" name="tagMappingTable"/>
-            </item>
-            <item row="6" column="1">
-             <layout class="QHBoxLayout" name="horizontalLayout_2">
-              <item>
-               <widget class="QPushButton" name="tagMappingAddButton">
-                <property name="text">
-                 <string>Add</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="tagMappingDeleteButton">
-                <property name="text">
-                 <string>Delete</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </widget>
-       <widget class="QTabWidget" name="robotTabWidget">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>4</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="baseSize">
-         <size>
-          <width>350</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="currentIndex">
-         <number>2</number>
-        </property>
-        <widget class="QWidget" name="robotTab">
-         <attribute name="title">
-          <string>Robots</string>
-         </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_4">
-          <item>
-           <widget class="QListView" name="robotList"/>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="networkTab">
-         <attribute name="title">
-          <string>Network</string>
-         </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <item>
-           <layout class="QFormLayout" name="formLayout_6">
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="networkPortBox">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>8888</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_18">
-              <property name="text">
-               <string>Port Number</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QPushButton" name="networkListenButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Start Listening</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="bluetoothTab">
-         <attribute name="title">
-          <string>Bluetooth</string>
-         </attribute>
-         <widget class="QWidget" name="verticalLayoutWidget">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>10</y>
-            <width>251</width>
-            <height>511</height>
-           </rect>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_9">
-           <item>
-            <widget class="QListView" name="bluetoothlist"/>
-           </item>
-           <item>
-            <widget class="QPushButton" name="bluetoothListenButton">
-             <property name="text">
-              <string>Connect All</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="bluetoothDisconnectAllButton">
-             <property name="text">
-              <string>Disconnect All</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButton_2">
-             <property name="text">
-              <string>Device List</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </widget>
-        <widget class="QWidget" name="loggingTab">
-         <attribute name="title">
-          <string>Logging</string>
-         </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_8">
-          <item>
-           <layout class="QFormLayout" name="formLayout_2">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label">
-              <property name="text">
-               <string>Log File Directory</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QToolButton" name="logFileButton">
-              <property name="text">
-               <string>...</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="loggingFileLabel">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>-</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QPushButton" name="loggingButton">
-            <property name="text">
-             <string>Start Logging</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </widget>
-      </widget>
       <widget class="QTabWidget" name="detailTabWidget">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>200</height>
+        </size>
+       </property>
        <property name="currentIndex">
         <number>0</number>
        </property>
-       <widget class="QWidget" name="consoleTab">
-        <attribute name="title">
-         <string>Console</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_5">
-         <item>
-          <widget class="QPlainTextEdit" name="consoleText"/>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="overviewTab">
-        <attribute name="title">
-         <string>Overview</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <layout class="QFormLayout" name="formLayout_3">
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_12">
-             <property name="text">
-              <string>Robot Data Overview</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_13">
-             <property name="text">
-              <string>ID</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QLabel" name="robotIDLabel">
-             <property name="text">
-              <string>-</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="label_11">
-             <property name="text">
-              <string>Name</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QLabel" name="robotNameLabel">
-             <property name="text">
-              <string>-</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="label_16">
-             <property name="text">
-              <string>State</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="label_17">
-             <property name="text">
-              <string>Position</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QLabel" name="robotStateLabel">
-             <property name="text">
-              <string>-</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="1">
-            <widget class="QLabel" name="robotPosLabel">
-             <property name="text">
-              <string>-</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </widget>
        <widget class="QWidget" name="customDataTab">
         <attribute name="title">
          <string>Custom Data</string>
@@ -427,6 +62,16 @@
         <layout class="QVBoxLayout" name="verticalLayout_7">
          <item>
           <widget class="QTableWidget" name="customDataTable"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="consoleTab">
+        <attribute name="title">
+         <string>Console</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <widget class="QPlainTextEdit" name="consoleText"/>
          </item>
         </layout>
        </widget>
@@ -446,14 +91,21 @@
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>Options</string>
+     <string>File</string>
     </property>
+    <addaction name="actionLog_to_File"/>
+    <addaction name="actionStop_Logging"/>
+    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuVisualiser">
     <property name="title">
-     <string>Visualiser</string>
+     <string>Settings</string>
     </property>
+    <addaction name="actionSave_Settings"/>
+    <addaction name="actionLoad_Settings"/>
+    <addaction name="separator"/>
+    <addaction name="actionEdit_Settings"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuVisualiser"/>
@@ -462,6 +114,43 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionLog_to_File">
+   <property name="text">
+    <string>Log to File</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionStop_Logging">
+   <property name="text">
+    <string>Stop Logging</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+L</string>
+   </property>
+  </action>
+  <action name="actionSave_Settings">
+   <property name="text">
+    <string>Save Settings</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionLoad_Settings">
+   <property name="text">
+    <string>Load Settings</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionEdit_Settings">
+   <property name="text">
+    <string>Edit Settings</string>
    </property>
   </action>
  </widget>

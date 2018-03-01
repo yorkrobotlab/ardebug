@@ -33,18 +33,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     // Show a message
-    ui->statusBar->showMessage("SwarmDebug v0.01", 3000);
-
-    // Show some console text
-    Log::instance()->setup(ui->consoleText, ui->loggingFileLabel);
-    Log::instance()->logMessage("Application Started Succesfully.\n", true);
+    ui->statusBar->showMessage("Welcome to ARDebug", 3000);
 
     // Set up the data model
     dataModel = new DataModel;
-    ui->robotList->setModel(dataModel->getRobotList());
-    connect(ui->robotList->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-            this, SLOT(robotListSelectionChanged(QItemSelection)));
-    ui->robotList->setEditTriggers(QListView::NoEditTriggers);
 
     // Set up the network thread
     DataThread *dataHandler = new DataThread;
@@ -67,19 +59,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(connectBluetooth()), bluetoothHandler, SLOT(connectAllSockets()));
     connect(this, SIGNAL(disconnectBluetooth()), bluetoothHandler, SLOT(disconnectAllSockets()));
     connect(this, SIGNAL(changeStateBluetoothDevice(int)), bluetoothHandler, SLOT(changeSocket(int)));
-    ui->bluetoothlist->setModel(btConfig->getActiveDeviceList());
-    ui->bluetoothlist->setEditTriggers(QListView::NoEditTriggers);
-    //connect other bluetooth related buttons here
 
     // Connect signals and sockets for transferring the incoming data
     connect(bluetoothHandler, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
 
-
     connect(dataModel, SIGNAL(modelChanged(bool)), this, SLOT(dataModelUpdate(bool)));
     networkThread.start();
     bluetoothThread.start();
-
-
 
     // Intantiate the visualiser
     visualiser = new Visualiser(dataModel);
@@ -88,7 +74,6 @@ MainWindow::MainWindow(QWidget *parent) :
     // Embed the visualiser in the tab
     QHBoxLayout* horizLayout = new QHBoxLayout();
     horizLayout->addWidget(visualiser);
-    ui->visualiserTab->setLayout(horizLayout);
 
     connect(visualiser, SIGNAL(robotSelectedInVisualiser(QString)), this, SLOT(robotSelectedInVisualiser(QString)));
 
@@ -103,19 +88,6 @@ MainWindow::MainWindow(QWidget *parent) :
     // Set up the ID mapping table
     addIDMappingDialog = NULL;
     idMappingTableSetup();
-
-    auto mediaPlayer = new QMediaPlayer;
-
-    auto placeholder = ui->videoPlaceholder;
-    QVideoWidget* videoWidget = new QVideoWidget{placeholder};
-
-    mediaPlayer->setVideoOutput(videoWidget);
-    mediaPlayer->setMedia(QMediaContent(QUrl("file:///home/richard/Downloads/BigBuckBunny_320x180.mp4")));
-
-    videoWidget->resize(640, 480);
-
-    mediaPlayer->play();
-    videoWidget->show();
 }
 
 /* Destructor.
@@ -211,18 +183,18 @@ void MainWindow::robotSelectedInVisualiser(QString id) {
     dataModel->selectedRobotID = id;
 
     // Get the list of strings in the robot list
-    QStringListModel* listModel = (QStringListModel*)ui->robotList->model();
-    QStringList stringList = listModel->stringList();
+//    QStringListModel* listModel = (QStringListModel*)ui->robotList->model();
+//    QStringList stringList = listModel->stringList();
 
     // Iterate over the list, checking each string for the selected ID
-    for (int i = 0; i < stringList.size(); i++) {
-        QString str = stringList.at(i);
+//    for (int i = 0; i < stringList.size(); i++) {
+//        QString str = stringList.at(i);
 
-        if (str.startsWith(id + ":")) {
+//        if (str.startsWith(id + ":")) {
             // Update selection
-            ui->robotList->setCurrentIndex(ui->robotList->model()->index(i, 0));
-        }
-    }
+//            ui->robotList->setCurrentIndex(ui->robotList->model()->index(i, 0));
+//        }
+//    }
 
     // Update the overview tab
     updateOverviewTab();
@@ -246,7 +218,7 @@ void MainWindow::dataModelUpdate(bool listChanged)
 {
     // Update the robot list
     if (listChanged) {
-        ui->robotList->setModel(dataModel->getRobotList());
+//        ui->robotList->setModel(dataModel->getRobotList());
 
 //        int idx = dataModel->getRobotIndex(dataModel->selectedRobotID, false);
 
@@ -268,13 +240,13 @@ void MainWindow::updateOverviewTab(void) {
     RobotData* robot = dataModel->getRobotByID(dataModel->selectedRobotID);
     if (robot) {
         // Update the overview text
-        ui->robotIDLabel->setText(robot->getID());
-        ui->robotPosLabel->setText("X: " + QString::number(robot->getPos().position.x) + ", Y: " + QString::number(robot->getPos().position.y) + ", A: " + QString::number(robot->getAngle()));
+//        ui->robotIDLabel->setText(robot->getID());
+//        ui->robotPosLabel->setText("X: " + QString::number(robot->getPos().position.x) + ", Y: " + QString::number(robot->getPos().position.y) + ", A: " + QString::number(robot->getAngle()));
     } else {
-        ui->robotIDLabel->setText("-");
-        ui->robotNameLabel->setText("-");
-        ui->robotStateLabel->setText("-");
-        ui->robotPosLabel->setText("-");
+//        ui->robotIDLabel->setText("-");
+//        ui->robotNameLabel->setText("-");
+//        ui->robotStateLabel->setText("-");
+//        ui->robotPosLabel->setText("-");
     }
 }
 
@@ -292,15 +264,15 @@ void MainWindow::on_networkListenButton_clicked()
     if (!listening) {
         // Parse port number
         bool ok = false;
-        int port = ui->networkPortBox->text().toInt(&ok);
+        int port = 8888;
 
         if (ok) {
             // Start listening
             listening = true;
             openUDPSocket(port);
             openPort = port;
-            ui->networkListenButton->setText("Stop Listening");
-            ui->networkPortBox->setDisabled(true);
+            //ui->networkListenButton->setText("Stop Listening");
+            //ui->networkPortBox->setDisabled(true);
 
             Log::instance()->logMessage(QString("Listening for robot data on port ") + QString::number(port) + QString("...\n"), true);
         }
@@ -310,8 +282,8 @@ void MainWindow::on_networkListenButton_clicked()
             listening = false;
             sendClosePacket(openPort);
             openPort = -1;
-            ui->networkListenButton->setText("Start Listening");
-            ui->networkPortBox->setDisabled(false);
+//            ui->networkListenButton->setText("Start Listening");
+//            ui->networkPortBox->setDisabled(false);
 
             Log::instance()->logMessage("Closing data socket.\n", true);
         }
@@ -332,7 +304,7 @@ void MainWindow::on_networkPortBox_textChanged(const QString &text)
         }
     }
 
-    ui->networkPortBox->setText(newString);
+//    ui->networkPortBox->setText(newString);
 }
 
 /* on_imageXDimEdit_textChanged
@@ -411,20 +383,20 @@ void MainWindow::on_loggingButton_clicked()
 {
     Log::instance()->setLoggingEnabled(!Log::instance()->isLoggingEnabled());
 
-    ui->loggingButton->setText(Log::instance()->isLoggingEnabled() ? "Stop Logging" : "Start Logging");
+//    ui->loggingButton->setText(Log::instance()->isLoggingEnabled() ? "Stop Logging" : "Start Logging");
 }
 
 /* idMappingTableSetup
  * Initilises the ID mapping table
  */
 void MainWindow::idMappingTableSetup(void) {
-    ui->tagMappingTable->setColumnCount(2);
+//    ui->tagMappingTable->setColumnCount(2);
 
     QStringList headerList;
     headerList.append("ARuCo ID");
     headerList.append("Robot ID");
-    ui->tagMappingTable->setHorizontalHeaderLabels(headerList);
-    ui->tagMappingTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+//    ui->tagMappingTable->setHorizontalHeaderLabels(headerList);
+//    ui->tagMappingTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 
     idMappingUpdate();
 }
@@ -434,10 +406,10 @@ void MainWindow::idMappingTableSetup(void) {
  */
 void MainWindow::idMappingUpdate(void) {
     // Clear the table
-    ui->tagMappingTable->clearContents();
+//    ui->tagMappingTable->clearContents();
 
     // Set the new row count
-    ui->tagMappingTable->setRowCount(Settings::instance()->idMapping.size());
+//    ui->tagMappingTable->setRowCount(Settings::instance()->idMapping.size());
 
     // For each mapping fill a row
     for (size_t i = 0; i < Settings::instance()->idMapping.size(); i++) {
@@ -449,8 +421,8 @@ void MainWindow::idMappingUpdate(void) {
         arucoID->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
         robotID->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
 
-        ui->tagMappingTable->setItem(i, 0, arucoID);
-        ui->tagMappingTable->setItem(i, 1, robotID);
+//        ui->tagMappingTable->setItem(i, 0, arucoID);
+//        ui->tagMappingTable->setItem(i, 1, robotID);
     }
 }
 
@@ -458,18 +430,18 @@ void MainWindow::idMappingUpdate(void) {
  * Called when the user presses the button to delete an ID mapping
  */
 void MainWindow::on_tagMappingDeleteButton_clicked() {
-    if (ui->tagMappingTable->selectionModel()->hasSelection()) {
-        // Get the selected row
-        QModelIndexList selection = ui->tagMappingTable->selectionModel()->selectedIndexes();
+//    if (ui->tagMappingTable->selectionModel()->hasSelection()) {
+//        // Get the selected row
+//        QModelIndexList selection = ui->tagMappingTable->selectionModel()->selectedIndexes();
 
-        for (int i = 0; i < selection.count(); i++) {
-            // Erase the mapping for that row
-            Settings::instance()->idMapping.erase(Settings::instance()->idMapping.begin() + selection.at(i).row());
-        }
+//        for (int i = 0; i < selection.count(); i++) {
+//            // Erase the mapping for that row
+//            Settings::instance()->idMapping.erase(Settings::instance()->idMapping.begin() + selection.at(i).row());
+//        }
 
-        // Update the table
-        idMappingUpdate();
-    }
+//        // Update the table
+//        idMappingUpdate();
+//    }
 }
 
 /* on_tagMappingAddButton_clicked

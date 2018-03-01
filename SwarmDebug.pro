@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui bluetooth network multimediawidgets multimedia avwidgets
+QT       += core gui bluetooth network multimediawidgets multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
