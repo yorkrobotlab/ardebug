@@ -7,6 +7,8 @@
 #include <QStandardItemModel>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QBluetoothDeviceDiscoveryAgent>
 #include "../Networking/Bluetooth/bluetoothconfig.h"
 
 
@@ -18,18 +20,26 @@ public:
     explicit BluetoothConfigDialog(Bluetoothconfig* btConfig);
     ~BluetoothConfigDialog();
 private:
+    QBluetoothDeviceDiscoveryAgent *discoveryAgent;
     QStandardItemModel* deviceListModel ;
+    QStandardItemModel* scanListModel ;
     std::vector<BluetoothDeviceListItem*> *deviceList;
     Bluetoothconfig* btConfig;
     QListView* currentList;
     QLineEdit * manualAdditionName;
     QLineEdit * manualAdditionAddress;
     QMessageBox * infoDialog;
+    QPushButton* scanButton;
     void accept(void);
     void reject(void);
 
+private slots:
+    void startScan();
+    void scanFinished();
+
 
 public slots:
+    void addDevice(const QBluetoothDeviceInfo&);
     void toggleStatus();
     void deleteEntry();
     void addEntry();

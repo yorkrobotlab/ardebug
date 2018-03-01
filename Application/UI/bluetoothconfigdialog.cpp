@@ -28,7 +28,7 @@ BluetoothConfigDialog::BluetoothConfigDialog(Bluetoothconfig* btConfig)
     QPushButton* moveButton = new QPushButton("<<");
     QPushButton* deleteButton = new QPushButton("Delete Entry");
     QPushButton* toggleActiveStatusButton = new QPushButton("(de)activate");
-    QPushButton* scanButton = new QPushButton("Scan");
+    scanButton = new QPushButton("Scan");
     QObject::connect(toggleActiveStatusButton, SIGNAL(clicked(bool)), this, SLOT(toggleStatus()));
     QObject::connect(deleteButton, SIGNAL(clicked(bool)), this, SLOT(deleteEntry()));
 
@@ -109,8 +109,18 @@ BluetoothConfigDialog::BluetoothConfigDialog(Bluetoothconfig* btConfig)
     currentList->setSelectionBehavior(QListView::SelectRows);
     currentList->setSelectionMode(QListView::ExtendedSelection);
 
+    scanListModel = new QStandardItemModel();
+    scanList->setModel(scanListModel);
+    scanList->setSelectionBehavior(QListView::SelectRows);
+    scanList->setSelectionMode(QListView::ExtendedSelection);
+
     // Set layout
     this->setLayout(mainbox);
+
+    discoveryAgent = new QBluetoothDeviceDiscoveryAgent();
+    connect(scanButton, SIGNAL(clicked()), this, SLOT(startScan()));
+    connect(discoveryAgent, SIGNAL(deviceDiscovered(QBluetoothDeviceInfo)),this, SLOT(addDevice(QBluetoothDeviceInfo)));
+    connect(discoveryAgent, SIGNAL(finished()), this, SLOT(scanFinished()));
 
 }
 
@@ -219,8 +229,28 @@ void BluetoothConfigDialog::addEntry()
         list_item->setBackground(Qt::red);
         deviceListModel->setItem(deviceListModel->rowCount() , 0, list_item);
     }
+}
 
 
+void BluetoothConfigDialog::startScan()
+{
+    discoveryAgent->start();
+    scanButton->setEnabled(false);
 
+}
 
+void BluetoothConfigDialog::scanFinished()
+{
+    scanButton->setEnabled(true);
+
+}
+
+void BluetoothConfigDialog::addDevice(const QBluetoothDeviceInfo &info)
+{
+    QString label = QString("%0 : %1").arg(info.name()).arg(info.address().toString());
+    QList<QStandardItem *> items =  scanListModel->findItems(label, Qt::MatchExactly);
+    if (items.empty()) {
+        QStandardItem *list_item = new QStandardItem(label);
+        scanListModel->setItem(scanListModel->rowCount() , 0, list_item);
+    }
 }
