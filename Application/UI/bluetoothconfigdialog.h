@@ -16,9 +16,10 @@ private:
     Q_OBJECT
 public:
     explicit BluetoothConfigDialog(Bluetoothconfig* btConfig);
+    ~BluetoothConfigDialog();
 private:
     QStandardItemModel* deviceListModel ;
-    std::vector<BluetoothDeviceListItem*> deviceList;
+    std::vector<BluetoothDeviceListItem*> *deviceList;
     Bluetoothconfig* btConfig;
     QListView* currentList;
     QLineEdit * manualAdditionName;

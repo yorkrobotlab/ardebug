@@ -16,6 +16,7 @@ class BluetoothDataThread : public QObject
    ~BluetoothDataThread();
     void stop();
      int openSocket(QBluetoothAddress addr);
+     void resetAllSockets();
 public:
     BluetoothDataThread(Bluetoothconfig * btConfig);
 

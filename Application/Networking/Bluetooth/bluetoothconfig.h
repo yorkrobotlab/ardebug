@@ -19,7 +19,7 @@ public:
     void getActiveDevices( std::vector<BluetoothDeviceListItem*> * activedeviceList);
     QStandardItemModel* getActiveDeviceList();
     void setItemColour(int index, Qt::GlobalColor colour);
-    std::vector<BluetoothDeviceListItem*> getDeviceList();
+    std::vector<BluetoothDeviceListItem*> * getDeviceList();
     void setDeviceList(std::vector<BluetoothDeviceListItem*> newDeviceList);
 
 

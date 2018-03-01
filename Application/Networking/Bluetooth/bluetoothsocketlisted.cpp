@@ -114,5 +114,5 @@ void BluetoothSocketListed::internalSocketDisconnected()
 
 void BluetoothSocketListed::internalSocketConnected()
 {
-     emit socketDisconnected(this->index);
+     emit socketConnected(this->index);
 }

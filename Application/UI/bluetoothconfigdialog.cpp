@@ -8,10 +8,14 @@
 #include "bluetoothconfigdialog.h"
 #include <QFormLayout>
 #include <QPushButton>
+#include <QDebug>
 
-
+/* constructor
+ *
+ */
 BluetoothConfigDialog::BluetoothConfigDialog(Bluetoothconfig* btConfig)
 {
+    qDebug()<<"dialog constructor";
     this->setModal(true);
     this->setGeometry(200, 200, 600, 400);
     this->setWindowTitle("Bluetooth configuration");
@@ -84,9 +88,9 @@ BluetoothConfigDialog::BluetoothConfigDialog(Bluetoothconfig* btConfig)
     deviceList = btConfig->getDeviceList();
     deviceListModel = new QStandardItemModel();
 
-    for(size_t i = 0; i < deviceList.size(); i++) {
+    for(size_t i = 0; i < deviceList->size(); i++) {
 
-        BluetoothDeviceListItem* item = (BluetoothDeviceListItem*)deviceList.at(i);
+        BluetoothDeviceListItem* item = (BluetoothDeviceListItem*)deviceList->at(i);
 
         QStandardItem *list_item = new QStandardItem(QString("%0 : %1").arg(item->getName()).arg(item->getBTAddress()));
         if( item->getState())
@@ -109,6 +113,16 @@ BluetoothConfigDialog::BluetoothConfigDialog(Bluetoothconfig* btConfig)
     this->setLayout(mainbox);
 
 }
+
+/* deconstructor
+ * frees memory
+ */
+BluetoothConfigDialog::~BluetoothConfigDialog()
+{
+    delete(deviceList);
+
+}
+
 /* toggleStatus()
  * slot to toggle the active/inactive status of selected device
  */
@@ -119,7 +133,7 @@ void BluetoothConfigDialog::toggleStatus()
 
     for( QModelIndexList::const_iterator it = indexes.constEnd() -1; it>=indexes.constBegin(); it--)
     {
-        BluetoothDeviceListItem* btDevice = deviceList.at(it->row());
+        BluetoothDeviceListItem* btDevice = deviceList->at(it->row());
         btDevice->setState(!btDevice->getState());
 
         if( btDevice->getState())
@@ -147,7 +161,7 @@ void BluetoothConfigDialog::deleteEntry()
 
     for( QModelIndexList::const_iterator it = indexes.constEnd() -1; it>=indexes.constBegin(); it--)
     {
-        deviceList.erase(deviceList.begin()+it->row() );
+        deviceList->erase(deviceList->begin()+it->row() );
         deviceListModel->removeRow(it->row());
 
     }
@@ -159,6 +173,9 @@ void BluetoothConfigDialog::deleteEntry()
  */
 void BluetoothConfigDialog::accept()
 {
+    qDebug()<<"accepted";
+    btConfig->setDeviceList(*deviceList);
+    QDialog::accept();
 
 
 }
@@ -197,7 +214,7 @@ void BluetoothConfigDialog::addEntry()
     }
     else    {
 
-        deviceList.push_back(newDevice);
+        deviceList->push_back(newDevice);
         QStandardItem *list_item = new QStandardItem(QString("%0 : %1").arg(name).arg(newDevice->getBTAddress()));
         list_item->setBackground(Qt::red);
         deviceListModel->setItem(deviceListModel->rowCount() , 0, list_item);

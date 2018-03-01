@@ -66,6 +66,10 @@ public slots:
 
     void idMappingUpdate(void);
 
+    //void socketConnected(const int);
+
+    //void socketDisconnected(const int);
+
 private slots:
     void on_actionExit_triggered();
 

@@ -41,7 +41,7 @@ BluetoothDataThread::BluetoothDataThread(Bluetoothconfig * btConfig){
 
         //update sockets somehow
         openSocket(QBluetoothAddress(activeDeviceList[i]->getBTAddress()));
-        qDebug() << "open socket "<<activeDeviceList[i]->getBTAddress();
+        //qDebug() << "open socket "<<activeDeviceList[i]->getBTAddress();
         delete activeDeviceList[i];
 
     }
@@ -159,7 +159,9 @@ void BluetoothDataThread::disconnectAllSockets()
  */
 void BluetoothDataThread::SocketDisconnected(const int & index)
 {
-    btConfig->setItemColour(index, Qt::darkYellow);
+    btConfig->setItemColour(index, Qt::red);
+
+    //item(index)->setBackground(Qt::green)
 }
 
 /* SocketConnected
@@ -175,15 +177,35 @@ void BluetoothDataThread::SocketConnected(const int & index)
  */
 void BluetoothDataThread::updateSocketList()
 {
-     std::vector<BluetoothDeviceListItem*> activeDeviceList;
-     activeDeviceList.reserve(NUMBER_OF_BT_SOCKET);
 
+    std::vector<BluetoothDeviceListItem*> activeDeviceList;
+    activeDeviceList.reserve(NUMBER_OF_BT_SOCKET);
+    resetAllSockets();
+    btConfig->getActiveDevices(&activeDeviceList);
     for (size_t i = 0; i < activeDeviceList.size(); i++) {
 
         //update sockets somehow
-
+        openSocket(QBluetoothAddress(activeDeviceList[i]->getBTAddress()));
         delete activeDeviceList[i];
     }
     activeDeviceList.clear();
+}
+
+
+/* resetAllSockets
+ * deletes every socket
+ */
+void BluetoothDataThread::resetAllSockets()
+{
+    for (int i = 0; i< NUMBER_OF_BT_SOCKET; i++)
+    {
+        if(btSocket[i] != 0)
+        {
+            delete btSocket[i];
+            btSocket[i] = 0;
+            qDebug() << "socket " <<i <<" deleted";
+        }
+    }
+
 }
 

@@ -702,6 +702,8 @@ void MainWindow::on_bluetoothConfigButton_clicked()
 {
     if (bluetoothConfigDialog != NULL) {
         delete bluetoothConfigDialog;
+        bluetoothConfigDialog = NULL;
+        qDebug()<<"deleted Dialog";
     }
 
     bluetoothConfigDialog = new BluetoothConfigDialog(btConfig);
@@ -711,3 +713,5 @@ void MainWindow::on_bluetoothConfigButton_clicked()
         bluetoothConfigDialog->show();
     }
 }
+
+
