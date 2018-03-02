@@ -26,6 +26,7 @@ private:
     std::vector<BluetoothDeviceListItem*> *deviceList;
     Bluetoothconfig* btConfig;
     QListView* currentList;
+    QListView* scanList;
     QLineEdit * manualAdditionName;
     QLineEdit * manualAdditionAddress;
     QMessageBox * infoDialog;
@@ -33,9 +34,11 @@ private:
     void accept(void);
     void reject(void);
 
+
 private slots:
     void startScan();
     void scanFinished();
+    void addScannedEntry();
 
 
 public slots:
