@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QTime>
+
 #include <opencv2/core.hpp>
 
 struct Vector2D {

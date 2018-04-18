@@ -78,10 +78,10 @@ void Visualiser::showImage(const cv::Mat& image) {
     // Convert to RGB
     switch (image.type()) {
         case CV_8UC1:
-            cv::cvtColor(image, _tmp, CV_GRAY2RGB);
+            cv::cvtColor(image, _tmp, cv::COLOR_GRAY2BGR);
             break;
         case CV_8UC3:
-            cv::cvtColor(image, _tmp, CV_BGR2RGB);
+            cv::cvtColor(image, _tmp, cv::COLOR_BGR2RGB);
             break;
         default:
             break;
