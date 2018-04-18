@@ -7,7 +7,6 @@
  */
 
 #include "visualiser.h"
-#include "../Tracking/machinevision.h"
 #include "../Core/settings.h"
 
 #include <stdio.h>
@@ -40,6 +39,8 @@ Visualiser::Visualiser(DataModel *dataModelRef) {
     this->config.elements.push_back(new VisDirection());
     this->config.elements.push_back(new VisPath());
 
+    this->image = cv::Mat{640, 480, CV_8UC3, cv::Scalar{200, 200, 200}};
+
     this->click.x = 0.0;
     this->click.y = 0.0;
 }
@@ -47,7 +48,9 @@ Visualiser::Visualiser(DataModel *dataModelRef) {
 /* showImage
  * Display the supplied opencv image.
  */
-void Visualiser::showImage(const cv::Mat& image) {
+void Visualiser::showImage() {
+    std::cout<<"Called show image"<<std::endl;
+    image = cv::Scalar(200, 200, 200);
     // Iterate over the list of robots
     for (int i = 0; i < dataModelRef->getRobotCount(); i++) {
         // Get data
@@ -172,12 +175,15 @@ void Visualiser::checkFrameSize() {
 
     if (desiredHeight > height) {
         // Height is the limiting dimension
+        cv::resize(image, image, cv::Size(desiredWidth, height), 0, 0, cv::INTER_CUBIC);
         emit frameSizeChanged(desiredWidth, height);
     } else if (desiredWidth > width) {
         // Width is the limiting dimension
+        cv::resize(image, image, cv::Size(width, desiredHeight), 0, 0, cv::INTER_CUBIC);
         emit frameSizeChanged(width, desiredHeight);
     } else {
         // Perfect dimensions
+        cv::resize(image, image, cv::Size(desiredWidth, desiredHeight), 0, 0, cv::INTER_CUBIC);
         emit frameSizeChanged(desiredWidth, desiredHeight);
     }
 }

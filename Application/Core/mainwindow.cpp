@@ -13,7 +13,6 @@
 #include "../Networking/Wifi/datathread.h"
 #include "../Networking/Bluetooth/bluetoothdatathread.h"
 #include "../Networking/Bluetooth/bluetoothconfig.h"
-#include "../Tracking/machinevision.h"
 #include "../DataModel/datamodel.h"
 #include "../DataModel/robotdata.h"
 #include "../UI/addidmappingdialog.h"
@@ -90,27 +89,12 @@ MainWindow::MainWindow(QWidget *parent) :
     horizLayout->addWidget(visualiser);
     ui->visualiserTab->setLayout(horizLayout);
 
-    // Instantiate the camera controller and move it to the camera thread
-    cameraController = new CameraController();
-    cameraController->moveToThread(&cameraThread);
-    connect(&cameraThread, SIGNAL(finished()), cameraController, SLOT(deleteLater()));
-    connect(this, SIGNAL(startReadingCamera(void)), cameraController, SLOT(startReadingCamera(void)));
-    connect(this, SIGNAL(stopReadingCamera(void)), cameraController, SLOT(stopReadingCamera(void)));
-
-    // Connect image related signals to the visualiser and vice versa
-    qRegisterMetaType< cv::Mat >("cv::Mat");
-    connect(cameraController, SIGNAL(dataFromCamera(cv::Mat)), visualiser, SLOT(showImage(cv::Mat)));
-    connect(visualiser, SIGNAL(frameSizeChanged(int, int)), cameraController, SLOT(updateFrameSize(int, int)));
-    connect(visualiser, SIGNAL(robotSelectedInVisualiser(QString)), this, SLOT(robotSelectedInVisualiser(QString)));
-
-    // Connect tracking position data signal to data model
-    connect(cameraController, SIGNAL(posData(QString)), dataModel, SLOT(newData(QString)));
-    cameraThread.start();
-
     // Have the visualiser pass its initial frame size to the camera controller
     visualiser->checkFrameSize();
 
     visualiser->config.populateSettingsList(ui->visSettingsList);
+
+    connect(dataHandler, SIGNAL(dataFromThread(QString)), visualiser, SLOT(showImage()));
 
     ui->imageXDimEdit->setValidator(new QIntValidator(1, 10000, this));
     ui->imageYDimEdit->setValidator(new QIntValidator(1, 10000, this));

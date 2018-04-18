@@ -7,7 +7,6 @@
 #include <QItemSelection>
 
 #include "../Visualiser/visualiser.h"
-#include "../Tracking/cameracontroller.h"
 #include "../DataModel/datamodel.h"
 
 namespace Ui {
@@ -21,7 +20,6 @@ class MainWindow : public QMainWindow
     QThread bluetoothThread;
     QThread cameraThread;
     Visualiser* visualiser;
-    CameraController* cameraController;
     DataModel* dataModel;
 
     QDialog* addIDMappingDialog;

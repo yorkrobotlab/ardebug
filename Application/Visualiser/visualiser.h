@@ -26,7 +26,7 @@ public:
     void checkFrameSize(void);
 
 public slots:
-    void showImage(const cv::Mat& image);
+    void showImage();
 
 signals:
     void frameSizeChanged(int width, int height);
@@ -41,6 +41,7 @@ protected:
 
     QImage _qimage;
     cv::Mat _tmp;
+    cv::Mat image;
     DataModel* dataModelRef;
 
     Vector2D click;
