@@ -34,8 +34,6 @@ void VisPosition::render(QWidget* widget, QPainter* painter, RobotData *robot, b
         return;
     }
 
-    std::cout<<widget->width() << "|" << widget->height() <<std::endl;
-
     double x = widget->width() * robot->getPos().position.x;
     double y = widget->height() * robot->getPos().position.y;
 

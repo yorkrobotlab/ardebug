@@ -26,8 +26,11 @@ import socket
 from math import cos, sin
 from time import sleep
 
+hostName = ''
+hostPort = 8888
+
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s.connect(('elecpc283.its', 8888))
+s.connect((hostName, hostPort))
 
 while True:
     
@@ -41,7 +44,7 @@ while True:
         s.send(testRobot.toJson())
     except:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(('elecpc283.its', 8888))
+        s.connect((hostName, hostPort))
         s.send(testRobot.toJson())
 
     sleep(0.1)
