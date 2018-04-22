@@ -84,17 +84,14 @@ MainWindow::MainWindow(QWidget *parent) :
     visualiser = new Visualiser(dataModel);
     visualiser->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
+    connect(dataModel, SIGNAL(modelChanged(bool)), visualiser, SLOT(refreshVisualisation()));
+
     // Embed the visualiser in the tab
     QHBoxLayout* horizLayout = new QHBoxLayout();
     horizLayout->addWidget(visualiser);
     ui->visualiserTab->setLayout(horizLayout);
 
-    // Have the visualiser pass its initial frame size to the camera controller
-    visualiser->checkFrameSize();
-
     visualiser->config.populateSettingsList(ui->visSettingsList);
-
-    connect(dataHandler, SIGNAL(dataFromThread(QString)), visualiser, SLOT(showImage()));
 
     ui->imageXDimEdit->setValidator(new QIntValidator(1, 10000, this));
     ui->imageYDimEdit->setValidator(new QIntValidator(1, 10000, this));
@@ -388,8 +385,6 @@ void MainWindow::on_imageXDimEdit_textChanged(const QString &arg1)
     if (ok) {
         Settings::instance()->setCameraImageWidth(w);
     }
-
-    visualiser->checkFrameSize();
 }
 
 /* on_imageYDimEdit_textChanged
@@ -404,8 +399,6 @@ void MainWindow::on_imageYDimEdit_textChanged(const QString &arg1)
     if (ok) {
         Settings::instance()->setCameraImageHeight(h);
     }
-
-    visualiser->checkFrameSize();
 }
 
 /* on_visSettingsList_itemClicked

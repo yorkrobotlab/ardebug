@@ -45,22 +45,22 @@ QString VisID::toString(void) {
 /* render
  * Render this visualisation for one robot.
  */
-void VisID::render(cv::Mat image, RobotData *robot, bool selected) {
-    if (!isEnabled() || (selectedOnly && !selected)) {
-        return;
-    }
+void VisID::render(QWidget* widget, QPainter* painter, RobotData *robot, bool selected) {
+//    if (!isEnabled() || (selectedOnly && !selected)) {
+//        return;
+//    }
 
-    cv::Scalar colour = Settings::instance()->isRobotColourEnabled() ? robot->getColour() : cv::Scalar(255, 255, 255);
+//    cv::Scalar colour = Settings::instance()->isRobotColourEnabled() ? robot->getColour() : cv::Scalar(255, 255, 255);
 
-    int x = image.cols * robot->getPos().position.x;
-    int y = image.rows * robot->getPos().position.y;
+//    int x = image.cols * robot->getPos().position.x;
+//    int y = image.rows * robot->getPos().position.y;
 
-    putText(image,
-            robot->getID().toStdString(),
-            cv::Point(x - 24, y),
-            cv::FONT_HERSHEY_SIMPLEX,
-            0.3,
-            colour);
+//    putText(image,
+//            robot->getID().toStdString(),
+//            cv::Point(x - 24, y),
+//            cv::FONT_HERSHEY_SIMPLEX,
+//            0.3,
+//            colour);
 }
 
 /* getSettingsDialog

@@ -10,7 +10,7 @@ public:
 
     virtual QString toString(void);
 
-    virtual void render(cv::Mat image, RobotData *robot, bool selected);
+    virtual void render(QWidget* widget, QPainter* painter, RobotData *robot, bool selected);
 
     virtual QDialog* getSettingsDialog(void);
 };

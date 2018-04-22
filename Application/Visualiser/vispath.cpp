@@ -45,34 +45,34 @@ QString VisPath::toString(void) {
 /* render
  * Render this visualisation for one robot.
  */
-void VisPath::render(cv::Mat image, RobotData *robot, bool selected) {
-    if (!isEnabled() || (selectedOnly && !selected)) {
-        return;
-    }
+void VisPath::render(QWidget* widget, QPainter* painter, RobotData *robot, bool selected) {
+//    if (!isEnabled() || (selectedOnly && !selected)) {
+//        return;
+//    }
 
-    cv::Scalar colour = Settings::instance()->isRobotColourEnabled() ? robot->getColour() : cv::Scalar(255, 255, 255);
+//    cv::Scalar colour = Settings::instance()->isRobotColourEnabled() ? robot->getColour() : cv::Scalar(255, 255, 255);
 
-    int x = image.cols * robot->getPos().position.x;
-    int y = image.rows * robot->getPos().position.y;
+//    int x = image.cols * robot->getPos().position.x;
+//    int y = image.rows * robot->getPos().position.y;
 
-    Pose posHistory[POS_HISTORY_COUNT];
-    robot->getPosHistory(posHistory);
+//    Pose posHistory[POS_HISTORY_COUNT];
+//    robot->getPosHistory(posHistory);
 
-    for (int i = 0; i < POS_HISTORY_COUNT; i++) {
-        int ex = image.cols * posHistory[i].position.x;
-        int ey = image.rows * posHistory[i].position.y;
+//    for (int i = 0; i < POS_HISTORY_COUNT; i++) {
+//        int ex = image.cols * posHistory[i].position.x;
+//        int ey = image.rows * posHistory[i].position.y;
 
-        if (x != 0 && y != 0 && ex != 0 && ey != 0) {
-            line(image,
-                 cv::Point(x, y),
-                 cv::Point(ex, ey),
-                 colour,
-                 1);
-        }
+//        if (x != 0 && y != 0 && ex != 0 && ey != 0) {
+//            line(image,
+//                 cv::Point(x, y),
+//                 cv::Point(ex, ey),
+//                 colour,
+//                 1);
+//        }
 
-        x = ex;
-        y = ey;
-    }
+//        x = ex;
+//        y = ey;
+//    }
 }
 
 /* getSettingsDialog

@@ -30,11 +30,19 @@ s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect(('elecpc283.its', 8888))
 
 while True:
+    
     testRobot.pose['orientation'] += 1
     if testRobot.pose['orientation'] > 360:
         testRobot.pose['orientation'] -= 360
     testRobot.pose['x'] = 0.5 + 0.4*sin(testRobot.pose['orientation']*(3.14159/180))
     testRobot.pose['y'] = 0.5 - 0.4*cos(testRobot.pose['orientation']*(3.14159/180))
-    s.send(testRobot.toJson())
+
+    try:
+        s.send(testRobot.toJson())
+    except:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('elecpc283.its', 8888))
+        s.send(testRobot.toJson())
+
     sleep(0.1)
-    
+        

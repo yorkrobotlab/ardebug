@@ -7,6 +7,9 @@
 
 #include "visposition.h"
 #include "../Core/settings.h"
+#include <QPainter>
+
+#include <iostream>
 
 /* Constructor
  * Initialise all setttings
@@ -26,21 +29,28 @@ QString VisPosition::toString(void) {
 /* render
  * Render this visualisation for one robot.
  */
-void VisPosition::render(cv::Mat image, RobotData *robot, bool selected) {
+void VisPosition::render(QWidget* widget, QPainter* painter, RobotData *robot, bool selected) {
     if (!isEnabled()) {
         return;
     }
 
-    cv::Scalar colour = Settings::instance()->isRobotColourEnabled() ? robot->getColour() : cv::Scalar(255, 255, 255);
+    std::cout<<widget->width() << "|" << widget->height() <<std::endl;
 
-    int x = image.cols * robot->getPos().position.x;
-    int y = image.rows * robot->getPos().position.y;
+    double x = widget->width() * robot->getPos().position.x;
+    double y = widget->height() * robot->getPos().position.y;
 
-    circle(image,
-           cv::Point(x, y),
-           8,
-           colour,
-           selected ? 2 : 1);
+    auto pen = painter->pen();
+
+    if(selected)
+    {
+        auto newPen = QPen{pen};
+        newPen.setWidth(pen.widthF() * 2);
+        painter->setPen(newPen);
+    }
+
+    painter->drawEllipse(QPointF{x, y}, 10, 10);
+
+    painter->setPen(pen);
 }
 
 /* getSettingsDialog

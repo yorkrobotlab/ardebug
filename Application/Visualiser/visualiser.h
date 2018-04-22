@@ -10,9 +10,9 @@
 #include <QPainter>
 #include <QTimer>
 #include <QMouseEvent>
-#include <opencv2/opencv.hpp>
+#include <QOpenGLWidget>
 
-class Visualiser : public QWidget
+class Visualiser : public QOpenGLWidget
 {
     Q_OBJECT
 public:
@@ -21,16 +21,15 @@ public:
     Visualiser(QWidget *parent = 0);
     Visualiser(DataModel* dataModelRef);
 
-    QSize minimumSizeHint () const {return QSize(200, 200); }
+    QSize minimumSizeHint () const { return QSize(200, 200); }
 
     void checkFrameSize(void);
 
 public slots:
-    void showImage();
+    void refreshVisualisation();
 
 signals:
     void frameSizeChanged(int width, int height);
-
     void robotSelectedInVisualiser(QString id);
 
 protected:
@@ -39,9 +38,6 @@ protected:
 
     void mousePressEvent(QMouseEvent*);
 
-    QImage _qimage;
-    cv::Mat _tmp;
-    cv::Mat image;
     DataModel* dataModelRef;
 
     Vector2D click;

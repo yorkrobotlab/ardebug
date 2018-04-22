@@ -38,7 +38,6 @@ SOURCES += Application/Core/main.cpp\
     Application/Visualiser/visualiser.cpp \
     Application/Visualiser/visconfig.cpp \
     Application/Visualiser/visposition.cpp \
-    Application/Visualiser/visdirection.cpp \
     Application/Visualiser/visname.cpp \
     Application/Visualiser/vispath.cpp \
     Application/Visualiser/visid.cpp \
@@ -64,7 +63,6 @@ HEADERS  += Application/Core/mainwindow.h \
     Application/Visualiser/visconfig.h \
     Application/Visualiser/viselement.h \
     Application/Visualiser/visposition.h \
-    Application/Visualiser/visdirection.h \
     Application/Visualiser/visname.h \
     Application/Visualiser/vispath.h \
     Application/Visualiser/visid.h \
