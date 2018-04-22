@@ -39,12 +39,6 @@ RobotInfoDialog::RobotInfoDialog(RobotData* robot)
     QPushButton* colourButton = new QPushButton("Choose Colour");
     QObject::connect(colourButton, SIGNAL(clicked(bool)), this, SLOT(setColour()));
 
-    //Set colour to current robot colour
-    colour.setRed(robot->getColour()[2]);
-    colour.setGreen(robot->getColour()[1]);
-    colour.setBlue(robot->getColour()[0]);
-
-
     // Create colour label and initilise it with current colour
     colourLabel = new QLabel("Colour");
     colourLabel->setText(colour.name());
@@ -96,8 +90,6 @@ void RobotInfoDialog::deleteButtonPressed(void) {
  * Overrides QDialog accept function. Called when user wished to apply the changes.
  */
 void RobotInfoDialog::accept(void) {
-    // Apply changes
-    robot->setColour(cv::Scalar(colour.blue(), colour.green(), colour.red()));//cv::Scalar(b, g, r));
 
     // Call superclass accept function
     QDialog::accept();

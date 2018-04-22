@@ -4,8 +4,6 @@
 #include <QString>
 #include <QDialog>
 
-//#include <opencv2/opencv.hpp>
-
 #include "../DataModel/robotdata.h"
 
 enum VisType { ID, NAME, STATE, POSITION, DIRECTION, PROXIMITY, PATH, CUSTOM };

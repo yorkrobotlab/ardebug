@@ -26,9 +26,6 @@ RobotData::RobotData(QString id) {
     this->posHistoryIndex = 0;
     this->posHistoryFrameCount = 0;
     bzero(this->posHistory, sizeof(Vector2D) * POS_HISTORY_COUNT);
-
-    // Generate colour
-    setColour(cv::Scalar(255, 255, 255));
 }
 
 /* Destructor
@@ -138,18 +135,4 @@ int RobotData::getAngle(void) {
  */
 void RobotData::setAngle(int angle) {
     this->pos.orientation = angle;
-}
-
-/* getColour
- * Get the colour used for this robot in the UI
- */
-cv::Scalar RobotData::getColour(void) {
-    return this->colour;
-}
-
-/* setColour
- * Set the colour used for this robot in the UI
- */
-void RobotData::setColour(cv::Scalar colour) {
-    this->colour = colour;
 }

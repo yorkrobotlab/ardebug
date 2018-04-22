@@ -76,12 +76,4 @@ FORMS    += Application/UI/mainwindow.ui
 
 CONFIG += link_pkgconfig \
     c++11
-PKGCONFIG += opencv
 
-
-#LIBS += -L/opt/cvb/lib/ -lCVCImg
-#LIBS += -L/opt/cvb/lib/ -lCVCDriver
-#LIBS += -L/opt/cvb/lib/ -lCVCUtilities
-
-INCLUDEPATH += /opt/cvb/include
-DEPENDPATH += /opt/cvb/include

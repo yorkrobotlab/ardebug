@@ -1,7 +1,6 @@
 /* visualiser.cpp
  *
- * This class encapsulates the visualiser Qt widget for displaying the camera feed, acquired
- * via opencv.
+ * This class encapsulates the visualiser Qt widget for displaying tracking data
  *
  * (C) Alistair Jewers Feb 2017
  */

@@ -5,8 +5,6 @@
 #include <QStringListModel>
 #include <QTableWidget>
 
-#include <opencv2/core.hpp>
-
 #include "../Core/util.h"
 
 #define STATE_HISTORY_COUNT     10
@@ -50,9 +48,6 @@ class RobotData
     int posHistoryIndex;
     int posHistoryFrameCount;
 
-    // Colour
-    cv::Scalar colour;
-
 public:
     RobotData(QString id);
     ~RobotData(void);
@@ -67,9 +62,6 @@ public:
 
     int getAngle(void);
     void setAngle(int angle);
-
-    cv::Scalar getColour(void);
-    void setColour(cv::Scalar colour);
 
     void setBoolValue(QString name, bool value)
     {
