@@ -2,6 +2,7 @@
 #define SETTINGS_H
 
 #include "util.h"
+#include <vector>
 
 typedef struct {
     int arucoID;
