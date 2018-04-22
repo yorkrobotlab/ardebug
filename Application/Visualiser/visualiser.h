@@ -10,9 +10,8 @@
 #include <QPainter>
 #include <QTimer>
 #include <QMouseEvent>
-#include <QOpenGLWidget>
 
-class Visualiser : public QOpenGLWidget
+class Visualiser : public QWidget
 {
     Q_OBJECT
 public:

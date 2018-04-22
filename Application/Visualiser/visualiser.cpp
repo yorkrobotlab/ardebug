@@ -52,8 +52,6 @@ void Visualiser::refreshVisualisation()
  */
 void Visualiser::paintEvent(QPaintEvent*) {
 
-    std::cout<<"Redrawing"<<std::endl;
-
     // Display the image
     QPainter painter(this);
     painter.setRenderHint(QPainter::HighQualityAntialiasing);
