@@ -11,6 +11,8 @@
 #include <QTimer>
 #include <QMouseEvent>
 
+#include <opencv2/opencv.hpp>
+
 class Visualiser : public QWidget
 {
     Q_OBJECT
@@ -26,6 +28,7 @@ public:
 
 public slots:
     void refreshVisualisation();
+    void newVideoFrame(cv::Mat& image);
 
 signals:
     void frameSizeChanged(int width, int height);
@@ -40,6 +43,8 @@ protected:
     DataModel* dataModelRef;
 
     Vector2D click;
+
+    QImage backgroundImage;
 };
 
 #endif // VISUALISER_H

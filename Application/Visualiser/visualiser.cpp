@@ -40,6 +40,8 @@ Visualiser::Visualiser(DataModel *dataModelRef) {
 
     this->click.x = 0.0;
     this->click.y = 0.0;
+
+    backgroundImage.fill(QColor{200, 200, 200});
 }
 
 void Visualiser::refreshVisualisation()
@@ -57,7 +59,9 @@ void Visualiser::paintEvent(QPaintEvent*) {
     painter.setRenderHint(QPainter::HighQualityAntialiasing);
     painter.setBackground(QBrush{QColor{200, 200, 200}});
     painter.setWindow(this->rect());
-    painter.fillRect(this->rect(), painter.background());
+//    painter.fillRect(this->rect(), painter.background());
+
+    painter.drawImage(this->rect(), backgroundImage);
 
     QPen pen{QColor{255, 255, 255}};
     pen.setWidth(3);
@@ -110,5 +114,38 @@ void Visualiser::mousePressEvent(QMouseEvent* event) {
             return;
         }
     }
+}
+
+void Visualiser::newVideoFrame(cv::Mat& newImage)
+{
+    std::cout<<"Have new image"<<std::endl;
+
+    cv::Mat image;
+    cv::cvtColor(newImage, image, cv::COLOR_BGR2RGB);
+
+    double xScale = (1.0 * this->width())/image.cols;
+    double yScale = (1.0 * this->height())/image.rows;
+    double scaleFactor;
+
+    int newX, newY;
+
+    if(xScale > yScale)
+    {
+        newX = image.cols * xScale;
+        newY = image.rows * xScale;
+        scaleFactor = xScale;
+    }
+    else
+    {
+        newX = image.cols * yScale;
+        newY = image.rows * yScale;
+        scaleFactor = yScale;
+    }
+
+    cv::resize(image, image, cv::Size{newX, newY}, scaleFactor > 1 ? cv::INTER_LINEAR : cv::INTER_AREA);
+
+    backgroundImage = QImage(image.data, image.cols, image.rows, image.cols*3, QImage::Format_RGB888);
+
+    repaint();
 }
 

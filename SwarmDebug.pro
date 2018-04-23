@@ -45,7 +45,9 @@ SOURCES += Application/Core/main.cpp\
     Application/UI/idsettingsdialog.cpp \
     Application/UI/namesettingsdialog.cpp \
     Application/UI/addidmappingdialog.cpp \
-    Application/UI/robotinfodialog.cpp
+    Application/UI/robotinfodialog.cpp \
+    Application/Tracking/aruco.cpp \
+    Application/Tracking/usbcamerathread.cpp
 
 HEADERS  += Application/Core/mainwindow.h \
     Application/Core/util.h \
@@ -70,10 +72,13 @@ HEADERS  += Application/Core/mainwindow.h \
     Application/UI/idsettingsdialog.h \
     Application/UI/namesettingsdialog.h \
     Application/UI/addidmappingdialog.h \
-    Application/UI/robotinfodialog.h
+    Application/UI/robotinfodialog.h \
+    Application/Tracking/aruco.h \
+    Application/Tracking/usbcamerathread.h
 
 FORMS    += Application/UI/mainwindow.ui
 
 CONFIG += link_pkgconfig \
     c++11
 
+PKGCONFIG += opencv

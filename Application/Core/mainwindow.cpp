@@ -106,6 +106,15 @@ MainWindow::MainWindow(QWidget *parent) :
     addIDMappingDialog = NULL;
     idMappingTableSetup();
 
+    qRegisterMetaType<cv::Mat>("cv::Mat&");
+
+    connect(&arucoTracker, SIGNAL(newRobotPosition(QString, Pose)), dataModel, SLOT(newRobotPosition(QString, Pose)));
+
+    connect(&cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), visualiser, SLOT(newVideoFrame(cv::Mat&)));
+    connect(&cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), &arucoTracker, SLOT(newImageReceived(cv::Mat&)));
+
+    cameraThread.start();
+
     // Start the camera reading immediately
     startReadingCamera();    
 }
@@ -142,6 +151,8 @@ MainWindow::~MainWindow()
     // Stop the camera thread
     cameraThread.quit();
     cameraThread.wait();
+
+    cameraThread.terminate();
 
     // Delete the singletons
     Settings::deleteInstance();

@@ -34,7 +34,6 @@ RobotInfoDialog::RobotInfoDialog(RobotData* robot)
     QPushButton* deleteButton = new QPushButton("Delete");
     QObject::connect(deleteButton, SIGNAL(clicked(bool)), this, SLOT(deleteButtonPressed()));
 
-
     // Create delete button, and connect to slot
     QPushButton* colourButton = new QPushButton("Choose Colour");
     QObject::connect(colourButton, SIGNAL(clicked(bool)), this, SLOT(setColour()));
@@ -49,8 +48,6 @@ RobotInfoDialog::RobotInfoDialog(RobotData* robot)
     QHBoxLayout* colourLayout = new QHBoxLayout();
     colourLayout->addWidget(colourLabel);
     colourLayout->addWidget(colourButton);
-
-
 
     // Layout all controls in a form
     QFormLayout* form = new QFormLayout();

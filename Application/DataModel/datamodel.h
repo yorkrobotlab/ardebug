@@ -53,6 +53,7 @@ signals:
 public slots:
     void newData(const QString &);
     void deleteRobot(QString ID);
+    void newRobotPosition(QString, Pose);
 };
 
 #endif // DATAMODEL_H

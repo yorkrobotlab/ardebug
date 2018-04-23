@@ -9,6 +9,9 @@
 #include "../Visualiser/visualiser.h"
 #include "../DataModel/datamodel.h"
 
+#include "Application/Tracking/aruco.h"
+#include "Application/Tracking/usbcamerathread.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -18,9 +21,12 @@ class MainWindow : public QMainWindow
     Q_OBJECT
     QThread networkThread;
     QThread bluetoothThread;
-    QThread cameraThread;
     Visualiser* visualiser;
     DataModel* dataModel;
+
+    std::map<int, QString> arucoNameMapping;
+    USBCameraThread cameraThread{"/dev/video0"};
+    ArUco arucoTracker{&arucoNameMapping};
 
     QDialog* addIDMappingDialog;
 
@@ -37,7 +43,6 @@ signals:
     void connectBluetooth(void);
     void changeStateBluetoothDevice(int);
     void disconnectBluetooth(void);
-
 
     void startReadingCamera(void);
     void stopReadingCamera(void);
