@@ -59,9 +59,11 @@ void Visualiser::paintEvent(QPaintEvent*) {
     painter.setRenderHint(QPainter::HighQualityAntialiasing);
     painter.setBackground(QBrush{QColor{200, 200, 200}});
     painter.setWindow(this->rect());
-//    painter.fillRect(this->rect(), painter.background());
+    painter.fillRect(this->rect(), painter.background());
 
-    painter.drawImage(this->rect(), backgroundImage);
+    double xOffset = 0.5*(this->width() - backgroundImage.width());
+    double yOffset = 0.5*(this->height() - backgroundImage.height());
+    painter.drawImage(xOffset, yOffset, backgroundImage);
 
     QPen pen{QColor{255, 255, 255}};
     pen.setWidth(3);
@@ -76,7 +78,7 @@ void Visualiser::paintEvent(QPaintEvent*) {
         // Render the visualisations
         for (size_t j = 0; j < this->config.elements.size(); j++) {
             VisElement* element = this->config.elements.at(j);
-            element->render(this, &painter, robot, selected);
+            element->render(this, &painter, robot, selected, QRectF{xOffset, yOffset, 1.0*backgroundImage.width(), 1.0*backgroundImage.height()});
         }
     }
 
@@ -118,8 +120,6 @@ void Visualiser::mousePressEvent(QMouseEvent* event) {
 
 void Visualiser::newVideoFrame(cv::Mat& newImage)
 {
-    std::cout<<"Have new image"<<std::endl;
-
     cv::Mat image;
     cv::cvtColor(newImage, image, cv::COLOR_BGR2RGB);
 
@@ -129,7 +129,7 @@ void Visualiser::newVideoFrame(cv::Mat& newImage)
 
     int newX, newY;
 
-    if(xScale > yScale)
+    if(xScale < yScale)
     {
         newX = image.cols * xScale;
         newY = image.rows * xScale;

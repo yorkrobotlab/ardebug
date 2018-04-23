@@ -9,7 +9,7 @@ USBCameraThread::USBCameraThread(QString deviceName)
 
 void USBCameraThread::run()
 {
-    while(true)
+    while(shouldRun)
     {
         if(captureDevice.isOpened())
         {
@@ -22,4 +22,9 @@ void USBCameraThread::run()
             yieldCurrentThread();
         }
     }
+}
+
+void USBCameraThread::endThread()
+{
+    shouldRun = false;
 }

@@ -1,5 +1,6 @@
 #include "aruco.h"
 #include "Application/Core/util.h"
+#include <QtMath>
 
 ArUco::ArUco(std::map<int, QString>* idMapping)
 {
@@ -31,11 +32,11 @@ void ArUco::newImageReceived(cv::Mat& image)
         for(auto& corner : tag)
             tagCentre += corner * (1.0 / tag.size());
 
+        cv::Point2f frontOfTag = 0.5 * (tag[0] + tag[1]);
+        double orientation = qRadiansToDegrees(std::atan2(frontOfTag.y - tagCentre.y, frontOfTag.x - tagCentre.x));
+
         tagCentre.x /= width;
         tagCentre.y /= height;
-
-        cv::Point2f frontOfTag = 0.5 * (tag[0] + tag[1]);
-        double orientation = std::atan2(frontOfTag.y - tagCentre.y, frontOfTag.x - tagCentre.x);
 
         Pose p;
         p.orientation = orientation;

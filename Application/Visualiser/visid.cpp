@@ -45,7 +45,7 @@ QString VisID::toString(void) {
 /* render
  * Render this visualisation for one robot.
  */
-void VisID::render(QWidget* widget, QPainter* painter, RobotData *robot, bool selected) {
+void VisID::render(QWidget* widget, QPainter* painter, RobotData *robot, bool selected, QRectF rect) {
 }
 
 /* getSettingsDialog

@@ -45,7 +45,7 @@ QString VisPath::toString(void) {
 /* render
  * Render this visualisation for one robot.
  */
-void VisPath::render(QWidget* widget, QPainter* painter, RobotData *robot, bool selected) {
+void VisPath::render(QWidget* widget, QPainter* painter, RobotData *robot, bool selected, QRectF rect) {
 
 }
 

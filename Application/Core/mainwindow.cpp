@@ -108,10 +108,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     qRegisterMetaType<cv::Mat>("cv::Mat&");
 
+    arucoNameMapping[5] = "robot_5";
+
     connect(&arucoTracker, SIGNAL(newRobotPosition(QString, Pose)), dataModel, SLOT(newRobotPosition(QString, Pose)));
 
     connect(&cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), visualiser, SLOT(newVideoFrame(cv::Mat&)));
     connect(&cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), &arucoTracker, SLOT(newImageReceived(cv::Mat&)));
+    connect(this, SIGNAL(stopReadingCamera()), &cameraThread, SLOT(endThread()));
 
     cameraThread.start();
 
@@ -128,7 +131,7 @@ MainWindow::~MainWindow()
     sendClosePacket(8888);
 
     // Stop the camera controller
-    stopReadingCamera();
+    emit stopReadingCamera();
 
     // Release all memory
     delete ui;
@@ -151,8 +154,6 @@ MainWindow::~MainWindow()
     // Stop the camera thread
     cameraThread.quit();
     cameraThread.wait();
-
-    cameraThread.terminate();
 
     // Delete the singletons
     Settings::deleteInstance();

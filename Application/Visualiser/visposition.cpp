@@ -30,7 +30,7 @@ QString VisPosition::toString(void) {
 /* render
  * Render this visualisation for one robot.
  */
-void VisPosition::render(QWidget* widget, QPainter* painter, RobotData *robot, bool selected) {
+void VisPosition::render(QWidget* widget, QPainter* painter, RobotData *robot, bool selected, QRectF rect) {
     if (!isEnabled()) {
         return;
     }
@@ -38,8 +38,8 @@ void VisPosition::render(QWidget* widget, QPainter* painter, RobotData *robot, b
     double indicatorSize = 40;
 
     double orientation = qDegreesToRadians(robot->getAngle()*1.0);
-    double x = widget->width() * robot->getPos().position.x;
-    double y = widget->height() * robot->getPos().position.y;
+    double x = rect.x() + (rect.width() * robot->getPos().position.x);
+    double y = rect.y() + (rect.height() * robot->getPos().position.y);
     QPointF centre = QPointF{x, y};
 
     double frontDx = cos(orientation) * indicatorSize * 0.5;

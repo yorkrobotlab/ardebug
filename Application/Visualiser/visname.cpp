@@ -36,7 +36,7 @@ QString VisName::toString(void) {
 /* render
  * Render this visualisation for one robot.
  */
-void VisName::render(QWidget* widget, QPainter* painter, RobotData *robot, bool selected) {
+void VisName::render(QWidget* widget, QPainter* painter, RobotData *robot, bool selected, QRectF rect) {
 }
 
 /* getSettingsDialog

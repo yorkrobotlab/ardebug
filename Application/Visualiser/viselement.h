@@ -25,7 +25,7 @@ public:
 
     virtual QString toString(void) = 0;
 
-    virtual void render(QWidget* widget, QPainter* painter, RobotData* robot, bool selected) = 0;
+    virtual void render(QWidget* widget, QPainter* painter, RobotData* robot, bool selected, QRectF rect) = 0;
 
     virtual QDialog* getSettingsDialog(void) = 0;
 };

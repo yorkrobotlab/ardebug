@@ -350,6 +350,7 @@ void DataModel::newData(const QString &dataString) {
 
 void DataModel::newRobotPosition(QString id, Pose p)
 {
+    addRobotIfNotExist(id);
     RobotData* robot = getRobotByID(id);
     robot->setPos(p.position.x, p.position.y);
     robot->setAngle(p.orientation);
