@@ -42,8 +42,6 @@ public:
     RobotData* setSelectedRobot(int idx);
 
 private:
-    void parsePositionPacket(RobotData* robot, QString xString, QString yString, QString aString);
-    void parseProximityPacket(RobotData* robot, QStringList data, bool background);
     void updateAveragePosition(void);
     void addRobotIfNotExist(QString id);
 

@@ -363,35 +363,6 @@ void DataModel::addRobotIfNotExist(QString id)
         robotDataList.push_back(new RobotData{id});
 }
 
-/* parsePositionPacket
- * Parses floating point data from the string elements of a position packet.
- */
-void DataModel::parsePositionPacket(RobotData* robot, QString xString, QString yString, QString aString) {
-    bool ok;
-    float x = xString.toFloat(&ok);
-
-    if(!ok) {
-        return;
-    }
-
-    float y = yString.toFloat(&ok);
-
-    if(!ok) {
-        return;
-    }
-
-    int a = aString.toInt(&ok);
-
-    if(!ok) {
-        return;
-    }
-
-    robot->setPos(x, y);
-    robot->setAngle(a);
-
-    updateAveragePosition();
-}
-
 /* deleteRobot
  * Remove a robot from the data model, including all of its data.
  */
