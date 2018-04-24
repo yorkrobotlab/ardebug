@@ -10,6 +10,7 @@
 #include <QPainter>
 #include <QTimer>
 #include <QMouseEvent>
+#include <QMutex>
 
 #include <opencv2/opencv.hpp>
 

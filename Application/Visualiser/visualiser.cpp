@@ -46,7 +46,7 @@ Visualiser::Visualiser(DataModel *dataModelRef) {
 
 void Visualiser::refreshVisualisation()
 {
-    repaint();
+//    repaint();
 }
 
 /* paintEvent
@@ -61,8 +61,16 @@ void Visualiser::paintEvent(QPaintEvent*) {
     painter.setWindow(this->rect());
     painter.fillRect(this->rect(), painter.background());
 
-    double xOffset = 0.5*(this->width() - backgroundImage.width());
-    double yOffset = 0.5*(this->height() - backgroundImage.height());
+    double width = this->width();
+    double height = this->height();
+    double xOffset = 0;
+    double yOffset = 0;
+
+    xOffset = 0.5*(this->width() - backgroundImage.width());
+    yOffset = 0.5*(this->height() - backgroundImage.height());
+    width = backgroundImage.width();
+    height = backgroundImage.height();
+
     painter.drawImage(xOffset, yOffset, backgroundImage);
 
     QPen pen{QColor{255, 255, 255}};
@@ -78,7 +86,7 @@ void Visualiser::paintEvent(QPaintEvent*) {
         // Render the visualisations
         for (size_t j = 0; j < this->config.elements.size(); j++) {
             VisElement* element = this->config.elements.at(j);
-            element->render(this, &painter, robot, selected, QRectF{xOffset, yOffset, 1.0*backgroundImage.width(), 1.0*backgroundImage.height()});
+            element->render(this, &painter, robot, selected, QRectF{xOffset, yOffset, width, height});
         }
     }
 
