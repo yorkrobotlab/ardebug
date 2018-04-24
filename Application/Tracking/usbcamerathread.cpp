@@ -4,7 +4,15 @@
 
 USBCameraThread::USBCameraThread(QString deviceName)
 {
-    std::cout<<"Opening capture device "<< (captureDevice.open(deviceName.toStdString(), cv::CAP_V4L) ? "SUCCESS" : "FAIL") <<std::endl;
+    captureDevice = cv::VideoCapture(0);
+
+    if(captureDevice.isOpened())
+        std::cout << "Successfully opened capture device" << std::endl;
+    else
+    {
+        std::cout << "Failed to open capture device" << std::endl;
+        exit(0);
+    }
 }
 
 void USBCameraThread::run()
