@@ -4,6 +4,7 @@
 #include "../DataModel/datamodel.h"
 #include "visconfig.h"
 #include "../Core/util.h"
+#include "vistext.h"
 
 #include <QWidget>
 #include <QImage>
@@ -46,6 +47,8 @@ protected:
     Vector2D click;
 
     QImage backgroundImage;
+
+    VisText* textVis;
 };
 
 #endif // VISUALISER_H

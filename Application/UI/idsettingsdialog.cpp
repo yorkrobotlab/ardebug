@@ -7,7 +7,7 @@
  */
 
 #include "idsettingsdialog.h"
-#include "../Visualiser/visid.h"
+#include "../Visualiser/vistext.h"
 
 #include <QPushButton>
 #include <QFormLayout>
@@ -23,8 +23,8 @@ IDSettingsDialog::IDSettingsDialog(VisElement* visElement) {
     this->setWindowTitle("ID Visualistion Settings");
 
     // Create controls. Initialise to match current settings. Connect slots.
-    selectedOnlyCheckbox = new QCheckBox();
-    selectedOnlyCheckbox->setChecked(((VisID*)visElement)->getSelectedOnly());
+//    selectedOnlyCheckbox = new QCheckBox();
+//    selectedOnlyCheckbox->setChecked(((VisText*)visElement)->getSelectedOnly());
     QPushButton* applyButton = new QPushButton("Apply");
     QPushButton* cancelButton = new QPushButton("Cancel");
     QObject::connect(applyButton, SIGNAL(clicked(bool)), this, SLOT(accept(void)));
@@ -32,7 +32,7 @@ IDSettingsDialog::IDSettingsDialog(VisElement* visElement) {
 
     // Lay out settings controls in a form layout
     QFormLayout* formLayout = new QFormLayout;
-    formLayout->addRow("Show only for selected:", selectedOnlyCheckbox);
+//    formLayout->addRow("Show only for selected:", selectedOnlyCheckbox);
 
     // Lay out buttons on one row
     QHBoxLayout* buttonBox = new QHBoxLayout();
@@ -53,8 +53,8 @@ IDSettingsDialog::IDSettingsDialog(VisElement* visElement) {
  */
 void IDSettingsDialog::accept(void) {
     // Apply settings changes.
-    VisID* visID = (VisID*)visElement;
-    visID->setSelectedOnly(selectedOnlyCheckbox->isChecked());
+    VisText* visID = (VisText*)visElement;
+//    visID->setSelectedOnly(selectedOnlyCheckbox->isChecked());
 
     // Call superclass accept function
     QDialog::accept();

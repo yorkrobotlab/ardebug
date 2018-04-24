@@ -35,7 +35,6 @@ void VisConfig::populateSettingsList(QListWidget *list) {
         VisElement* element = elements.at(i);
 
         QListWidgetItem* item = new QListWidgetItem;
-        item->setData(Qt::DisplayRole, element->toString());
         item->setData(Qt::CheckStateRole, element->isEnabled() ? Qt::Checked : Qt::Unchecked);
         item->setData(Qt::UserRole, QVariant::fromValue<VisElement*>(element));
         list->addItem(item);

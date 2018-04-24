@@ -200,7 +200,7 @@ void MainWindow::setVideo(bool enabled) {
 
     // Display a message
     if(enabled) {
-        ui->statusBar->showMessage("Viedo Enabled.", 3000);
+        ui->statusBar->showMessage("Video Enabled.", 3000);
     } else {
         ui->statusBar->showMessage("Video Disabled.", 3000);
     }
@@ -218,6 +218,16 @@ void MainWindow::robotListSelectionChanged(const QItemSelection &selection) {
 
         // Show a status bar message
         ui->statusBar->showMessage(robot->getID(), 3000);
+
+        ui->customDataTable->clear();
+        ui->customDataTable->setRowCount(0);
+        for(const auto& key : robot->getKeys(ValueType::String))
+        {
+            int newRowIndex = ui->customDataTable->rowCount();
+            ui->customDataTable->insertRow(newRowIndex);
+            ui->customDataTable->setItem(newRowIndex, 0, new QTableWidgetItem{key});
+            ui->customDataTable->setItem(newRowIndex, 1, new QTableWidgetItem{robot->getStringValue(key)});
+        }
     } else {
         dataModel->selectedRobotID = -1;
     }

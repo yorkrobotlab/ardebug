@@ -4,8 +4,8 @@ import json
 
 class Robot:
     def __init__(self):
-        self.id = 'robot_1'
-        self.pose = {'x': 0.5, 'y': 0.9, 'orientation': 120}
+        self.id = 'robot_5'
+        self.pose = { 'x': 0.1, 'y': 0.2, 'orientation': 10 }
         self.state = 'Wandering'
         self.batteryLevel = 12.6
         self.internalState = {'alpha': 12, 'nextTarget': 'somewhere', 'ir': [0.3, 0.6, 0.1, 0.05]}
@@ -13,10 +13,10 @@ class Robot:
     def toJson(self):
         return json.dumps({
                     'id': self.id,
-                    'pose': self.pose,
                     'state': 'Wandering',
                     'batteryLevel': self.batteryLevel,
-                    'internalState': self.internalState
+                    'internalState': self.internalState,
+            'someString' : 'Some new String'
                })
 
 testRobot = Robot()

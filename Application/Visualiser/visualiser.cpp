@@ -15,7 +15,7 @@
 #include <iostream>
 #include <QLayout>
 
-#include "visid.h"
+#include "vistext.h"
 #include "visname.h"
 #include "visposition.h"
 #include "vispath.h"
@@ -33,10 +33,10 @@ Visualiser::Visualiser(DataModel *dataModelRef) {
 
     // Default visualiser config
     this->config = VisConfig();
-    this->config.elements.push_back(new VisID());
-    this->config.elements.push_back(new VisName());
-    this->config.elements.push_back(new VisPosition());
-    this->config.elements.push_back(new VisPath());
+    textVis = new VisText;
+    this->config.elements.push_back(textVis);
+    this->config.elements.push_back(new VisPosition);
+    this->config.elements.push_back(new VisPath);
 
     this->click.x = 0.0;
     this->click.y = 0.0;
@@ -82,6 +82,9 @@ void Visualiser::paintEvent(QPaintEvent*) {
         // Get data
         RobotData* robot = dataModelRef->getRobotByIndex(i);
         bool selected = dataModelRef->selectedRobotID == robot->getID();
+
+        textVis->resetText();
+        textVis->addLine("ID:   " + robot->getID());
 
         // Render the visualisations
         for (size_t j = 0; j < this->config.elements.size(); j++) {

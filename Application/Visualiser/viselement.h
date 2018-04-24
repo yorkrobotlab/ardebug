@@ -23,8 +23,6 @@ public:
     void setEnabled(bool en) { enabled = en; }
     bool isEnabled(void) { return enabled; }
 
-    virtual QString toString(void) = 0;
-
     virtual void render(QWidget* widget, QPainter* painter, RobotData* robot, bool selected, QRectF rect) = 0;
 
     virtual QDialog* getSettingsDialog(void) = 0;

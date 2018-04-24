@@ -4,25 +4,26 @@
 #include "viselement.h"
 #include "../UI/idsettingsdialog.h"
 
-class VisID : public VisElement
+class VisText : public VisElement
 {
 public:
-    VisID();
-    ~VisID();
-
-    virtual QString toString(void);
+    VisText();
+    ~VisText();
 
     virtual void render(QWidget* widget, QPainter* painter, RobotData *robot, bool selected, QRectF rect);
 
     virtual QDialog* getSettingsDialog(void);
 
-    void setSelectedOnly(bool enable);
-    bool getSelectedOnly(void);
+    void setText(QString newText);
+    QString getText();
+
+    void addLine(QString newLine);
+    void resetText();
 
 private:
     IDSettingsDialog* settingsDialog;
 
-    bool selectedOnly;
+    QString text;
 };
 
 #endif // VISID_H

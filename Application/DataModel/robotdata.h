@@ -63,6 +63,28 @@ public:
     int getAngle(void);
     void setAngle(int angle);
 
+    ValueType getValueType(QString key)
+    {
+        if(values.contains(key))
+            return values[key].type;
+
+        return ValueType::Unknown;
+    }
+
+    QList<QString> getKeys()
+    {
+        return values.keys();
+    }
+
+    QList<QString> getKeys(ValueType type)
+    {
+        QList<QString> ret;
+        for(const auto& key : values.keys())
+            if(values[key].type == type || type == ValueType::Unknown)
+                ret.append(key);
+        return ret;
+    }
+
     void setBoolValue(QString name, bool value)
     {
         auto& val = values[name];
