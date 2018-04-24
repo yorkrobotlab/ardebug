@@ -83,6 +83,7 @@ void Visualiser::paintEvent(QPaintEvent*) {
         RobotData* robot = dataModelRef->getRobotByIndex(i);
         bool selected = dataModelRef->selectedRobotID == robot->getID();
 
+        // @EXTEND: Add other data types
         textVis->resetText();
         textVis->addLine("ID:   " + robot->getID());
 

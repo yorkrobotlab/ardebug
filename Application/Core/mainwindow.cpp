@@ -221,6 +221,8 @@ void MainWindow::robotListSelectionChanged(const QItemSelection &selection) {
 
         ui->customDataTable->clear();
         ui->customDataTable->setRowCount(0);
+
+        // @EXTEND: Add other data types
         for(const auto& key : robot->getKeys(ValueType::String))
         {
             int newRowIndex = ui->customDataTable->rowCount();
