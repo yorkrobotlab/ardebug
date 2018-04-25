@@ -94,7 +94,7 @@ int BluetoothDataThread::openSocket(QBluetoothAddress addr)
             connect(btSocket[i], SIGNAL(readyRead_indexed(int)), this, SLOT(readSocket(int)));
             connect(btSocket[i], SIGNAL(socketConnected(int)), this, SLOT(SocketConnected(int)));
             connect(btSocket[i], SIGNAL(socketDisconnected(int)), this, SLOT(SocketDisconnected(int)));
-            //qDebug() << "opened";
+            //qDebug() << "opened dangerous socket";
             //connect(btSocket[i], SIGNAL(error(QBluetoothSocket::SocketError)), this, SLOT(SocketError(QBluetoothSocket::SocketError)));
             return 1;
         }

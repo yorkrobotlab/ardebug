@@ -10,6 +10,7 @@
 #include "../Core/settings.h"
 #include <iostream>
 
+
 #include <QTableWidgetItem>
 
 /* Construtor
@@ -25,11 +26,13 @@ RobotData::RobotData(int id, QString name) {
     this->state = "Unknown";
     this->stateTransitionIndex = 0;
 
+    this->posHistoryIndex = 0;
+    this->posHistoryFrameCount = 0;
+
     // Initialise odometry
     setPos(0.0f, 0.0f);
     setAngle(0);
-    this->posHistoryIndex = 0;
-    this->posHistoryFrameCount = 0;
+
     bzero(this->posHistory, sizeof(Vector2D) * POS_HISTORY_COUNT);
 
     // Generate colour
@@ -38,6 +41,7 @@ RobotData::RobotData(int id, QString name) {
     // Zero out the proximity data array
     bzero(this->proximityData, sizeof(int) * PROX_SENS_COUNT);
     bzero(this->backgroundIR, sizeof(int) * PROX_SENS_COUNT);
+
 }
 
 /* Destructor

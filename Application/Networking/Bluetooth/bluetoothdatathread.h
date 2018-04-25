@@ -6,7 +6,7 @@
 #include "bluetoothconfig.h"
 
 
-#define NUMBER_OF_BT_SOCKET 7
+#define NUMBER_OF_BT_SOCKET 16
 
 class BluetoothDataThread : public QObject
 {
