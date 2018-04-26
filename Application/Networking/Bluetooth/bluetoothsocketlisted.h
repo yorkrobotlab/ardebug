@@ -27,10 +27,16 @@ signals:
     void readyRead_indexed( int index);
     void connectInternalSocket();
     void disconnectInternalSocket();
+    void socketDisconnected(const int &);
+    void socketConnected(const int &);
+
 private slots:
     void socketReadyRead(void);
     void internalSocketConnector();
     void internalSocketDisconnector();
+    void internalSocketDisconnected();
+    void internalSocketConnected();
+
 
 
 

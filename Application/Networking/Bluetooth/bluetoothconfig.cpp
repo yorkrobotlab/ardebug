@@ -11,6 +11,7 @@
 #include "bluetoothconfig.h"
 #include <QDebug>
 
+
 /* Constructor
  * initialisation
  */
@@ -19,7 +20,7 @@ Bluetoothconfig::Bluetoothconfig(QObject *parent) : QObject(parent)
     deviceList.reserve(10);
 
     // Create a  model for the list of active bluetooth devices
-    deviceListModel = new QStringListModel();
+    deviceListModel = new QStandardItemModel();
 
 
     readFile();
@@ -43,6 +44,25 @@ Bluetoothconfig::~Bluetoothconfig()
  */
 int Bluetoothconfig::writeFile()
 {
+    QFile btfile("bluetooth.config");
+    btfile.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text);
+
+
+    for (size_t i = 0; i < deviceList.size(); i++) {
+        QString entry = "";
+        if(deviceList[i]->getState() == true)
+        {
+
+             entry =deviceList[i]->getBTAddress()+" " + deviceList[i]->getName() + "\n";
+        }
+        else
+        {
+             entry = "#" + deviceList[i]->getBTAddress()+" " + deviceList[i]->getName() + "\n";
+        }
+        btfile.write(entry.toLatin1().data(),  qstrlen(entry.toLatin1().data()));
+    }
+    btfile.close();
+
     return 0;
 }
 
@@ -69,7 +89,7 @@ int Bluetoothconfig::readFile()
     {
         QByteArray line = btfile.readLine();
         bool state;
-        QString adress;
+        QString address;
         QString name;
 
         //remove extra whitespaces
@@ -80,7 +100,7 @@ int Bluetoothconfig::readFile()
             {
                 state = false;
                 int divider = line.indexOf(" ");
-                adress = line.mid(1,divider-1);
+                address = line.mid(1,divider-1);
                 name = line.mid(divider+1);
 
             }
@@ -88,14 +108,15 @@ int Bluetoothconfig::readFile()
             {
                 state = true;
                 int divider = line.indexOf(" ");
-                adress = line.mid(0,divider);
+                address = line.mid(0,divider);
                 name = line.mid(divider+1);
 
             }
-            BluetoothDeviceListItem* newDevice = new BluetoothDeviceListItem(adress, name, state);
+            BluetoothDeviceListItem* newDevice = new BluetoothDeviceListItem(address, name, state);
             deviceList.push_back(newDevice);
         }
     }
+    btfile.close();
     return 1;
 }
 
@@ -108,8 +129,8 @@ void Bluetoothconfig::getActiveDevices( std::vector<BluetoothDeviceListItem*> * 
     for (size_t i = 0; i < deviceList.size(); i++) {
         if(deviceList[i]->getState() == true)
         {
-             activedeviceList->push_back(new BluetoothDeviceListItem(deviceList[i]->getBTAdress(), deviceList[i]->getName(), true));
-             qDebug() << "active device" <<deviceList[i]->getBTAdress();
+             activedeviceList->push_back(new BluetoothDeviceListItem(deviceList[i]->getBTAddress(), deviceList[i]->getName(), true));
+             qDebug() << "active device" <<deviceList[i]->getBTAddress();
         }
     }
 }
@@ -119,22 +140,73 @@ void Bluetoothconfig::getActiveDevices( std::vector<BluetoothDeviceListItem*> * 
  *
  *
  */
-QStringListModel* Bluetoothconfig::getActiveDeviceList(void) {
-    QStringList list;
-    qDebug() << "active device list";
+QStandardItemModel* Bluetoothconfig::getActiveDeviceList(void) {
+    int row = 0;
+    deviceListModel->clear();
+
     for(size_t i = 0; i < deviceList.size(); i++) {
 
         BluetoothDeviceListItem* item = (BluetoothDeviceListItem*)deviceList.at(i);
         if (item->getState() == true)
         {
-
-            QString str(item->getName()+ ": " + item->getBTAdress());
-            list.append(str);
+            QStandardItem *list_item = new QStandardItem(QString("%0 : %1").arg(item->getName()).arg(item->getBTAddress()));
+            deviceListModel->setItem(row, 0, list_item),
+            row++;
         }
     }
 
-    // Return the list model
-    deviceListModel->setStringList(list);
-    qDebug() << "active device list end" << list.size()<<deviceList.size();
+
+
     return deviceListModel;
 }
+
+
+/* setItemColour
+ * sets the colour of a model item
+ */
+ void Bluetoothconfig::setItemColour(int index,  Qt::GlobalColor colour){
+    qDebug()<<"item colour called";
+
+    //QModelIndex vindex = deviceListModel->index(index,0);
+    //deviceListModel->setData(vindex, QBrush(colour), Qt::BackgroundRole);
+    deviceListModel->item(index)->setBackground(QBrush(colour));
+
+ }
+
+
+ /* getDeviceList
+  * returns a pointer to a copy of the current devicelist
+  */
+ std::vector<BluetoothDeviceListItem*> *Bluetoothconfig::getDeviceList(){
+
+     std::vector<BluetoothDeviceListItem*> *newDeviceList = new std::vector<BluetoothDeviceListItem*> ;
+     newDeviceList->reserve(deviceList.size());
+     BluetoothDeviceListItem* item;
+
+
+     for(size_t i = 0; i < deviceList.size(); i++) {
+
+         item = (BluetoothDeviceListItem*)deviceList.at(i);
+         BluetoothDeviceListItem* newDevice = new BluetoothDeviceListItem(item->getBTAddress(), item->getName(), item->getState());
+         newDeviceList->push_back(newDevice);
+     }
+
+
+
+     return newDeviceList;
+ }
+
+
+ /* setDeviceList
+  * sets a new device list and saves the updates to the config file
+  */
+ void Bluetoothconfig::setDeviceList(std::vector<BluetoothDeviceListItem*> newDeviceList)
+ {
+
+     this->deviceList.clear();
+     this->deviceList.insert(this->deviceList.end(), newDeviceList.begin(), newDeviceList.end());
+     this->getActiveDeviceList();
+     writeFile();
+
+     emit deviceListChanged();
+ }

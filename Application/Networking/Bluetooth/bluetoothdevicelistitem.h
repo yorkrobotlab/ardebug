@@ -6,17 +6,17 @@
 class BluetoothDeviceListItem
 {
 private:
-    QBluetoothAddress bt_adress;
+    QBluetoothAddress bt_address;
     QString name;
     bool state;
 
 public:
     QString getName();
-    QString getBTAdress();
+    QString getBTAddress();
     BluetoothDeviceListItem(QString addr, QString name, bool state);
     BluetoothDeviceListItem(QBluetoothAddress addr, QString name, bool state);
-    //bool operator<(const  BluetoothDeviceListItem & left , const  BluetoothDeviceListItem & right);
     bool getState();
+    void setState(bool state);
 
 };
 

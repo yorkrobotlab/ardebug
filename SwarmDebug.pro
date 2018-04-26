@@ -47,7 +47,9 @@ SOURCES += Application/Core/main.cpp\
     Application/UI/robotinfodialog.cpp \
     Application/Tracking/aruco.cpp \
     Application/Tracking/usbcamerathread.cpp \
-    Application/Visualiser/vistext.cpp
+    Application/Visualiser/vistext.cpp \
+    Application/UI/bluetoothconfigdialog.cpp
+
 
 HEADERS  += Application/Core/mainwindow.h \
     Application/Core/util.h \
@@ -74,7 +76,9 @@ HEADERS  += Application/Core/mainwindow.h \
     Application/UI/robotinfodialog.h \
     Application/Tracking/aruco.h \
     Application/Tracking/usbcamerathread.h \
-    Application/Visualiser/vistext.h
+    Application/Visualiser/vistext.h \
+    Application/UI/bluetoothconfigdialog.h
+
 
 FORMS    += Application/UI/mainwindow.ui
 

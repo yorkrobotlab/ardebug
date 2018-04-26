@@ -6,7 +6,7 @@
 #include "bluetoothconfig.h"
 
 
-#define NUMBER_OF_BT_SOCKET 7
+#define NUMBER_OF_BT_SOCKET 16
 
 class BluetoothDataThread : public QObject
 {
@@ -16,6 +16,7 @@ class BluetoothDataThread : public QObject
    ~BluetoothDataThread();
     void stop();
      int openSocket(QBluetoothAddress addr);
+     void resetAllSockets();
 public:
     BluetoothDataThread(Bluetoothconfig * btConfig);
 
@@ -26,7 +27,8 @@ public slots:
      void connectAllSockets();
      void changeSocket(int index);
 private slots:
-    void SocketDisconnected();
+    void SocketDisconnected(const int &);
+    void SocketConnected(const int &);
     //void SocketError(BluetoothSocket::SocketError);
 
 signals:
