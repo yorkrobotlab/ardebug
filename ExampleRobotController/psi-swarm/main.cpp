@@ -50,8 +50,9 @@ void user_code_loop()
    
     int irfront;
     
-    irfront = (sensors.calculate_side_ir_value(0 ) + sensors.calculate_side_ir_value( 7)) /2;
+    irfront = (sensors.calculate_side_ir_value(0 ) +sensors.calculate_side_ir_value(1 )+sensors.calculate_side_ir_value(6 )+ sensors.calculate_side_ir_value( 7)) /4;
     ARDebug_sendWatchdog();
+    ARDebug_sendCostumData("testvalue", "12.4");
     
     if (currentState == FORWARD)
     {
@@ -87,7 +88,7 @@ void user_code_loop()
                 previousState = currentState ;
                 ARDebug_sendState("FORWARD");
             }
-            motors.forward(0.8);
+            motors.forward(0.3);
             
         }
         if (currentState == AVOID)
@@ -97,8 +98,8 @@ void user_code_loop()
                 ARDebug_sendState("AVOID");
                 previousState = currentState ;
             }
-             motors.set_left_motor_speed(-0.8);
-             motors.set_right_motor_speed(0.8);
+             motors.set_left_motor_speed(-0.3);
+             motors.set_right_motor_speed(0.3);
                 
             
         }    
@@ -218,7 +219,7 @@ int main()
 void attime()
 {
     sensors.store_ir_values(); 
-    //sensors.store_background_raw_ir_values();
+    sensors.store_background_raw_ir_values();
     ARDebug_sendIR();
     ARDebug_sendBackgroundIR(); 
 }
@@ -228,9 +229,9 @@ void attime()
 //Watchdog message
 void ARDebug_sendWatchdog()
 {
+     
      char str[100];
-     //[Robotid] [MessageID] [Robotname]
-     sprintf(str, "%i %i %s\n", (int) robot_id ,0 , "PsiSwarm");
+     sprintf(str, "{  \"id\": \"robot_%i\"}\n", (int) robot_id );
      bt.printf(str);
 }
 
@@ -238,9 +239,10 @@ void ARDebug_sendWatchdog()
 void ARDebug_sendIR()
 {
     char str[100];
-    //[Robotid] [MessageID] 8x[sensorvalue]
-    sprintf(str, "%i %i %i %i %i %i %i %i %i %i\n", 
-           (int) robot_id, 3, sensors.get_illuminated_raw_ir_value(0),            
+    
+   
+     sprintf(str, "{  \"id\": \"robot_%i\", \"internalState\":{\"ir\": [%i, %i, %i, %i, %i, %i, %i, %i] } }\n", (int) robot_id ,
+            sensors.get_illuminated_raw_ir_value(0),            
             sensors.get_illuminated_raw_ir_value(1),
             sensors.get_illuminated_raw_ir_value(2),
             sensors.get_illuminated_raw_ir_value(3),
@@ -253,10 +255,10 @@ void ARDebug_sendIR()
 
 void ARDebug_sendBackgroundIR()
 {
-    char str[100];
-    //[Robotid] [MessageID] 8x[sensorvalue]
-    sprintf(str, "%i %i %i %i %i %i %i %i %i %i\n", 
-            (int) robot_id, 4, sensors.get_background_raw_ir_value(0),            
+    char str[100];   
+    
+     sprintf(str, "{  \"id\": \"robot_%i\", \"internalState\":{\"ir\": [%i, %i, %i, %i, %i, %i, %i, %i] } }\n", (int) robot_id ,
+            sensors.get_background_raw_ir_value(0),            
             sensors.get_background_raw_ir_value(1),
             sensors.get_background_raw_ir_value(2),
             sensors.get_background_raw_ir_value(3),
@@ -269,25 +271,17 @@ void ARDebug_sendBackgroundIR()
 
 void ARDebug_sendState(string statename)
 {
-    char str[100];
-    //[Robotid] [MessageID] [Statename]
-    sprintf(str, "%i %i %s\n", (int) robot_id, 1, statename.c_str());
+    char str[100],    
+    sprintf(str, "{  \"id\": \"robot_%i\", \"state\": \"%s\"}\n", (int) robot_id , statename.c_str() );
     bt.printf(str);
+    
 }
 
-void ARDebug_sendMessage(string message)
-{
-    char str[100];
-    //[Robotid] [MessageID] [Message]
-    sprintf(str, "%i %i %s\n", (int) robot_id, 5, message.c_str());
-    bt.printf(str);   
-}
 
 void ARDebug_sendCostumData(string key, string value)
 {
     char str[100];
-     //[Robotid] [MessageID] [Key] [Value]
-    sprintf(str, "%i %i %s %s\n", (int) robot_id,6 , key.c_str() , value.c_str());
+     sprintf(str, "{  \"id\": \"robot_%i\", \"%s\": \"%s\"}\n", (int) robot_id , key.c_str(), value.c_str() );
     bt.printf(str);   
 }
 
