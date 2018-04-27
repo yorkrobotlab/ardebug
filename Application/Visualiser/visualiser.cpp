@@ -132,7 +132,7 @@ void Visualiser::mousePressEvent(QMouseEvent* event) {
 
 void Visualiser::newVideoFrame(cv::Mat& newImage)
 {
-    cv::Mat image;
+    static cv::Mat image;
     cv::cvtColor(newImage, image, cv::COLOR_BGR2RGB);
 
     double xScale = (1.0 * this->width())/image.cols;
