@@ -6,6 +6,7 @@
 #include <QThread>
 #include <QItemSelection>
 
+#include "../Networking/Bluetooth/bluetoothconfig.h"
 #include "../Visualiser/visualiser.h"
 #include "../DataModel/datamodel.h"
 
@@ -24,11 +25,16 @@ class MainWindow : public QMainWindow
     Visualiser* visualiser;
     DataModel* dataModel;
 
+   // IRDataView* irDataView;
+    Bluetoothconfig * btConfig;
+
+
     std::map<int, QString> arucoNameMapping;
     USBCameraThread cameraThread{"/dev/video0"};
     ArUco arucoTracker{&arucoNameMapping};
 
     QDialog* addIDMappingDialog;
+    QDialog* bluetoothConfigDialog;
 
     int sockfd;
 
@@ -61,6 +67,10 @@ public slots:
     void socketOpened(const int &sockfd) { this->sockfd = sockfd; }
 
     void idMappingUpdate(void);
+
+    //void socketConnected(const int);
+
+    //void socketDisconnected(const int);
 
 private slots:
     void on_actionExit_triggered();
@@ -104,6 +114,8 @@ private slots:
     void on_bluetoothlist_doubleClicked(const QModelIndex &index);
 
     void on_angleCorrectionEdit_textChanged(const QString &arg1);
+
+    void on_bluetoothConfigButton_clicked();
 
 private:
     Ui::MainWindow *ui;

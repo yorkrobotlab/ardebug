@@ -5,19 +5,23 @@
 #include <QString>
 #include "bluetoothdevicelistitem.h"
 #include <QObject>
-#include <QStringListModel>
+#include <QStandardItemModel>
 
 class Bluetoothconfig : public QObject
 {
     Q_OBJECT
 private:
     std::vector<BluetoothDeviceListItem*> deviceList;
-    QStringListModel* deviceListModel;
+    QStandardItemModel* deviceListModel;
 public:
     explicit Bluetoothconfig(QObject *parent = 0);
     ~Bluetoothconfig();
     void getActiveDevices( std::vector<BluetoothDeviceListItem*> * activedeviceList);
-    QStringListModel* getActiveDeviceList();
+    QStandardItemModel* getActiveDeviceList();
+    void setItemColour(int index, Qt::GlobalColor colour);
+    std::vector<BluetoothDeviceListItem*> * getDeviceList();
+    void setDeviceList(std::vector<BluetoothDeviceListItem*> newDeviceList);
+
 
 private:
     int readFile();

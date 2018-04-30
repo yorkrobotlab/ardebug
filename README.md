@@ -2,12 +2,20 @@
 ARDebug is a tool for monitoring and debugging swarm robotics and multi-robot experiments in real time using augmented reality techniques. The software provides a GUI for displaying internal data reported wirelessly by each robot within the swarm or group. This data is used to augment a real-time video feed of the robots and their environment, using graphical and textual representations of the data. The software aims to reduce the time taken to develop and debug swarm robotics experiments and behaviours by giving the developer more immediate access to decision making varaibles, sensor readings, and other key data, when compared to standard console or log-based debugging techniques. The software relies on a tracking system to locate the robots within the image in order to correctly overlay the graphical elements, and a modular software architecture is used to allow for easy integration with a variety of tracking systems. The tracking systen used in this reference implementation makes use of [ARuCo](https://www.uco.es/investiga/grupos/ava/node/26) fiducial markers and the associated [OpenCV](https://docs.opencv.org/3.1.0/d5/dae/tutorial_aruco_detection.html) image processing library.
 
 ## Installation
-Currently ARDebug requires compiling from source, and may require minor modifications to work with your tracking set up. Luckily compiling and building the application is made easy by the Qt toolchain. Simply download QtCreator from [here](https://www.qt.io/download), choosing the open source option. Clone this repository, or download it as a zip file and extract it into a directory, then use QtCreator to open the directory containing the code as a Qt project, and hit *Run* to launch.
+Currently ARDebug requires compiling from source, and may require minor modifications to work with your tracking set up. Luckily compiling and building the application is made easy by the Qt toolchain. Simply download QtCreator from [here](https://www.qt.io/download), choosing the open source option. Clone this repository, or download it as a zip file and extract it into a directory, then use QtCreator to open the directory containing the code as a Qt project, and hit *Run* to launch. 
 
 Pre-built versions of the software are in the works.
 
+###Dependencies
+ARDebug depends on the presence of further software packages, which include 
+
++ OpenCV 3.X.X including opencv_contrib to handle ARuCo-tags
++ CVB camera libraries
+
+It is possible to build the software without a camera. This is mainly included to faciliate developement on a computer that is not connected to the tracking system. To achieve that, unavailable libraries can be commented in the Qt-project file <i>SwarmDebug.pro</i>. The file <i>Application/Core/appconfig.h</i> is used to define the presence of a camera through preprocessor definitions. When no camera is defined, a dummy tracking is shown and the software can be run on a developement machine without tracking camera.
+
 ## Features
-The primary feature of ARDebug is providing acces to internal robot data. A number of types of data are supported:
+The primary feature of ARDebug is providing access to internal robot data. A number of types of data are supported:
 - State
 ⋅⋅⋅ A string describing the robot's current state within its state machine / the current action the robot is performing
 - IR Data
@@ -43,7 +51,7 @@ The packet type ID is an integer number identifying the type of data contained w
 | 5 | Message | Used to send a string-based message to the application, which will be reported in the application console. The data field should contain a string, and may contain spaces. |
 | 6 | Custom Data | Used to send any custom data value, in the form of a key/value pair. Data field should include the key string, followed by the value string, separated by a space. Neither may contain spaces. |
 
-ode for communicating packets in this format via WiFi from a linux-based robot is provided in <i>ardebug/RobotAPI</i>, primarily for illustrative purposes. An example of how this can be integrated into an example robot controller is provided in <i>ardebug/ExampleRobotController</i>
+Code for communicating packets in this format via WiFi from a linux-based robot is provided in <i>ardebug/RobotAPI</i>, primarily for illustrative purposes. An example of how this can be integrated into an example argos robot controller is provided in <i>ardebug/ExampleRobotController/e-puck</i>. An example controller for PsiSwarm robots using bluetooth communication is also provided in <i>ardebug/ExampleRobotController/psi-swarm</i>. Only the main file is provided here. Example projects for the PsiSwarm robot and the used libraries can be found at the [mbed team page](http://os.mbed.com/teams/Psi-Swarm-Robot/).
 
 ## Tracking System
 Tracking information regarding the position and orientation of each robot is passed through the same interface as the other data, meaning that the code can be easily extended to support a different tracking system from the ARuCo based one included, or even receive tracking data via the network from a seperate machine.

@@ -16,7 +16,7 @@
 BluetoothDeviceListItem::BluetoothDeviceListItem(QString addr, QString name, bool state)
 {
     this->name = name;
-    this->bt_adress = QBluetoothAddress(addr);
+    this->bt_address = QBluetoothAddress(addr);
     this->state = state;
 
 }
@@ -28,7 +28,7 @@ BluetoothDeviceListItem::BluetoothDeviceListItem(QBluetoothAddress addr, QString
 {
 
     this->name = name;
-    this->bt_adress = QBluetoothAddress(addr);
+    this->bt_address = QBluetoothAddress(addr);
     this->state = state;
 }
 
@@ -43,9 +43,9 @@ QString BluetoothDeviceListItem::getName()
 /* getBTAdress
  * returns the bluetooth adress
  */
-QString BluetoothDeviceListItem::getBTAdress()
+QString BluetoothDeviceListItem::getBTAddress()
 {
-    return this->bt_adress.toString();
+    return this->bt_address.toString();
 }
 
 /* getState
@@ -57,4 +57,9 @@ bool BluetoothDeviceListItem::getState()
     return this->state;
 }
 
+void BluetoothDeviceListItem::setState(bool state)
+{
+
+    this->state = state;
+}
 

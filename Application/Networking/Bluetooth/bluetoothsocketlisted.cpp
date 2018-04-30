@@ -35,6 +35,10 @@ void BluetoothSocketListed::connectSocket()
 
     connect(socket, SIGNAL(readyRead()), this, SLOT(socketReadyRead()));
     connect(this, SIGNAL(connectInternalSocket()), this, SLOT(internalSocketConnector()));
+
+    //signals for actual socket status for colour changing in UI
+    connect(socket, SIGNAL(connected()), this, SLOT(internalSocketConnected()));
+    connect(socket, SIGNAL(disconnected()), this, SLOT(internalSocketDisconnected()));
     emit connectInternalSocket();
     //connect(btSocket[i], SIGNAL(error(QBluetoothSocket::SocketError)), this, SLOT(SocketError(QBluetoothSocket::SocketError)));
 }
@@ -100,4 +104,15 @@ void BluetoothSocketListed::internalSocketDisconnector()
 {
     socket->disconnectFromService();
     qDebug() << "socket disconnected";
+}
+
+
+void BluetoothSocketListed::internalSocketDisconnected()
+{
+    emit socketDisconnected(this->index);
+}
+
+void BluetoothSocketListed::internalSocketConnected()
+{
+     emit socketConnected(this->index);
 }
