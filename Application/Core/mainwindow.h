@@ -9,9 +9,15 @@
 #include "../Networking/Bluetooth/bluetoothconfig.h"
 #include "../Visualiser/visualiser.h"
 #include "../DataModel/datamodel.h"
+#include "../Core/appconfig.h"
 
 #include "Application/Tracking/aruco.h"
+
+#ifdef CVB_CAMERA_PRESENT
+#include "Application/Tracking/cvbcamerathread.h"
+#else
 #include "Application/Tracking/usbcamerathread.h"
+#endif
 
 namespace Ui {
 class MainWindow;
@@ -30,7 +36,13 @@ class MainWindow : public QMainWindow
 
 
     std::map<int, QString> arucoNameMapping;
-    USBCameraThread cameraThread{"/dev/video0"};
+
+#ifdef CVB_CAMERA_PRESENT
+    CVBCameraThread cameraThread;
+#else
+    USBCameraThread cameraThread;
+#endif
+
     ArUco arucoTracker{&arucoNameMapping};
 
     QDialog* addIDMappingDialog;

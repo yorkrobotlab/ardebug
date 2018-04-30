@@ -48,7 +48,8 @@ SOURCES += Application/Core/main.cpp\
     Application/Tracking/aruco.cpp \
     Application/Tracking/usbcamerathread.cpp \
     Application/Visualiser/vistext.cpp \
-    Application/UI/bluetoothconfigdialog.cpp
+    Application/UI/bluetoothconfigdialog.cpp \
+    Application/Tracking/cvbcamerathread.cpp
 
 
 HEADERS  += Application/Core/mainwindow.h \
@@ -77,7 +78,8 @@ HEADERS  += Application/Core/mainwindow.h \
     Application/Tracking/aruco.h \
     Application/Tracking/usbcamerathread.h \
     Application/Visualiser/vistext.h \
-    Application/UI/bluetoothconfigdialog.h
+    Application/UI/bluetoothconfigdialog.h \
+    Application/Tracking/cvbcamerathread.h
 
 
 FORMS    += Application/UI/mainwindow.ui
@@ -86,3 +88,10 @@ CONFIG += link_pkgconfig \
     c++11
 
 PKGCONFIG += opencv
+
+#LIBS += -L/opt/cvb/lib/ -lCVCImg
+#LIBS += -L/opt/cvb/lib/ -lCVCDriver
+#LIBS += -L/opt/cvb/lib/ -lCVCUtilities
+
+INCLUDEPATH += /opt/cvb/include
+DEPENDPATH += /opt/cvb/include

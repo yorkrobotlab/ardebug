@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-USBCameraThread::USBCameraThread(QString deviceName)
+USBCameraThread::USBCameraThread()
 {
     captureDevice = cv::VideoCapture(0);
 }

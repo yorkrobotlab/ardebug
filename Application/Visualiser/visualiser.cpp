@@ -154,7 +154,8 @@ void Visualiser::newVideoFrame(cv::Mat& newImage)
         scaleFactor = yScale;
     }
 
-    cv::resize(image, image, cv::Size{newX, newY}, scaleFactor > 1 ? cv::INTER_LINEAR : cv::INTER_AREA);
+//    cv::resize(image, image, cv::Size{newX, newY}, scaleFactor > 1 ? cv::INTER_LINEAR : cv::INTER_AREA);
+    cv::resize(image, image, cv::Size{newX, newY}, cv::INTER_LINEAR);
 
     backgroundImage = QImage(image.data, image.cols, image.rows, image.cols*3, QImage::Format_RGB888);
 

@@ -10,7 +10,7 @@ class USBCameraThread : public QThread
     Q_OBJECT
 
 public:
-    USBCameraThread(QString deviceName);
+    USBCameraThread();
     virtual void run() override;
 
 public slots:
