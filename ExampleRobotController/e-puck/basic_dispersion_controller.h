@@ -59,8 +59,8 @@ namespace argos
         int random_turn_count;
         int battery_level;
 
-        // Networking object for sending data to SwarmDebug system
-        DebugNetwork* swarm_debug;
+        // Networking object for sending data to ARDebug system
+        DebugNetwork* ardebug;
     };
 };
 

@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     // Show a message
-    ui->statusBar->showMessage("SwarmDebug v0.01", 3000);
+    ui->statusBar->showMessage("ARDebug v1.1", 3000);
 
     // Show some console text
     Log::instance()->setup(ui->consoleText, ui->loggingFileLabel);

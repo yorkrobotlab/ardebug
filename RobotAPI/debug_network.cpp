@@ -2,7 +2,7 @@
  * debug_network.cpp
  *
  * This class encapsulates networking functionality for sending packets of
- * robot data to the SwarmDebug application.
+ * robot data to the ARDebug application.
  *
  * (C) Alistair Jewers, Feb 2017.
  */
@@ -19,7 +19,7 @@ DebugNetwork::~DebugNetwork(void) { }
 /* init
  * Initialise the debugging system and network socket.
  * Must provide a port number, and fallback server IP and robot ID,
- * in case swarm_debug_config.txt cannot be found. 
+ * in case ardebug_config.txt cannot be found.
  */
 void DebugNetwork::init(int port, std::string default_server_ip, int default_robot_id) {
     // Open config file

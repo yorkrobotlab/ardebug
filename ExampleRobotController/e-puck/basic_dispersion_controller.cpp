@@ -26,7 +26,7 @@ CBasicDispersionController::CBasicDispersionController():
         right_wheel_speed(0),
         wheels_actuator(NULL),
         proximity_sensor(NULL),
-        swarm_debug(NULL) {}
+        ardebug(NULL) {}
 
 CBasicDispersionController::~CBasicDispersionController()
 {
@@ -46,14 +46,14 @@ void CBasicDispersionController::Init(TConfigurationNode& t_node)
     wheels_actuator = GetActuator<CCI_EPuckWheelsActuator>("epuck_wheels");
     base_leds_actuator = GetActuator<CCI_EPuckBaseLEDsActuator>("epuck_base_leds");
 
-    // Initialise SwarmDebug system with a fallback server IP and robot ID
-    swarm_debug = new DebugNetwork();
-    swarm_debug->init(8888, "192.168.1.101", 99);
+    // Initialise ARDebug system with a fallback server IP and robot ID
+    ardebug = new DebugNetwork();
+    ardebug->init(8888, "192.168.1.101", 99);
 
     // Send a message to the application console
     std::ostringstream msg;
-    msg << "Robot_" << swarm_debug->getRobotID() << " initialised.";
-    swarm_debug->sendLogMessage(msg.str());
+    msg << "Robot_" << ardebug->getRobotID() << " initialised.";
+    ardebug->sendLogMessage(msg.str());
 
     // Initialise rand
     srand(time(NULL));
@@ -64,8 +64,8 @@ void CBasicDispersionController::Init(TConfigurationNode& t_node)
  */
 void CBasicDispersionController::Destroy()
 {
-    swarm_debug->destroy();
-    delete swarm_debug;
+    ardebug->destroy();
+    delete ardebug;
 }
 
 /* ControlStep
@@ -85,19 +85,19 @@ void CBasicDispersionController::ControlStep()
     if (control_step % 10 == 0) {
         // Robot name for watchdog packet
         std::ostringstream name;
-        name << "E-Puck_" << swarm_debug->getRobotID();
-        swarm_debug->sendWatchdogPacket(name.str());
+        name << "E-Puck_" << ardebug->getRobotID();
+        ardebug->sendWatchdogPacket(name.str());
 
         // Control step as custom data
         std::ostringstream number;
         number << control_step;
-        swarm_debug->sendCustomData("ControlStep", number.str());
+        ardebug->sendCustomData("ControlStep", number.str());
     }
 
     // Read the IR sensors
     const CCI_EPuckProximitySensor::TReadings& proximity_sensor_readings = proximity_sensor->GetReadings();
 
-    // Copy the IR readings into a simple int array for sending to the SwarmDebug server
+    // Copy the IR readings into a simple int array for sending to the ARDebug server
     int ir_data[proximity_sensor_readings.size()];
     int i = 0;
     for(CCI_EPuckProximitySensor::SReading reading : proximity_sensor_readings) {
@@ -106,7 +106,7 @@ void CBasicDispersionController::ControlStep()
     }
 
     // Send the IR data as a packet
-    swarm_debug->sendIRDataPacket(ir_data, proximity_sensor_readings.size(), false);
+    ardebug->sendIRDataPacket(ir_data, proximity_sensor_readings.size(), false);
 
     // Read the IR sensor background values
     const CCI_EPuckLightSensor::TReadings& light_sensor_readings = light_sensor->GetReadings();
@@ -120,7 +120,7 @@ void CBasicDispersionController::ControlStep()
     }
 
     // Send the background IR data as a packet
-    swarm_debug->sendIRDataPacket(background_ir_data, light_sensor_readings.size(), true);
+    ardebug->sendIRDataPacket(background_ir_data, light_sensor_readings.size(), true);
 
     // Create diffusion vector
     CVector2 diffusionVector;
@@ -143,7 +143,7 @@ void CBasicDispersionController::ControlStep()
         // Walk forward for 100 control steps if uninterrupted
         if (walk_count < 100) {
             // Set state to WALKING
-            swarm_debug->sendStatePacket("WALKING");
+            ardebug->sendStatePacket("WALKING");
 
             // Walk forward
             wheels_actuator->SetLinearVelocity(3, 3);
@@ -158,7 +158,7 @@ void CBasicDispersionController::ControlStep()
             walk_count++;
         } else {
             // Set state to TURNING
-            swarm_debug->sendStatePacket("TURNING");
+            ardebug->sendStatePacket("TURNING");
 
             // Turn on the spot
             wheels_actuator->SetLinearVelocity(0, 6);
@@ -179,7 +179,7 @@ void CBasicDispersionController::ControlStep()
         WheelSpeedsFromHeadingVector(headingVector);
 
         // Set state to AVOIDING
-        swarm_debug->sendStatePacket("AVOIDING");
+        ardebug->sendStatePacket("AVOIDING");
 
         // Reset walk count
         walk_count = 0;
@@ -188,7 +188,7 @@ void CBasicDispersionController::ControlStep()
     // Send the walk timer value as custom data
     std::ostringstream walk_str;
     walk_str << walk_count;
-    swarm_debug->sendCustomData("WalkTimer", walk_str.str());
+    ardebug->sendCustomData("WalkTimer", walk_str.str());
 
     // Simulated battery level value
     if(control_step == 1) {
@@ -204,7 +204,7 @@ void CBasicDispersionController::ControlStep()
     // Send batter level as custom data
     std::ostringstream batt_str;
     batt_str << battery_level;
-    swarm_debug->sendCustomData("BatteryLevel", batt_str.str());
+    ardebug->sendCustomData("BatteryLevel", batt_str.str());
 }
 
 /* WheelSpeedsFromHeadingVector

@@ -2,7 +2,7 @@
  * debug_network.h
  *
  * This class encapsulates networking functionality for sending packets of
- * robot data to the SwarmDebug application.
+ * robot data to the ARDebug application.
  *
  * (C) Alistair Jewers, Feb 2017.
  */
@@ -62,7 +62,7 @@ private:
     struct sockaddr_in sock_in;
     int sockfd;
 
-    // Robot id within the swarm debug system
+    // Robot id within the ARDebug system
     int robot_id;
 };
 

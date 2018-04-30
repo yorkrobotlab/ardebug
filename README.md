@@ -12,7 +12,7 @@ ARDebug depends on the presence of further software packages, which include
 + OpenCV 3.X.X including opencv_contrib to handle ARuCo-tags
 + CVB camera libraries
 
-It is possible to build the software without a camera. This is mainly included to faciliate developement on a computer that is not connected to the tracking system. To achieve that, unavailable libraries can be commented in the Qt-project file <i>SwarmDebug.pro</i>. The file <i>Application/Core/appconfig.h</i> is used to define the presence of a camera through preprocessor definitions. When no camera is defined, a dummy tracking is shown and the software can be run on a developement machine without tracking camera.
+It is possible to build the software without a camera. This is mainly included to faciliate developement on a computer that is not connected to the tracking system. To achieve that, unavailable libraries can be commented in the Qt-project file <i>ARDebug.pro</i>. The file <i>Application/Core/appconfig.h</i> is used to define the presence of a camera through preprocessor definitions. When no camera is defined, a dummy tracking is shown and the software can be run on a developement machine without tracking camera.
 
 ## Features
 The primary feature of ARDebug is providing access to internal robot data. A number of types of data are supported:
