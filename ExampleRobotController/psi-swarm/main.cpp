@@ -271,7 +271,7 @@ void ARDebug_sendBackgroundIR()
 
 void ARDebug_sendState(string statename)
 {
-    char str[100],    
+    char str[100];    
     sprintf(str, "{  \"id\": \"robot_%i\", \"state\": \"%s\"}\n", (int) robot_id , statename.c_str() );
     bt.printf(str);
     
