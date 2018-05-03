@@ -35,7 +35,7 @@ void VisPosition::render(QWidget* widget, QPainter* painter, RobotData *robot, b
         return;
     }
 
-    double indicatorSize = 40;
+    double indicatorSize = 7;
 
     double orientation = qDegreesToRadians(robot->getAngle()*1.0);
     double x = rect.x() + (rect.width() * robot->getPos().position.x);
@@ -57,23 +57,7 @@ void VisPosition::render(QWidget* widget, QPainter* painter, RobotData *robot, b
         painter->setPen(newPen);
     }
 
-    // Axes
-    painter->drawLine(x-frontDx, y-frontDy, x+frontDx, y+frontDy);
-    painter->drawLine(x-sideDx, y-sideDy, x+sideDx, y+sideDy);
-
-    //Arrow
-    QPointF offsets[3] =
-    {
-        QPointF{frontDx, frontDy},
-        0.5 * QPointF{frontDx, frontDy} + 0.2 * QPointF{sideDx, sideDy},
-        0.5 * QPointF{frontDx, frontDy} - 0.2 * QPointF{sideDx, sideDy}
-    };
-
-    QPointF points[3];
-    for(int i = 0; i < 3; ++i)
-        points[i] = centre + offsets[i];
-
-    painter->drawConvexPolygon(points, 3);
+    painter->drawEllipse(centre, indicatorSize, indicatorSize);
 
     painter->setPen(pen);
 }
