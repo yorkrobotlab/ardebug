@@ -28,8 +28,11 @@ Mat cvb_to_ocv_nocopy(IMG cvbImg)
     intptr_t yInc = 0;
     GetLinearAccess(cvbImg, 0, &ppixels, &xInc, &yInc);
     Mat image(size, CV_8UC3, ppixels, yInc);
+    Mat ret;
 
-    return image;
+    cv::cvtColor(image, ret, CV_BGR2RGB);
+
+    return ret;
 }
 
 CVBCameraThread::CVBCameraThread()
@@ -81,22 +84,22 @@ void CVBCameraThread::run()
             // Create an attached OpenCV image
             Mat originalImage = cvb_to_ocv_nocopy(hCamera);
 
-            Mat unflippedImage;
-            originalImage.convertTo(unflippedImage, -1, 2, 40);
+	    //Mat unflippedImage;
+            originalImage.convertTo(originalImage, -1, 2, 40);
 
             // Swap blue and red channels
-            vector<Mat> channels(3);
-            split(unflippedImage, channels);
-            merge(vector<Mat>{channels[2], channels[1], channels[0]}, unflippedImage);
+            //vector<Mat> channels(3);
+            //split(originalImage, channels);
+            //merge(vector<Mat>{channels[2], channels[1], channels[0]}, originalImage);
 
 //            if (Settings::instance()->isImageFlipped()) {
 //                flip(unflippedImage, image, -1);
 //            } else {
-                image = unflippedImage;
+	    //image = unflippedImage;
+	    emit newVideoFrame(originalImage);
 //            }
         }
 
-        emit newVideoFrame(image);
     }
 }
 

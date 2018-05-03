@@ -121,8 +121,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(&arucoTracker, SIGNAL(newRobotPosition(QString, Pose)), dataModel, SLOT(newRobotPosition(QString, Pose)));
 
-    connect(&cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), visualiser, SLOT(newVideoFrame(cv::Mat&)));
-    connect(&cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), &arucoTracker, SLOT(newImageReceived(cv::Mat&)));
+    connect(&cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), visualiser, SLOT(newVideoFrame(cv::Mat&)), Qt::BlockingQueuedConnection);
+    connect(&cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), &arucoTracker, SLOT(newImageReceived(cv::Mat&, Qt::BlockingQueuedConnection)));
     connect(this, SIGNAL(stopReadingCamera()), &cameraThread, SLOT(endThread()));
 
     cameraThread.start();
