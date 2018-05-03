@@ -117,12 +117,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     qRegisterMetaType<cv::Mat>("cv::Mat&");
 
-    arucoNameMapping[5] = "robot_5";
+    for(int i = 0; i < 50; ++i)
+    {
+        std::stringstream sstream;
+        sstream<<"robot_"<<i;
+        arucoNameMapping[i] = QString::fromStdString(sstream.str());
+    }
 
     connect(&arucoTracker, SIGNAL(newRobotPosition(QString, Pose)), dataModel, SLOT(newRobotPosition(QString, Pose)));
 
     connect(&cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), visualiser, SLOT(newVideoFrame(cv::Mat&)), Qt::BlockingQueuedConnection);
-    connect(&cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), &arucoTracker, SLOT(newImageReceived(cv::Mat&, Qt::BlockingQueuedConnection)));
+    connect(&cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), &arucoTracker, SLOT(newImageReceived(cv::Mat&)), Qt::BlockingQueuedConnection);
     connect(this, SIGNAL(stopReadingCamera()), &cameraThread, SLOT(endThread()));
 
     cameraThread.start();

@@ -354,6 +354,7 @@ void DataModel::newRobotPosition(QString id, Pose p)
     RobotData* robot = getRobotByID(id);
     robot->setPos(p.position.x, p.position.y);
     robot->setAngle(p.orientation);
+    emit modelChanged(true);
 }
 
 void DataModel::addRobotIfNotExist(QString id)
