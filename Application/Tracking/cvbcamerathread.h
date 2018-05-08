@@ -20,7 +20,7 @@ public:
     virtual void run() override;
 
 public slots:
-    void endThread();
+    virtual void quit();
 
 signals:
     void newVideoFrame(cv::Mat& image);

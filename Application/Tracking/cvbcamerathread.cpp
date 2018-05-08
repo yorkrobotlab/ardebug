@@ -96,14 +96,18 @@ void CVBCameraThread::run()
 //                flip(unflippedImage, image, -1);
 //            } else {
 	    //image = unflippedImage;
-	    emit newVideoFrame(originalImage);
+            if(shouldRun)
+                emit newVideoFrame(originalImage);
 //            }
         }
 
     }
+
+    G2Freeze(hCamera, true);
+    ReleaseObject(hCamera);
 }
 
-void CVBCameraThread::endThread()
+void CVBCameraThread::quit()
 {
     shouldRun = false;
 }

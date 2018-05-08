@@ -15,16 +15,18 @@ void USBCameraThread::run()
         {
             cv::Mat image;
             captureDevice>>image;
-            emit newVideoFrame(image);
+            if(shouldRun)
+                emit newVideoFrame(image);
         }
         else
         {
             yieldCurrentThread();
         }
     }
+    captureDevice.release();
 }
 
-void USBCameraThread::endThread()
+void USBCameraThread::quit()
 {
     shouldRun = false;
 }
