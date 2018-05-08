@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui bluetooth opengl
+QT       += core gui bluetooth opengl charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -49,7 +49,8 @@ SOURCES += Application/Core/main.cpp\
     Application/Tracking/usbcamerathread.cpp \
     Application/Visualiser/vistext.cpp \
     Application/UI/bluetoothconfigdialog.cpp \
-    Application/Tracking/cvbcamerathread.cpp
+    Application/Tracking/cvbcamerathread.cpp \
+    Application/UI/chartdialog.cpp
 
 
 HEADERS  += Application/Core/mainwindow.h \
@@ -79,7 +80,8 @@ HEADERS  += Application/Core/mainwindow.h \
     Application/Tracking/usbcamerathread.h \
     Application/Visualiser/vistext.h \
     Application/UI/bluetoothconfigdialog.h \
-    Application/Tracking/cvbcamerathread.h
+    Application/Tracking/cvbcamerathread.h \
+    Application/UI/chartdialog.h
 
 
 FORMS    += Application/UI/mainwindow.ui

@@ -27,6 +27,7 @@
 
 #include <QLayout>
 #include <QStandardItemModel>
+#include "../UI/chartdialog.h"
 
 /* Constructor.
  * Do UI set up tasks.
@@ -639,3 +640,25 @@ void MainWindow::on_bluetoothConfigButton_clicked()
 }
 
 
+
+void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
+{
+     qDebug()<<"doubleClicked";
+     QString  dataset =  ui->customDataTable->item(item->row(), 0)->text();
+    qDebug()<<dataset;
+    if (chartDialog != NULL) {
+        delete chartDialog;
+        chartDialog = NULL;
+        qDebug()<<"deleted chart Dialog";
+    }
+
+    chartDialog = new Chartdialog(dataModel);
+
+    if (chartDialog != NULL) {
+        QObject::connect(this, SIGNAL(chartDataSelected(QString )), chartDialog, SLOT(newDataSelected(const QString &)));
+        emit chartDataSelected(dataset);
+
+        chartDialog->show();
+
+    }
+}
