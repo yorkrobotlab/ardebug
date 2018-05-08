@@ -15,14 +15,15 @@
 
 #include <opencv2/opencv.hpp>
 
+#include "Application/Tracking/cvbcamerathread.h"
+
 class Visualiser : public QWidget
 {
     Q_OBJECT
 public:
     VisConfig config;
 
-    Visualiser(QWidget *parent = 0);
-    Visualiser(DataModel* dataModelRef);
+    Visualiser(DataModel* dataModelRef, CVBCameraThread* cameraThread);
 
     QSize minimumSizeHint () const { return QSize(200, 200); }
 
@@ -47,6 +48,8 @@ protected:
     Vector2D click;
 
     QImage backgroundImage;
+
+    CVBCameraThread* cameraThread;
 
     VisText* textVis;
 };

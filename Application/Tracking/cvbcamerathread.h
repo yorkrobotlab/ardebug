@@ -11,6 +11,10 @@
 
 #include <iCVCImg.h>
 
+#include <functional>
+#include <QMutex>
+#include <QMutexLocker>
+
 class CVBCameraThread : public QThread
 {
     Q_OBJECT
@@ -18,6 +22,11 @@ class CVBCameraThread : public QThread
 public:
     CVBCameraThread();
     virtual void run() override;
+    void addPreEmitCall(std::function<void()> call)
+    {
+        QMutexLocker lock{&emitCallMutex};
+        preEmitCalls.push_back(call);
+    }
 
 public slots:
     virtual void quit();
@@ -28,6 +37,8 @@ signals:
 private:
     IMG hCamera = NULL;
     volatile bool shouldRun = true;
+    std::vector<std::function<void()>> preEmitCalls;
+    QMutex emitCallMutex;
 };
 
 Q_DECLARE_METATYPE(cv::Mat)

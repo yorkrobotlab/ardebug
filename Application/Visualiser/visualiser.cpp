@@ -20,15 +20,17 @@
 #include "visposition.h"
 #include "vispath.h"
 
+#include <iostream>
+
 /* Constructor
  * Empty.
  */
-Visualiser::Visualiser(QWidget*)  { }
+//Visualiser::Visualiser(QWidget*)  { }
 
 /* Constructor
  * Initalises the visualiser data.
  */
-Visualiser::Visualiser(DataModel *dataModelRef) {
+Visualiser::Visualiser(DataModel *dataModelRef, CVBCameraThread* cameraThread) {
     this->dataModelRef = dataModelRef;
 
     // Default visualiser config
@@ -42,6 +44,9 @@ Visualiser::Visualiser(DataModel *dataModelRef) {
     this->click.y = 0.0;
 
     backgroundImage.fill(QColor{200, 200, 200});
+
+    this->cameraThread = cameraThread;
+    connect(cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), this, SLOT(newVideoFrame(cv::Mat&)));
 }
 
 void Visualiser::refreshVisualisation()
@@ -132,6 +137,9 @@ void Visualiser::mousePressEvent(QMouseEvent* event) {
 
 void Visualiser::newVideoFrame(cv::Mat& newImage)
 {
+//    bool disconnected = disconnect(cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), this, SLOT(newVideoFrame(cv::Mat&)));
+
+std::cout<<"Vis "<<std::endl<<std::flush;
     static cv::Mat image;
     cv::cvtColor(newImage, image, cv::COLOR_BGR2RGB);
 
@@ -160,5 +168,10 @@ void Visualiser::newVideoFrame(cv::Mat& newImage)
     backgroundImage = QImage(image.data, image.cols, image.rows, image.cols*3, QImage::Format_RGB888);
 
     repaint();
+
+//    if(disconnected)
+    cameraThread->addPreEmitCall([&](){
+        connect(cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), this, SLOT(newVideoFrame(cv::Mat&)));
+    });
 }
 

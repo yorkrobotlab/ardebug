@@ -43,7 +43,7 @@ class MainWindow : public QMainWindow
     USBCameraThread cameraThread;
 #endif
 
-    ArUco arucoTracker{&arucoNameMapping};
+    ArUco arucoTracker{&arucoNameMapping, &cameraThread};
 
     QDialog* addIDMappingDialog;
     QDialog* bluetoothConfigDialog;

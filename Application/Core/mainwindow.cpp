@@ -90,7 +90,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     // Intantiate the visualiser
-    visualiser = new Visualiser(dataModel);
+    visualiser = new Visualiser(dataModel, &cameraThread);
     visualiser->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
     connect(dataModel, SIGNAL(modelChanged(bool)), visualiser, SLOT(refreshVisualisation()));
@@ -126,10 +126,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(&arucoTracker, SIGNAL(newRobotPosition(QString, Pose)), dataModel, SLOT(newRobotPosition(QString, Pose)));
 
-    connect(&cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), visualiser, SLOT(newVideoFrame(cv::Mat&)), Qt::BlockingQueuedConnection);
-    connect(&cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), &arucoTracker, SLOT(newImageReceived(cv::Mat&)), Qt::BlockingQueuedConnection);
-//    connect(this, SIGNAL(stopReadingCamera()), &cameraThread, SLOT(quit()));
-
     cameraThread.start();
 
     // Start the camera reading immediately
@@ -144,18 +140,10 @@ MainWindow::~MainWindow()
     // Send a packet to signal the network socket to close
     sendClosePacket(8888);
 
+    std::cout<<"xitinging"<<std::endl;
+
     // Stop the camera controller
-    emit stopReadingCamera();
-
-    // Release all memory
-    delete ui;
-    delete dataModel;
-    delete visualiser;
-
-    // Delete the id mapping dialog if existing
-    if (addIDMappingDialog != NULL) {
-        delete addIDMappingDialog;
-    }
+//    emit stopReadingCamera();
 
     // Stop the network thread
     networkThread.quit();
@@ -168,6 +156,16 @@ MainWindow::~MainWindow()
     // Stop the camera thread
     cameraThread.quit();
     cameraThread.wait();
+
+    // Release all memory
+    delete ui;
+    delete dataModel;
+    delete visualiser;
+
+    // Delete the id mapping dialog if existing
+    if (addIDMappingDialog != NULL) {
+        delete addIDMappingDialog;
+    }
 
     // Delete the singletons
     Settings::deleteInstance();
