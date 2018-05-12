@@ -44,14 +44,8 @@ void VisText::render(QWidget* , QPainter* painter, RobotData *robot, bool select
     auto font = painter->font();
     auto pen  = painter->pen();
 
-    auto newFont = font;
-    newFont.setStyleStrategy(QFont::ForceOutline);
-    painter->setFont(newFont);
-
-    auto newPen = pen;
-    newPen.setColor(QColor{50, 50, 50});
-    painter->setPen(newPen);
-    painter->drawText(QRectF{x, y, 200, 200}, Qt::TextWordWrap, text);
+    painter->setBackgroundMode(Qt::BGMode::OpaqueMode);
+    painter->setBackground(QBrush{QColor{0, 0, 0, 100}});
 
     painter->setFont(font);
     painter->setPen(pen);
