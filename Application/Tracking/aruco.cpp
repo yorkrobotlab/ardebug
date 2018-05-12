@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-ArUco::ArUco(std::map<int, QString>* idMapping, CVBCameraThread* cameraThread)
+ArUco::ArUco(std::map<int, QString>* idMapping, ARCameraThread* cameraThread)
 {
     possibleTags = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_6X6_50);
     detectorParameters = cv::aruco::DetectorParameters::create();

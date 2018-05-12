@@ -35,6 +35,15 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+#ifdef CVB_CAMERA_PRESENT
+    cameraThread = new CVBCameraThread;
+#else
+    cameraThread = new USBCameraThread;
+#endif
+
+    arucoTracker = new ArUco{&arucoNameMapping, cameraThread};
+
+
     ui->setupUi(this);
 
     // Show a message
@@ -90,7 +99,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     // Intantiate the visualiser
-    visualiser = new Visualiser(dataModel, &cameraThread);
+    visualiser = new Visualiser{dataModel, cameraThread};
     visualiser->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
     connect(dataModel, SIGNAL(modelChanged(bool)), visualiser, SLOT(refreshVisualisation()));
@@ -124,9 +133,9 @@ MainWindow::MainWindow(QWidget *parent) :
         arucoNameMapping[i] = QString::fromStdString(sstream.str());
     }
 
-    connect(&arucoTracker, SIGNAL(newRobotPosition(QString, Pose)), dataModel, SLOT(newRobotPosition(QString, Pose)));
+    connect(arucoTracker, SIGNAL(newRobotPosition(QString, Pose)), dataModel, SLOT(newRobotPosition(QString, Pose)));
 
-    cameraThread.start();
+    cameraThread->start();
 
     // Start the camera reading immediately
     startReadingCamera();    
@@ -154,8 +163,8 @@ MainWindow::~MainWindow()
     bluetoothThread.wait();
 
     // Stop the camera thread
-    cameraThread.quit();
-    cameraThread.wait();
+    cameraThread->quit();
+    cameraThread->wait();
 
     // Release all memory
     delete ui;

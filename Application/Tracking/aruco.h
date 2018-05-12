@@ -9,14 +9,14 @@
 #include <QObject>
 
 #include "Application/Core/util.h"
-#include "Application/Tracking/cvbcamerathread.h"
+#include "Application/Tracking/camerathread.h"
 
 class ArUco : public QObject
 {
     Q_OBJECT
 
 public:
-    ArUco(std::map<int, QString>* idMapping, CVBCameraThread* cameraThread);
+    ArUco(std::map<int, QString>* idMapping, ARCameraThread* cameraThread);
 
 public slots:
     void newImageReceived(cv::Mat& image);
@@ -28,7 +28,7 @@ private:
     cv::Ptr<cv::aruco::Dictionary> possibleTags;
     cv::Ptr<cv::aruco::DetectorParameters> detectorParameters;
     std::map<int, QString>* arucoToStringIdMapping;
-    CVBCameraThread* cameraThread;
+    ARCameraThread* cameraThread;
 };
 
 #endif // ARUCO_H

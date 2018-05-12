@@ -15,7 +15,7 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "Application/Tracking/cvbcamerathread.h"
+#include "Application/Tracking/camerathread.h"
 
 class Visualiser : public QWidget
 {
@@ -23,7 +23,7 @@ class Visualiser : public QWidget
 public:
     VisConfig config;
 
-    Visualiser(DataModel* dataModelRef, CVBCameraThread* cameraThread);
+    Visualiser(DataModel* dataModelRef, ARCameraThread* cameraThread);
 
     QSize minimumSizeHint () const { return QSize(200, 200); }
 
@@ -49,7 +49,7 @@ protected:
 
     QImage backgroundImage;
 
-    CVBCameraThread* cameraThread;
+    ARCameraThread* cameraThread;
 
     VisText* textVis;
 };

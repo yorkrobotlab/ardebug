@@ -79,7 +79,8 @@ HEADERS  += Application/Core/mainwindow.h \
     Application/Tracking/usbcamerathread.h \
     Application/Visualiser/vistext.h \
     Application/UI/bluetoothconfigdialog.h \
-    Application/Tracking/cvbcamerathread.h
+    Application/Tracking/cvbcamerathread.h \
+    Application/Tracking/camerathread.h
 
 
 FORMS    += Application/UI/mainwindow.ui

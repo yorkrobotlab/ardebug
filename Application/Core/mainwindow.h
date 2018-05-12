@@ -37,13 +37,9 @@ class MainWindow : public QMainWindow
 
     std::map<int, QString> arucoNameMapping;
 
-#ifdef CVB_CAMERA_PRESENT
-    CVBCameraThread cameraThread;
-#else
-    USBCameraThread cameraThread;
-#endif
+    ARCameraThread* cameraThread;
 
-    ArUco arucoTracker{&arucoNameMapping, &cameraThread};
+    ArUco* arucoTracker;
 
     QDialog* addIDMappingDialog;
     QDialog* bluetoothConfigDialog;

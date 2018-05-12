@@ -30,7 +30,7 @@
 /* Constructor
  * Initalises the visualiser data.
  */
-Visualiser::Visualiser(DataModel *dataModelRef, CVBCameraThread* cameraThread) {
+Visualiser::Visualiser(DataModel *dataModelRef, ARCameraThread* cameraThread) {
     this->dataModelRef = dataModelRef;
 
     // Default visualiser config

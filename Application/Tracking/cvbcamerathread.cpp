@@ -47,12 +47,10 @@ CVBCameraThread::CVBCameraThread()
 
     if(!success)
     {
-//        Log::instance()->logMessage("Error loading " + QString(driverPath) + " driver!", true);
         cout << "Error loading " << driverPath << " driver!" << endl;
         exit(0);
     }
 
-//    Log::instance()->logMessage("Load " + QString(driverPath) + " successful.", true);
     cout << "Load " << driverPath << " successful." << endl;
 
     // Start grab with ring buffer
@@ -60,7 +58,6 @@ CVBCameraThread::CVBCameraThread()
 
     if(result < 0)
     {
-//        Log::instance()->logMessage("Error grabbing camera with ring buffer.", true);
         cout << "Error grabbing camera with ring buffer." << endl;
         exit(0);
     }
@@ -85,10 +82,7 @@ void CVBCameraThread::run()
 
             if(shouldRun)
             {
-                QMutexLocker lock{&emitCallMutex};
-                for(auto f : preEmitCalls)
-                    f();
-                preEmitCalls.clear();
+                executePreEmitCalls();
                 emit newVideoFrame(originalImage);
                 disconnect(this, SIGNAL(newVideoFrame(cv::Mat&)), nullptr, 0);
             }
@@ -97,13 +91,6 @@ void CVBCameraThread::run()
 
     G2Freeze(hCamera, true);
     ReleaseObject(hCamera);
-}
-
-void CVBCameraThread::quit()
-{
-    std::cout<<"Quitting thread"<<std::endl;
-    this->blockSignals(true);
-    shouldRun = false;
 }
 
 #endif // CVB_CAMERA_PRESENT
