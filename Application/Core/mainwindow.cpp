@@ -27,6 +27,9 @@
 
 #include <QLayout>
 #include <QStandardItemModel>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
 #include <sstream>
 
 /* Constructor.
@@ -36,6 +39,40 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    std::ifstream robotConfigFile{"./RobotConfig.json"};
+    if(robotConfigFile)
+    {
+        std::stringstream configData;
+        while(robotConfigFile)
+        {
+            std::string tmp;
+            robotConfigFile >> tmp;
+            configData << tmp << " ";
+        }
+        QJsonDocument doc = QJsonDocument::fromJson(QString::fromStdString(configData.str()).toUtf8());
+        if(!doc.isNull())
+        {
+            QJsonArray arr = doc.array();
+            for(auto item : arr)
+            {
+                if(!item.isObject())
+                    continue;
+
+                auto obj = item.toObject();
+                if(!obj.keys().contains("aruco_id") || !obj.keys().contains("robot_id"))
+                    continue;
+
+                int arucoId = obj["aruco_id"].toDouble();
+                QString robotId = obj["robot_id"].toString();
+
+                arucoNameMapping[arucoId] = robotId;
+
+                std::cout<<"Aruco ID "<<arucoId<<" is now mapped to Robot ID "<<robotId.toStdString()<<std::endl;
+            }
+        }
+    }
+
+
 #ifdef CVB_CAMERA_PRESENT
     cameraThread = new CVBCameraThread;
 #else
@@ -233,10 +270,20 @@ void MainWindow::setVideo(bool enabled) {
  */
 void MainWindow::robotListSelectionChanged(const QItemSelection &selection) {
     // Get the data of the robot selected
+
     int idx = selection.indexes().at(0).row();
-    if (idx >= 0 || idx < dataModel->getRobotCount()) {
-        // Update the selected robot id
-        RobotData* robot = dataModel->setSelectedRobot(idx);
+    if (idx >= 0 || idx < dataModel->getRobotCount())
+        dataModel->setSelectedRobot(idx);
+
+    updateCustomData();
+}
+
+void MainWindow::updateCustomData()
+{
+    auto id = dataModel->selectedRobotID;
+    if(dataModel->getRobotByID(id))
+    {
+        RobotData* robot = dataModel->getRobotByID(id);
 
         // Show a status bar message
         ui->statusBar->showMessage(robot->getID(), 3000);
@@ -392,6 +439,7 @@ void MainWindow::dataModelUpdate(bool listChanged)
 
     // Update the necessary data tabs
     updateOverviewTab();
+    updateCustomData();
 }
 
 /* updateOverviewTab

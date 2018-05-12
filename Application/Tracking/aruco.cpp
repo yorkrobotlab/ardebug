@@ -15,8 +15,6 @@ ArUco::ArUco(std::map<int, QString>* idMapping, ARCameraThread* cameraThread)
 
 void ArUco::newImageReceived(cv::Mat& image)
 {
-//    disconnect(cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), this, SLOT(newImageReceived(cv::Mat&)));
-    std::cout<<"Aruco"<<std::endl<<std::flush;
     std::vector<int> ids;
     std::vector<std::vector<cv::Point2f>> detectedTags, junk;
 

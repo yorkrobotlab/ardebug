@@ -130,6 +130,7 @@ private:
 
     void setVideo(bool enabled);
     void updateOverviewTab(void);
+    void updateCustomData();
 
     void idMappingTableSetup(void);
 };

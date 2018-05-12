@@ -137,9 +137,6 @@ void Visualiser::mousePressEvent(QMouseEvent* event) {
 
 void Visualiser::newVideoFrame(cv::Mat& newImage)
 {
-//    bool disconnected = disconnect(cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), this, SLOT(newVideoFrame(cv::Mat&)));
-
-std::cout<<"Vis "<<std::endl<<std::flush;
     static cv::Mat image;
     cv::cvtColor(newImage, image, cv::COLOR_BGR2RGB);
 
@@ -162,14 +159,12 @@ std::cout<<"Vis "<<std::endl<<std::flush;
         scaleFactor = yScale;
     }
 
-//    cv::resize(image, image, cv::Size{newX, newY}, scaleFactor > 1 ? cv::INTER_LINEAR : cv::INTER_AREA);
     cv::resize(image, image, cv::Size{newX, newY}, cv::INTER_LINEAR);
 
     backgroundImage = QImage(image.data, image.cols, image.rows, image.cols*3, QImage::Format_RGB888);
 
     repaint();
 
-//    if(disconnected)
     cameraThread->addPreEmitCall([&](){
         connect(cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), this, SLOT(newVideoFrame(cv::Mat&)));
     });
