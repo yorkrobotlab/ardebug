@@ -22,20 +22,16 @@ DebugNetwork::~DebugNetwork(void) { }
  * Must provide a port number, and fallback server IP and robot ID,
  * in case ardebug_config.txt cannot be found.
  */
-void DebugNetwork::init(int port, std::string default_server_ip, int default_robot_id) {
+void DebugNetwork::init(int port, std::string default_server_ip, std::string default_robot_id) {
     // Open config file
     std::ifstream file ("ar_debug_config.txt");
 
-    // String for reading from config file
-    std::string config_string;
-
     if (file.is_open()) {
         // Config file open, acquire ID
-        getline(file,config_string);
-        this->robot_id = atoi(config_string.c_str());
+        getline(file, this->robot_id);
 
         // Acquire IP
-        getline(file,default_server_ip);
+        getline(file, default_server_ip);
 
         file.close();
     } else {
@@ -91,13 +87,6 @@ void DebugNetwork::sendData(std::string data) {
 /* getRobotID
  * Get the current robot ID value used when sending packets.
  */
-int DebugNetwork::getRobotID(void) {
+std::string DebugNetwork::getRobotID(void) {
     return robot_id;
-}
-
-/* setRobotID
- * Change the current robot ID value used when sending packets.
- */
-void DebugNetwork::setRobotID(int id) {
-    this->robot_id = id;
 }
