@@ -95,6 +95,7 @@ void Visualiser::paintEvent(QPaintEvent*) {
         {
             if(!robot->valueShouldBeDisplayed(key))
                 continue;
+
             std::stringstream ss;
             ss<<key.toStdString();
             ss<<": ";

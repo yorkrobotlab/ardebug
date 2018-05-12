@@ -9,6 +9,7 @@
 #include "../Core/settings.h"
 
 #include <QPainter>
+#include <QPainterPath>
 
 /* Constructor
  * Initialise all setttings
@@ -32,7 +33,7 @@ VisText::~VisText() {
 /* render
  * Render this visualisation for one robot.
  */
-void VisText::render(QWidget* widget, QPainter* painter, RobotData *robot, bool selected, QRectF rect) {
+void VisText::render(QWidget*, QPainter* painter, RobotData *robot, bool selected, QRectF rect) {
 
     if(!selected)
         return;
@@ -40,9 +41,16 @@ void VisText::render(QWidget* widget, QPainter* painter, RobotData *robot, bool 
     double x = rect.x() + (rect.width() * robot->getPos().position.x) + 10;
     double y = rect.y() + (rect.height() * robot->getPos().position.y) - 10;
 
-    QPointF centre = QPointF{x, y};
+    QPainterPath path;
+    QPen pen;
 
-    painter->drawText(QRectF{x, y, 200, 200}, Qt::TextWordWrap, text);
+    pen.setWidth(2);
+    pen.setColor(Qt::red);
+
+    path.addText(x, y, painter->font(), text); //Adjust the position
+    painter->drawPath(path);
+
+    painter->drawText(x, y, text);
 }
 
 /* getSettingsDialog
