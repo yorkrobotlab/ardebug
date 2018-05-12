@@ -50,11 +50,6 @@ void CBasicDispersionController::Init(TConfigurationNode& t_node)
     ardebug = new DebugNetwork();
     ardebug->init(8888, "192.168.1.101", 99);
 
-    // Send a message to the application console
-    std::ostringstream msg;
-    msg << "Robot_" << ardebug->getRobotID() << " initialised.";
-    ardebug->sendLogMessage(msg.str());
-
     // Initialise rand
     srand(time(NULL));
 }
@@ -81,46 +76,11 @@ void CBasicDispersionController::ControlStep()
     // Increment control step
     control_step++;
 
-    // Send watchdog and custom data packet every 10 steps (1s)
-    if (control_step % 10 == 0) {
-        // Robot name for watchdog packet
-        std::ostringstream name;
-        name << "E-Puck_" << ardebug->getRobotID();
-        ardebug->sendWatchdogPacket(name.str());
-
-        // Control step as custom data
-        std::ostringstream number;
-        number << control_step;
-        ardebug->sendCustomData("ControlStep", number.str());
-    }
-
     // Read the IR sensors
     const CCI_EPuckProximitySensor::TReadings& proximity_sensor_readings = proximity_sensor->GetReadings();
 
-    // Copy the IR readings into a simple int array for sending to the ARDebug server
-    int ir_data[proximity_sensor_readings.size()];
-    int i = 0;
-    for(CCI_EPuckProximitySensor::SReading reading : proximity_sensor_readings) {
-        ir_data[i] = (int)reading.Value;
-        i++;
-    }
-
-    // Send the IR data as a packet
-    ardebug->sendIRDataPacket(ir_data, proximity_sensor_readings.size(), false);
-
     // Read the IR sensor background values
     const CCI_EPuckLightSensor::TReadings& light_sensor_readings = light_sensor->GetReadings();
-
-    // Print out the values
-    int background_ir_data[light_sensor_readings.size()];
-    i = 0;
-    for(CCI_EPuckLightSensor::SReading reading: light_sensor_readings) {
-        background_ir_data[i] = (int)reading.Value;
-        i++;
-    }
-
-    // Send the background IR data as a packet
-    ardebug->sendIRDataPacket(background_ir_data, light_sensor_readings.size(), true);
 
     // Create diffusion vector
     CVector2 diffusionVector;
@@ -133,17 +93,17 @@ void CBasicDispersionController::ControlStep()
             diffusionVector += CVector2(proximity_sensor_readings[i].Value, proximity_sensor_readings[i].Angle);
         }
     }
-    diffusionVector /= proximity_sensor_readings.size();
 
+    diffusionVector /= proximity_sensor_readings.size();
 
     /* If the angle of the vector is small enough and the closest obstacle
        is far enough, ignore the vector and go straight, otherwise turn to avoid it */
-    if(diffusionVector.Angle().GetAbsoluteValue() < m_cGoStraightAngleThreshold.GetValue() && diffusionVector.Length() < m_fProximitySensorThreshold || 
+    if(diffusionVector.Angle().GetAbsoluteValue() < m_cGoStraightAngleThreshold.GetValue() && diffusionVector.Length() < m_fProximitySensorThreshold ||
        diffusionVector.Length() < 0.05) {
         // Walk forward for 100 control steps if uninterrupted
         if (walk_count < 100) {
             // Set state to WALKING
-            ardebug->sendStatePacket("WALKING");
+            state = "WALKING";
 
             // Walk forward
             wheels_actuator->SetLinearVelocity(3, 3);
@@ -158,7 +118,7 @@ void CBasicDispersionController::ControlStep()
             walk_count++;
         } else {
             // Set state to TURNING
-            ardebug->sendStatePacket("TURNING");
+            state = "TURNING";
 
             // Turn on the spot
             wheels_actuator->SetLinearVelocity(0, 6);
@@ -179,32 +139,42 @@ void CBasicDispersionController::ControlStep()
         WheelSpeedsFromHeadingVector(headingVector);
 
         // Set state to AVOIDING
-        ardebug->sendStatePacket("AVOIDING");
+        state = "AVOIDING";
 
         // Reset walk count
         walk_count = 0;
     }
 
-    // Send the walk timer value as custom data
-    std::ostringstream walk_str;
-    walk_str << walk_count;
-    ardebug->sendCustomData("WalkTimer", walk_str.str());
+    std::ostringstream packet;
 
-    // Simulated battery level value
-    if(control_step == 1) {
-        battery_level = 50 + proximity_sensor_readings[0].Value / 8;
+    packet << "{";
 
-        if (battery_level > 100) {
-            battery_level = 100;
-        } else if (battery_level < 56) {
-            battery_level = 56;
-        }
+    packet << "\"id\":\"robot_" << ardebug->getRobotID() << "\",";
+    packet << "\"control_step\":" << control_step << ",";
+    packet << "\"state\":\"" << state << "\",";
+    packet << "\"reflected_ir\":[";
+
+    for(int i = 0; i < proximity_sensor_readings.size(); i++)
+    {
+        packet << proximity_sensor_readings[i].Value;
+        packet << (i < proximity_sensor_readings.size() - 1 ? "," : "]");
     }
 
-    // Send batter level as custom data
-    std::ostringstream batt_str;
-    batt_str << battery_level;
-    ardebug->sendCustomData("BatteryLevel", batt_str.str());
+    packet << ",";
+    packet << "\"ambient_ir\":[";
+
+    for(int i = 0; i < light_sensor_readings.size(); i++)
+    {
+        packet << light_sensor_readings[i].Value;
+        packet << (i < light_sensor_readings.size() - 1 ? "," : "]");
+    }
+
+    packet << ",";
+    packet << "\"walk_timer\":" << walk_count;
+    packet << "}";
+    std::cout << packet.str() << std::endl;
+
+    ardebug->sendData(packet.str());
 }
 
 /* WheelSpeedsFromHeadingVector

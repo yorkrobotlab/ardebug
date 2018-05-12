@@ -45,13 +45,6 @@ public:
     // Raw packet function
     void sendData(std::string data);
 
-    // Specific packet functions
-    void sendWatchdogPacket(std::string name);
-    void sendStatePacket(std::string state);
-    void sendIRDataPacket(int* data, int count, bool background);
-    void sendLogMessage(std::string message);
-    void sendCustomData(std::string key, std::string value);
-
     // Robot ID functions
     int getRobotID(void);
     void setRobotID(int id);
