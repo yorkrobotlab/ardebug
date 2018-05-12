@@ -349,6 +349,7 @@ void MainWindow::updateCustomData()
 
             QCheckBox* cb = static_cast<QCheckBox*>(ui->customDataTable->cellWidget(i, 2));
             cb->disconnect();
+            cb->setChecked(robot->valueShouldBeDisplayed(key));
             connect(cb, &QCheckBox::stateChanged, [=](int sig){ robot->setValueDisplayed(key, sig == 2); });
         }
 
