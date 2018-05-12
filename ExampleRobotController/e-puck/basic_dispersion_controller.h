@@ -58,6 +58,7 @@ namespace argos
         int walk_count;
         int random_turn_count;
         int battery_level;
+        std::string state;
 
         // Networking object for sending data to ARDebug system
         DebugNetwork* ardebug;

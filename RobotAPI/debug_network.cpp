@@ -12,6 +12,7 @@
 #include <fstream>
 #include <string>
 #include <cstdlib>
+#include <iostream>
 
 DebugNetwork::DebugNetwork(void) { }
 DebugNetwork::~DebugNetwork(void) { }
@@ -62,6 +63,8 @@ void DebugNetwork::init(int port, std::string default_server_ip, int default_rob
     }
 
     socket_ready = true;
+
+    std::cout << "Connected to: " << default_server_ip << std::endl;
 }
 
 /* destroy
@@ -83,70 +86,6 @@ void DebugNetwork::sendData(std::string data) {
         // Send the data
         sendto(sockfd, data.c_str(), data.length(), 0, (struct sockaddr *)&sock_in, sizeof(sock_in));
     }
-}
-
-/* sendWatchdogPacket
- * Send a watchdog data packet to the debugging application.
- */
-void DebugNetwork::sendWatchdogPacket(std::string name) {
-    std::ostringstream packet;
-
-    packet << robot_id << PACKET_TYPE_STR_WATCHDOG << name;
-
-    sendData(packet.str());
-}
-
-/* sendStatePacket
- * Send a state data packet to the debugging application.
- */
-void DebugNetwork::sendStatePacket(std::string state) {
-    std::ostringstream packet;
-
-    packet << robot_id << PACKET_TYPE_STR_STATE << state;
-
-    sendData(packet.str());
-}
-
-/* sendIRDataPacket
- * Send an IR data packet to the debugging application. Can be active or
- * background readings.
- */
-void DebugNetwork::sendIRDataPacket(int* data, int count, bool background) {
-    std::ostringstream packet;
-
-    if (background) {
-        packet << robot_id << PACKET_TYPE_STR_BACKGROUND_IR;
-    } else {
-        packet << robot_id << PACKET_TYPE_STR_PROXIMITY;
-    }   
-
-    for (int i = 0; i < count; i++) {
-        packet << " " << data[i];
-    }
-
-    sendData(packet.str());
-}
-
-/* sendLogMessage
- * Send a log message packet to the debugging application.
- */
-void DebugNetwork::sendLogMessage(std::string message) {
-    std::ostringstream packet;
-
-    packet << robot_id << PACKET_TYPE_STR_MSG << message;
-
-    sendData(packet.str());
-}
-
-/* sendCustomData
- * Send a custom data packet to the debugging application.
- */
-void DebugNetwork::sendCustomData(std::string key, std::string value) {
-    std::ostringstream packet;
-
-    packet << robot_id << PACKET_TYPE_STR_CUSTOM << key << " " << value;
-
-    sendData(packet.str());
 }
 
 /* getRobotID
