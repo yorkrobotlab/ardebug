@@ -241,6 +241,11 @@ void MainWindow::robotListSelectionChanged(const QItemSelection &selection) {
         // Show a status bar message
         ui->statusBar->showMessage(robot->getID(), 3000);
 
+        std::vector<std::pair<int, int>> selected;
+        auto selectedItems = ui->customDataTable->selectedItems();
+        for(auto& item : selectedItems)
+            selected.push_back({item->row(), item->column()});
+
         ui->customDataTable->clear();
         ui->customDataTable->setRowCount(0);
 
@@ -252,11 +257,11 @@ void MainWindow::robotListSelectionChanged(const QItemSelection &selection) {
             ui->customDataTable->insertRow(newRowIndex);
             ui->customDataTable->setItem(newRowIndex, 0, new QTableWidgetItem{key});
 
-            ss.clear();
+            ss.str("");
             auto type = robot->getValueType(key);
 
             if(type == String)
-                ss<<robot->getDoubleValue(key);
+                ss<<robot->getStringValue(key).toStdString();
 
             if(type == Double)
                 ss<<robot->getDoubleValue(key);
@@ -273,12 +278,35 @@ void MainWindow::robotListSelectionChanged(const QItemSelection &selection) {
                     if(i > 0) ss<<"   ";
                     auto item = arr[i];
                     if(item.type == String) ss<<'"'<<item.stringValue.toStdString()<<'"';
-                    if(item.type == Double) ss<<item.doubleValue;
-                    if(item.type == Bool) ss<<(item.boolValue ? "True" : "False");
+                    else if(item.type == Double) ss<<item.doubleValue;
+                    else if(item.type == Bool) ss<<(item.boolValue ? "True" : "False");
+                    else ss<<"Unsupported";
                 }
                 ss<<" ]";
             }
+
+            if(type == Object)
+            {
+                auto obj = robot->getObjectValue(key);
+                ss<<"{ ";
+                for(auto& key : obj.keys())
+                {
+                    ss<<key.toStdString()<<": ";
+                    auto& item = obj[key];
+                    if(item.type == String) ss<<'"'<<item.stringValue.toStdString()<<'"';
+                    else if(item.type == Double) ss<<item.doubleValue;
+                    else if(item.type == Bool) ss<<(item.boolValue ? "True" : "False");
+                    else ss<<"Unsupported";
+                    ss<<"   ";
+                }
+                ss<<" }";
+            }
             ui->customDataTable->setItem(newRowIndex, 1, new QTableWidgetItem{QString::fromStdString(ss.str())});
+        }
+
+        for(auto& item : selected)
+        {
+            ui->customDataTable->item(item.first, item.second)->setSelected(true);
         }
     } else {
         dataModel->selectedRobotID = -1;
@@ -350,12 +378,14 @@ void MainWindow::dataModelUpdate(bool listChanged)
 {
     // Update the robot list
     if (listChanged) {
-        ui->robotList->setModel(dataModel->getRobotList());
+        auto model = dataModel->getRobotList();
+        ui->robotList->setModel(model);
 
-        int idx = dataModel->getRobotIndex(dataModel->selectedRobotID, false);
-
-        if (idx != -1) {
-            QModelIndex qidx = ui->robotList->model()->index(idx, 0);
+        auto stringList = model->stringList();
+        auto found = std::find_if(stringList.begin(), stringList.end(), [&](const QString& item){ return item == dataModel->selectedRobotID; });
+        if(found != stringList.end())
+        {
+            QModelIndex qidx = ui->robotList->model()->index(found - stringList.begin(), 0);
             ui->robotList->setCurrentIndex(qidx);
         }
     }
