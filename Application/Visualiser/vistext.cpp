@@ -37,8 +37,8 @@ void VisText::render(QWidget* widget, QPainter* painter, RobotData *robot, bool 
     if(!selected)
         return;
 
-    double x = rect.x() + (rect.width() * robot->getPos().position.x) + 30;
-    double y = rect.y() + (rect.height() * robot->getPos().position.y) - 30;
+    double x = rect.x() + (rect.width() * robot->getPos().position.x) + 10;
+    double y = rect.y() + (rect.height() * robot->getPos().position.y) - 10;
 
     QPointF centre = QPointF{x, y};
 

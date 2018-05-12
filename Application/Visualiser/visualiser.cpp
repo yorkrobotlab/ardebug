@@ -91,6 +91,57 @@ void Visualiser::paintEvent(QPaintEvent*) {
         // @EXTEND: Add other data types
         textVis->resetText();
         textVis->addLine("ID:   " + robot->getID());
+        for(auto& key : robot->getKeys())
+        {
+            if(!robot->valueShouldBeDisplayed(key))
+                continue;
+            std::stringstream ss;
+            ss<<key.toStdString();
+            ss<<": ";
+
+            auto type = robot->getValueType(key);
+
+            if(type == String) ss<<robot->getStringValue(key).toStdString();
+
+            if(type == Double) ss<<robot->getDoubleValue(key);
+
+            if(type == Bool) ss<<(robot->getBoolValue(key) ? "True" : "False");
+
+            if(type == Array)
+            {
+                auto arr = robot->getArrayValue(key);
+                ss<<"[ ";
+                for(int i = 0; i < arr.size(); ++i)
+                {
+                    if(i > 0) ss<<"   ";
+                    auto item = arr[i];
+                    if(item.type == String) ss<<'"'<<item.stringValue.toStdString()<<'"';
+                    else if(item.type == Double) ss<<item.doubleValue;
+                    else if(item.type == Bool) ss<<(item.boolValue ? "True" : "False");
+                    else ss<<"Unsupported";
+                }
+                ss<<" ]";
+            }
+
+            if(type == Object)
+            {
+                auto obj = robot->getObjectValue(key);
+                ss<<"{ ";
+                for(auto& key : obj.keys())
+                {
+                    ss<<key.toStdString()<<": ";
+                    auto& item = obj[key];
+                    if(item.type == String) ss<<'"'<<item.stringValue.toStdString()<<'"';
+                    else if(item.type == Double) ss<<item.doubleValue;
+                    else if(item.type == Bool) ss<<(item.boolValue ? "True" : "False");
+                    else ss<<"Unsupported";
+                    ss<<"   ";
+                }
+                ss<<" }";
+            }
+
+            textVis->addLine(QString::fromStdString(ss.str()));
+        }
 
         // Render the visualisations
         for (size_t j = 0; j < this->config.elements.size(); j++) {

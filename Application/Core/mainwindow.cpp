@@ -154,8 +154,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->angleCorrectionEdit->setValidator(new QIntValidator(-180, 180, this));
 
     // Set up the custom data table
-    ui->customDataTable->setColumnCount(2);
-    ui->customDataTable->setHorizontalHeaderLabels(QStringList("Key") << QString("Value"));
+    ui->customDataTable->setColumnCount(3);
+    ui->customDataTable->setHorizontalHeaderLabels(QStringList("Key") << QString("Value") << QString{"Display In Visualiser"});
     ui->customDataTable->horizontalHeader()->setStretchLastSection(true);
 
     // Set up the ID mapping table
@@ -285,21 +285,78 @@ void MainWindow::updateCustomData()
     {
         RobotData* robot = dataModel->getRobotByID(id);
 
-        // Show a status bar message
-        ui->statusBar->showMessage(robot->getID(), 3000);
-
         std::vector<std::pair<int, int>> selected;
         auto selectedItems = ui->customDataTable->selectedItems();
         for(auto& item : selectedItems)
             selected.push_back({item->row(), item->column()});
 
-        ui->customDataTable->clear();
-        ui->customDataTable->setRowCount(0);
-
         std::stringstream ss;
 
-        for(const auto& key : robot->getKeys())
+        const auto& keys = robot->getKeys();
+
+        if(keys.size() != ui->customDataTable->rowCount())
+            ui->customDataTable->clear();
+
+        int i;
+        for(i = 0; i < std::min(keys.size(), ui->customDataTable->rowCount()); ++i)
         {
+            auto& key = keys[i];
+            ui->customDataTable->item(i, 0)->setText(key);
+
+            ss.str("");
+            auto type = robot->getValueType(key);
+
+            if(type == String)
+                ss<<robot->getStringValue(key).toStdString();
+
+            if(type == Double)
+                ss<<robot->getDoubleValue(key);
+
+            if(type == Bool)
+                ss<<(robot->getBoolValue(key) ? "True" : "False");
+
+            if(type == Array)
+            {
+                auto arr = robot->getArrayValue(key);
+                ss<<"[ ";
+                for(int i = 0; i < arr.size(); ++i)
+                {
+                    if(i > 0) ss<<"   ";
+                    auto item = arr[i];
+                    if(item.type == String) ss<<'"'<<item.stringValue.toStdString()<<'"';
+                    else if(item.type == Double) ss<<item.doubleValue;
+                    else if(item.type == Bool) ss<<(item.boolValue ? "True" : "False");
+                    else ss<<"Unsupported";
+                }
+                ss<<" ]";
+            }
+
+            if(type == Object)
+            {
+                auto obj = robot->getObjectValue(key);
+                ss<<"{ ";
+                for(auto& key : obj.keys())
+                {
+                    ss<<key.toStdString()<<": ";
+                    auto& item = obj[key];
+                    if(item.type == String) ss<<'"'<<item.stringValue.toStdString()<<'"';
+                    else if(item.type == Double) ss<<item.doubleValue;
+                    else if(item.type == Bool) ss<<(item.boolValue ? "True" : "False");
+                    else ss<<"Unsupported";
+                    ss<<"   ";
+                }
+                ss<<" }";
+            }
+            ui->customDataTable->item(i, 1)->setText(QString::fromStdString(ss.str()));
+
+            QCheckBox* cb = static_cast<QCheckBox*>(ui->customDataTable->cellWidget(i, 2));
+            cb->disconnect();
+            connect(cb, &QCheckBox::stateChanged, [=](int sig){ robot->setValueDisplayed(key, sig == 2); });
+        }
+
+        for(; i < keys.size(); ++i)
+        {
+            auto& key = keys[i];
             int newRowIndex = ui->customDataTable->rowCount();
             ui->customDataTable->insertRow(newRowIndex);
             ui->customDataTable->setItem(newRowIndex, 0, new QTableWidgetItem{key});
@@ -349,6 +406,11 @@ void MainWindow::updateCustomData()
                 ss<<" }";
             }
             ui->customDataTable->setItem(newRowIndex, 1, new QTableWidgetItem{QString::fromStdString(ss.str())});
+
+            QCheckBox* cb = new QCheckBox;
+            cb->setChecked(robot->valueShouldBeDisplayed(key));
+            connect(cb, &QCheckBox::stateChanged, [=](int sig){ std::cout<<"Checkbox state changed to "<<sig<<std::endl; });
+            ui->customDataTable->setCellWidget(newRowIndex, 2, cb);
         }
 
         for(auto& item : selected)
