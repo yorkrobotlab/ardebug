@@ -12,7 +12,6 @@
 #include "log.h"
 #include "../Networking/Wifi/datathread.h"
 #include "../Networking/Bluetooth/bluetoothdatathread.h"
-#include <fstream>
 
 //#include "../Networking/Bluetooth/bluetoothconfig.h"
 
@@ -32,6 +31,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <sstream>
+#include <fstream>
 
 /* Constructor.
  * Do UI set up tasks.
