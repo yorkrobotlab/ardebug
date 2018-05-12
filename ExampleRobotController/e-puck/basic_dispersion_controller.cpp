@@ -48,7 +48,7 @@ void CBasicDispersionController::Init(TConfigurationNode& t_node)
 
     // Initialise ARDebug system with a fallback server IP and robot ID
     ardebug = new DebugNetwork();
-    ardebug->init(8888, "192.168.1.101", 99);
+    ardebug->init(8888, "192.168.1.101", "unnamed_robot");
 
     // Initialise rand
     srand(time(NULL));
@@ -149,7 +149,7 @@ void CBasicDispersionController::ControlStep()
 
     packet << "{";
 
-    packet << "\"id\":\"robot_" << ardebug->getRobotID() << "\",";
+    packet << "\"id\":\"" << ardebug->getRobotID() << "\",";
     packet << "\"control_step\":" << control_step << ",";
     packet << "\"state\":\"" << state << "\",";
     packet << "\"reflected_ir\":[";
