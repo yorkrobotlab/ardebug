@@ -12,6 +12,7 @@
 #include "log.h"
 #include "../Networking/Wifi/datathread.h"
 #include "../Networking/Bluetooth/bluetoothdatathread.h"
+#include <fstream>
 
 //#include "../Networking/Bluetooth/bluetoothconfig.h"
 
@@ -163,13 +164,6 @@ MainWindow::MainWindow(QWidget *parent) :
     idMappingTableSetup();
 
     qRegisterMetaType<cv::Mat>("cv::Mat&");
-
-    for(int i = 0; i < 50; ++i)
-    {
-        std::stringstream sstream;
-        sstream<<"robot_"<<i;
-        arucoNameMapping[i] = QString::fromStdString(sstream.str());
-    }
 
     connect(arucoTracker, SIGNAL(newRobotPosition(QString, Pose)), dataModel, SLOT(newRobotPosition(QString, Pose)));
 
