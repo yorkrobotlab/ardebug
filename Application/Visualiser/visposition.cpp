@@ -49,6 +49,7 @@ void VisPosition::render(QWidget* widget, QPainter* painter, RobotData *robot, b
     double sideDy = cos(orientation) * indicatorSize * 0.5;
 
     auto pen = painter->pen();
+    auto borderPen = pen;
 
     if(selected)
     {
@@ -57,6 +58,10 @@ void VisPosition::render(QWidget* widget, QPainter* painter, RobotData *robot, b
         painter->setPen(newPen);
     }
 
+    painter->drawEllipse(centre, indicatorSize, indicatorSize);
+
+    borderPen.setWidth(painter->pen().width()+2);
+    painter->setPen(borderPen);
     painter->drawEllipse(centre, indicatorSize, indicatorSize);
 
     painter->setPen(pen);

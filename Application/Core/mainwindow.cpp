@@ -157,6 +157,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Set up the custom data table
     ui->customDataTable->setColumnCount(3);
     ui->customDataTable->setHorizontalHeaderLabels(QStringList("Key") << QString("Value") << QString{"Display In Visualiser"});
+    ui->customDataTable->setColumnWidth(1, ui->customDataTab->width()*0.8);
     ui->customDataTable->horizontalHeader()->setStretchLastSection(true);
 
     // Set up the ID mapping table
@@ -289,7 +290,10 @@ void MainWindow::updateCustomData()
         const auto& keys = robot->getKeys();
 
         if(keys.size() != ui->customDataTable->rowCount())
+        {
             ui->customDataTable->clear();
+            ui->customDataTable->setHorizontalHeaderLabels(QStringList("Key") << QString("Value") << QString{"Display In Visualiser"});
+        }
 
         int i;
         for(i = 0; i < std::min(keys.size(), ui->customDataTable->rowCount()); ++i)

@@ -10,6 +10,7 @@
 
 #include <QPainter>
 #include <QPainterPath>
+#include <limits>
 
 /* Constructor
  * Initialise all setttings
@@ -38,7 +39,7 @@ void VisText::render(QWidget* , QPainter* painter, RobotData *robot, bool select
     if(!selected)
         return;
 
-    double x = rect.x() + (rect.width() * robot->getPos().position.x) + 10;
+    double x = rect.x() + (rect.width() * robot->getPos().position.x) + 15;
     double y = rect.y() + (rect.height() * robot->getPos().position.y) - 10;
 
     auto font = painter->font();
@@ -49,7 +50,7 @@ void VisText::render(QWidget* , QPainter* painter, RobotData *robot, bool select
 
     painter->setFont(font);
     painter->setPen(pen);
-    painter->drawText(QRectF{x, y, 200, 200}, Qt::TextWordWrap, text);
+    painter->drawText(QRectF{x, y, std::numeric_limits<float>::max(), std::numeric_limits<float>::max()}, Qt::TextWordWrap, text);
 }
 
 /* getSettingsDialog
