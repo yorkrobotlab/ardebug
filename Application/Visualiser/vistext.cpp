@@ -33,7 +33,7 @@ VisText::~VisText() {
 /* render
  * Render this visualisation for one robot.
  */
-void VisText::render(QWidget*, QPainter* painter, RobotData *robot, bool selected, QRectF rect) {
+void VisText::render(QWidget* , QPainter* painter, RobotData *robot, bool selected, QRectF rect) {
 
     if(!selected)
         return;
@@ -41,16 +41,21 @@ void VisText::render(QWidget*, QPainter* painter, RobotData *robot, bool selecte
     double x = rect.x() + (rect.width() * robot->getPos().position.x) + 10;
     double y = rect.y() + (rect.height() * robot->getPos().position.y) - 10;
 
-    QPainterPath path;
-    QPen pen;
+    auto font = painter->font();
+    auto pen  = painter->pen();
 
-    pen.setWidth(2);
-    pen.setColor(Qt::red);
+    auto newFont = font;
+    newFont.setStyleStrategy(QFont::ForceOutline);
+    painter->setFont(newFont);
 
-    path.addText(x, y, painter->font(), text); //Adjust the position
-    painter->drawPath(path);
+    auto newPen = pen;
+    newPen.setColor(QColor{50, 50, 50});
+    painter->setPen(newPen);
+    painter->drawText(QRectF{x, y, 200, 200}, Qt::TextWordWrap, text);
 
-    painter->drawText(x, y, text);
+    painter->setFont(font);
+    painter->setPen(pen);
+    painter->drawText(QRectF{x, y, 200, 200}, Qt::TextWordWrap, text);
 }
 
 /* getSettingsDialog
