@@ -135,7 +135,7 @@ public:
 
     bool valueShouldBeDisplayed(QString key)
     {
-        if(!values.contains(key))
+        if(values.contains(key))
             return values[key].isDisplayed;
 
         return false;
@@ -143,7 +143,7 @@ public:
 
     void setValueDisplayed(QString key, bool displayed)
     {
-        if(!values.contains(key))
+        if(values.contains(key))
             values[key].isDisplayed = displayed;
     }
 
