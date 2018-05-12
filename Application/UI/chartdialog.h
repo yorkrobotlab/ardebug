@@ -25,6 +25,8 @@ public:
 private:
     DataModel* data;
     QtCharts::QChart *chart;
+    QString current_dataset;
+    void updateDiagram();
 
 
 private slots:
@@ -32,6 +34,7 @@ private slots:
 
 public slots:
     void newDataSelected(const QString &);
+    void dataChanged(bool);
 
 
 };

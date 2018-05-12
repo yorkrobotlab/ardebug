@@ -26,7 +26,7 @@ Chartdialog::Chartdialog(DataModel* data)
     this->setWindowTitle("Dataview");
     this->data = data;
 
-
+    //QObject::connect(data, SIGNAL(modelChanged(bool)), this, SLOT(dataChanged(bool)));
 
     chart = new QtCharts::QChart();
 
@@ -46,6 +46,9 @@ Chartdialog::Chartdialog(DataModel* data)
     this->setLayout(mainbox);
 }
 
+
+
+
 /* deconstructor
  * frees memory
  */
@@ -55,7 +58,21 @@ Chartdialog::~Chartdialog()
 
 }
 
-  void Chartdialog::newDataSelected(const QString & dataset)
+ void Chartdialog::newDataSelected(const QString & dataset)
+ {
+     current_dataset = dataset;
+     updateDiagram();
+ }
+
+ void Chartdialog::dataChanged(bool changed)
+ {
+     if(changed)
+        updateDiagram();
+ }
+
+
+
+ void Chartdialog::updateDiagram()
   {
     QMap<QString, int> entryList;
 
@@ -75,7 +92,7 @@ Chartdialog::~Chartdialog()
 
 
         }
-        QString value = robot->getStringValue(dataset);
+        QString value = robot->getStringValue(current_dataset);
 
         if (entryList.contains(value))
         {
@@ -97,7 +114,7 @@ Chartdialog::~Chartdialog()
         series->append(key, entryList[key]);
         QtCharts::QPieSlice *slice = series->slices().at(counter );
 
-         slice->setLabelVisible();
+        slice->setLabelVisible();
 
         qDebug()<<"data in dialog: " <<key;
         counter ++;

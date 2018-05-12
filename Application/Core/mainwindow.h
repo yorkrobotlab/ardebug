@@ -11,6 +11,8 @@
 #include "../DataModel/datamodel.h"
 #include "../Core/appconfig.h"
 
+#include <QtCharts/QChartView>
+
 #include "Application/Tracking/aruco.h"
 
 #ifdef CVB_CAMERA_PRESENT
@@ -48,6 +50,8 @@ class MainWindow : public QMainWindow
     QDialog* addIDMappingDialog;
     QDialog* bluetoothConfigDialog;
     QDialog* chartDialog;
+
+    QtCharts::QChart *chart;
 
     int sockfd;
 
