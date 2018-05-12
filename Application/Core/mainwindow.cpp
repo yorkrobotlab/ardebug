@@ -27,6 +27,7 @@
 
 #include <QLayout>
 #include <QStandardItemModel>
+#include <sstream>
 
 /* Constructor.
  * Do UI set up tasks.
@@ -243,13 +244,41 @@ void MainWindow::robotListSelectionChanged(const QItemSelection &selection) {
         ui->customDataTable->clear();
         ui->customDataTable->setRowCount(0);
 
-        // @EXTEND: Add other data types
-        for(const auto& key : robot->getKeys(ValueType::String))
+        std::stringstream ss;
+
+        for(const auto& key : robot->getKeys())
         {
             int newRowIndex = ui->customDataTable->rowCount();
             ui->customDataTable->insertRow(newRowIndex);
             ui->customDataTable->setItem(newRowIndex, 0, new QTableWidgetItem{key});
-            ui->customDataTable->setItem(newRowIndex, 1, new QTableWidgetItem{robot->getStringValue(key)});
+
+            ss.clear();
+            auto type = robot->getValueType(key);
+
+            if(type == String)
+                ss<<robot->getDoubleValue(key);
+
+            if(type == Double)
+                ss<<robot->getDoubleValue(key);
+
+            if(type == Bool)
+                ss<<(robot->getBoolValue(key) ? "True" : "False");
+
+            if(type == Array)
+            {
+                auto arr = robot->getArrayValue(key);
+                ss<<"[ ";
+                for(int i = 0; i < arr.size(); ++i)
+                {
+                    if(i > 0) ss<<"   ";
+                    auto item = arr[i];
+                    if(item.type == String) ss<<'"'<<item.stringValue.toStdString()<<'"';
+                    if(item.type == Double) ss<<item.doubleValue;
+                    if(item.type == Bool) ss<<(item.boolValue ? "True" : "False");
+                }
+                ss<<" ]";
+            }
+            ui->customDataTable->setItem(newRowIndex, 1, new QTableWidgetItem{QString::fromStdString(ss.str())});
         }
     } else {
         dataModel->selectedRobotID = -1;
@@ -293,7 +322,7 @@ void MainWindow::robotSelectedInVisualiser(QString id) {
     for (int i = 0; i < stringList.size(); i++) {
         QString str = stringList.at(i);
 
-        if (str.startsWith(id + ":")) {
+        if (str == id) {
             // Update selection
             ui->robotList->setCurrentIndex(ui->robotList->model()->index(i, 0));
         }
@@ -323,12 +352,12 @@ void MainWindow::dataModelUpdate(bool listChanged)
     if (listChanged) {
         ui->robotList->setModel(dataModel->getRobotList());
 
-//        int idx = dataModel->getRobotIndex(dataModel->selectedRobotID, false);
+        int idx = dataModel->getRobotIndex(dataModel->selectedRobotID, false);
 
-//        if (idx != -1) {
-//            QModelIndex qidx = ui->robotList->model()->index(idx, 0);
-//            ui->robotList->setCurrentIndex(qidx);
-//        }
+        if (idx != -1) {
+            QModelIndex qidx = ui->robotList->model()->index(idx, 0);
+            ui->robotList->setCurrentIndex(qidx);
+        }
     }
 
     // Update the necessary data tabs
