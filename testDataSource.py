@@ -1,11 +1,12 @@
 #!/usr/bin/python
 
 import json
+from random import randint
 
 class Robot:
     def __init__(self, id = 'robot_5'):
         self.id = id
-        self.pose = { 'x': 0.1, 'y': 0.2, 'orientation': 10 }
+        self.pose = { 'x': randint(20, 500)*0.002, 'y': randint(20, 400)*0.0025, 'orientation': 10 }
         self.state = 'Wandering'
         self.batteryLevel = 12.6
         self.internalState = {'alpha': 12, 'nextTarget': 'somewhere', 'ir': [0.3, 0.6, 0.1, 0.05]}
@@ -16,7 +17,8 @@ class Robot:
                     'state': 'Wandering',
                     'batteryLevel': self.batteryLevel,
                     'internalState': self.internalState,
-            'someString' : 'Some new String'
+            'someString' : 'Some new String',
+            'pose': self.pose
                })
 
 robots = [Robot('robot_%d' % (i,)) for i in range(10)]
