@@ -11,6 +11,8 @@
 #include "../DataModel/datamodel.h"
 #include "../Core/appconfig.h"
 
+#include <QtCharts/QChartView>
+
 #include "Application/Tracking/aruco.h"
 
 #ifdef CVB_CAMERA_PRESENT
@@ -43,6 +45,9 @@ class MainWindow : public QMainWindow
 
     QDialog* addIDMappingDialog;
     QDialog* bluetoothConfigDialog;
+    QDialog* chartDialog;
+
+    QtCharts::QChart *chart;
 
     int sockfd;
 
@@ -60,6 +65,7 @@ signals:
 
     void startReadingCamera(void);
     void stopReadingCamera(void);
+    void chartDataSelected(QString dataset);
 
 public slots:
     void robotDeleted(void);
@@ -79,6 +85,8 @@ public slots:
     //void socketConnected(const int);
 
     //void socketDisconnected(const int);
+
+
 
 private slots:
     void on_actionExit_triggered();
@@ -124,6 +132,8 @@ private slots:
     void on_angleCorrectionEdit_textChanged(const QString &arg1);
 
     void on_bluetoothConfigButton_clicked();
+
+    void on_customDataTable_itemDoubleClicked(QTableWidgetItem *item);
 
 private:
     Ui::MainWindow *ui;

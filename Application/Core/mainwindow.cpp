@@ -27,11 +27,19 @@
 
 #include <QLayout>
 #include <QStandardItemModel>
+
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <sstream>
 #include <fstream>
+
+#include "../UI/chartdialog.h"
+
+#include <QtCharts/QChartView>
+#include <QtCharts/QPieSeries>
+#include <QtCharts/QPieSlice>
+
 
 /* Constructor.
  * Do UI set up tasks.
@@ -160,6 +168,25 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->customDataTable->setColumnWidth(1, ui->customDataTab->width()*0.8);
     ui->customDataTable->horizontalHeader()->setStretchLastSection(true);
 
+    //set up the chart view
+    chart = new QtCharts::QChart();
+
+    //chart->setTitle("robot data");
+    //chart->legend()->hide();
+
+    QtCharts::QChartView *chartView = new QtCharts::QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+
+
+    // Arrange the rows vertically
+    QVBoxLayout* mainbox = new QVBoxLayout();
+
+    mainbox->addWidget(chartView);
+
+    // Set layout
+    ui->chartWidget->setLayout(mainbox);
+
+
     // Set up the ID mapping table
     addIDMappingDialog = NULL;
     idMappingTableSetup();
@@ -184,8 +211,10 @@ MainWindow::~MainWindow()
 
     std::cout<<"xitinging"<<std::endl;
 
+
     // Stop the camera controller
 //    emit stopReadingCamera();
+
 
     // Stop the network thread
     networkThread.quit();
@@ -203,10 +232,21 @@ MainWindow::~MainWindow()
     delete ui;
     delete dataModel;
     delete visualiser;
+    delete chart;
 
     // Delete the id mapping dialog if existing
     if (addIDMappingDialog != NULL) {
         delete addIDMappingDialog;
+    }
+
+
+    /*if (chartDialog != NULL) {
+        delete chartDialog;
+
+    }*/
+    if (bluetoothConfigDialog != NULL) {
+        delete bluetoothConfigDialog;
+
     }
 
     // Delete the singletons
@@ -814,3 +854,76 @@ void MainWindow::on_bluetoothConfigButton_clicked()
 }
 
 
+
+void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
+{
+     qDebug()<<"doubleClicked";
+      QString  dataset =  ui->customDataTable->item(item->row(), 0)->text();
+
+
+     QMap<QString, int> entryList;
+
+     chart->removeAllSeries();
+     QtCharts::QPieSeries *series = new QtCharts::QPieSeries();
+     //series->setLabelsVisible(true);
+
+
+
+
+    //get data for chart
+     for(int i = 0; i<dataModel->getRobotCount(); i++)
+     {
+         RobotData* robot = dataModel->getRobotByIndex(i);
+
+         QString value = robot->getStringValue(dataset);
+
+         if (entryList.contains(value))
+         {
+            entryList[value] = entryList[value] + 1;
+
+         }
+         else
+         {
+            entryList[value] = 1;
+
+         }
+         qDebug()<<"robot: " <<i <<  " value: "<< value;
+
+
+     }
+     int counter = 0;
+     //create chart from data
+     for(const auto& key : entryList.keys())
+     {
+         series->append(key, entryList[key]);
+         //QtCharts::QPieSlice *slice = series->slices().at(counter );
+
+         //slice->setLabelVisible();
+
+         qDebug()<<"data in dialog: " <<key;
+         counter ++;
+
+     }
+
+
+     chart->addSeries(series);
+
+
+    /* QString  dataset =  ui->customDataTable->item(item->row(), 0)->text();
+    qDebug()<<dataset;
+    if (chartDialog != NULL) {
+        delete chartDialog;
+        chartDialog = NULL;
+        qDebug()<<"deleted chart Dialog";
+    }
+
+    chartDialog = new Chartdialog(dataModel);
+
+    if (chartDialog != NULL) {
+        QObject::connect(this, SIGNAL(chartDataSelected(QString )), chartDialog, SLOT(newDataSelected(const QString &)));
+        emit chartDataSelected(dataset);
+
+        chartDialog->show();
+
+    }*/
+}
