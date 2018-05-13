@@ -4,7 +4,7 @@ import json
 
 class Robot:
     def __init__(self):
-        self.id = 'robot_5'
+        self.id = 'robot_2'
         self.pose = { 'x': 0.1, 'y': 0.2, 'orientation': 10 }
         self.state = 'Wandering'
         self.batteryLevel = 12.6
@@ -13,7 +13,7 @@ class Robot:
     def toJson(self):
         return json.dumps({
                     'id': self.id,
-                    'state': 'Wandering',
+                    'state': self.state,
                     'batteryLevel': self.batteryLevel,
                     'internalState': self.internalState,
             'someString' : 'Some new String'

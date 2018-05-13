@@ -337,10 +337,15 @@ void MainWindow::updateCustomData()
         }
 
         int i;
+        qDebug()<<std::min(keys.size(), ui->customDataTable->rowCount());
         for(i = 0; i < std::min(keys.size(), ui->customDataTable->rowCount()); ++i)
         {
             auto& key = keys[i];
-            ui->customDataTable->item(i, 0)->setText(key);
+            qDebug()<<key;
+            if (ui->customDataTable->item(i, 0))
+                ui->customDataTable->item(i, 0)->setText(key);
+            else
+                 qDebug()<<"error";
 
             ss.str("");
             auto type = robot->getValueType(key);
@@ -386,12 +391,20 @@ void MainWindow::updateCustomData()
                 }
                 ss<<" }";
             }
-            ui->customDataTable->item(i, 1)->setText(QString::fromStdString(ss.str()));
+            if(ui->customDataTable->item(i, 1))
+                 ui->customDataTable->item(i, 1)->setText(QString::fromStdString(ss.str()));
+            else
+                qDebug()<<"error";
 
             QCheckBox* cb = static_cast<QCheckBox*>(ui->customDataTable->cellWidget(i, 2));
-            cb->disconnect();
-            cb->setChecked(robot->valueShouldBeDisplayed(key));
-            connect(cb, &QCheckBox::stateChanged, [=](int sig){ robot->setValueDisplayed(key, sig == 2); });
+            if(cb)
+            {
+                cb->disconnect();
+                cb->setChecked(robot->valueShouldBeDisplayed(key));
+                connect(cb, &QCheckBox::stateChanged, [=](int sig){ robot->setValueDisplayed(key, sig == 2); });
+            }
+            else
+                qDebug()<<"error";
         }
 
         for(; i < keys.size(); ++i)
