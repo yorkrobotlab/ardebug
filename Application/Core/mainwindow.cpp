@@ -476,7 +476,8 @@ void MainWindow::updateCustomData()
 
         for(auto& item : selected)
         {
-            ui->customDataTable->item(item.first, item.second)->setSelected(true);
+            if(ui->customDataTable->item(item.first, item.second))
+                ui->customDataTable->item(item.first, item.second)->setSelected(true);
         }
     } else {
         dataModel->selectedRobotID = -1;
