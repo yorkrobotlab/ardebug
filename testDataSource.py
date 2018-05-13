@@ -1,11 +1,14 @@
 #!/usr/bin/python
 
 import json
+from random import randint
 
 class Robot:
-    def __init__(self):
-        self.id = 'robot_2'
-        self.pose = { 'x': 0.1, 'y': 0.2, 'orientation': 10 }
+
+
+    def __init__(self, id = 'robot_5'):
+        self.id = id
+        self.pose = { 'x': randint(20, 500)*0.002, 'y': randint(20, 400)*0.0025, 'orientation': 10 }
         self.state = 'Wandering'
         self.batteryLevel = 12.6
         self.internalState = {'alpha': 12, 'nextTarget': 'somewhere', 'ir': [0.3, 0.6, 0.1, 0.05]}
@@ -16,12 +19,12 @@ class Robot:
                     'state': self.state,
                     'batteryLevel': self.batteryLevel,
                     'internalState': self.internalState,
-            'someString' : 'Some new String'
+            'someString' : 'Some new String',
+            'pose': self.pose
                })
 
-testRobot = Robot()
-print(testRobot.toJson())
-
+robots = [Robot('robot_%d' % (i,)) for i in range(10)]
+    
 import socket
 from math import cos, sin
 from time import sleep
@@ -33,19 +36,13 @@ s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect((hostName, hostPort))
 
 while True:
-    
-    testRobot.pose['orientation'] += 1
-    if testRobot.pose['orientation'] > 360:
-        testRobot.pose['orientation'] -= 360
-    testRobot.pose['x'] = 0.5 + 0.4*sin(testRobot.pose['orientation']*(3.14159/180))
-    testRobot.pose['y'] = 0.5 - 0.4*cos(testRobot.pose['orientation']*(3.14159/180))
-
-    try:
-        s.send(testRobot.toJson())
-    except:
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect((hostName, hostPort))
-        s.send(testRobot.toJson())
+    for r in robots:
+        try:
+            s.send(r.toJson())
+        except:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect((hostName, hostPort))
+            s.send(r.toJson())
 
     sleep(0.1)
         
