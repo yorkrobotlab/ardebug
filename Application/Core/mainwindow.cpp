@@ -345,7 +345,8 @@ void MainWindow::updateCustomData()
             if (ui->customDataTable->item(i, 0))
                 ui->customDataTable->item(i, 0)->setText(key);
             else
-                 qDebug()<<"error";
+                ui->customDataTable->setItem(i, 0, new QTableWidgetItem{key});
+
 
             ss.str("");
             auto type = robot->getValueType(key);
@@ -394,7 +395,7 @@ void MainWindow::updateCustomData()
             if(ui->customDataTable->item(i, 1))
                  ui->customDataTable->item(i, 1)->setText(QString::fromStdString(ss.str()));
             else
-                qDebug()<<"error";
+                ui->customDataTable->setItem(i, 1, new QTableWidgetItem{QString::fromStdString(ss.str())});
 
             QCheckBox* cb = static_cast<QCheckBox*>(ui->customDataTable->cellWidget(i, 2));
             if(cb)
@@ -404,7 +405,14 @@ void MainWindow::updateCustomData()
                 connect(cb, &QCheckBox::stateChanged, [=](int sig){ robot->setValueDisplayed(key, sig == 2); });
             }
             else
-                qDebug()<<"error";
+            {
+
+                QCheckBox* cb = new QCheckBox;
+                cb->setChecked(robot->valueShouldBeDisplayed(key));
+                connect(cb, &QCheckBox::stateChanged, [=](int sig){ std::cout<<"Checkbox state changed to "<<sig<<std::endl; });
+                ui->customDataTable->setCellWidget(i, 2, cb);
+
+            }
         }
 
         for(; i < keys.size(); ++i)
