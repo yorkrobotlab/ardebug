@@ -9,6 +9,8 @@
 #include "../Core/settings.h"
 
 #include <QPainter>
+#include <QPainterPath>
+#include <limits>
 
 /* Constructor
  * Initialise all setttings
@@ -32,17 +34,23 @@ VisText::~VisText() {
 /* render
  * Render this visualisation for one robot.
  */
-void VisText::render(QWidget* widget, QPainter* painter, RobotData *robot, bool selected, QRectF rect) {
+void VisText::render(QWidget* , QPainter* painter, RobotData *robot, bool selected, QRectF rect) {
 
     if(!selected)
         return;
 
-    double x = rect.x() + (rect.width() * robot->getPos().position.x) + 30;
-    double y = rect.y() + (rect.height() * robot->getPos().position.y) - 30;
+    double x = rect.x() + (rect.width() * robot->getPos().position.x) + 15;
+    double y = rect.y() + (rect.height() * robot->getPos().position.y) - 10;
 
-    QPointF centre = QPointF{x, y};
+    auto font = painter->font();
+    auto pen  = painter->pen();
 
-    painter->drawText(QRectF{x, y, 200, 200}, Qt::TextWordWrap, text);
+    painter->setBackgroundMode(Qt::BGMode::OpaqueMode);
+    painter->setBackground(QBrush{QColor{0, 0, 0, 100}});
+
+    painter->setFont(font);
+    painter->setPen(pen);
+    painter->drawText(QRectF{x, y, std::numeric_limits<float>::max(), std::numeric_limits<float>::max()}, Qt::TextWordWrap, text);
 }
 
 /* getSettingsDialog

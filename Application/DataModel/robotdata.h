@@ -26,6 +26,7 @@ enum ValueType
 struct RobotStateValue
 {
     ValueType type;
+    bool isDisplayed = false;
 
     QString stringValue = "";
     double doubleValue = 0;
@@ -131,6 +132,21 @@ public:
 
         return values[name].objectValue;
     }
+
+    bool valueShouldBeDisplayed(QString key)
+    {
+        if(values.contains(key))
+            return values[key].isDisplayed;
+
+        return false;
+    }
+
+    void setValueDisplayed(QString key, bool displayed)
+    {
+        if(values.contains(key))
+            values[key].isDisplayed = displayed;
+    }
+
 private:
     void updatePositionHistory(void);
 };

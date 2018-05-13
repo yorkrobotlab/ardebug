@@ -27,11 +27,19 @@
 
 #include <QLayout>
 #include <QStandardItemModel>
+
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <sstream>
+#include <fstream>
+
 #include "../UI/chartdialog.h"
 
 #include <QtCharts/QChartView>
 #include <QtCharts/QPieSeries>
 #include <QtCharts/QPieSlice>
+
 
 /* Constructor.
  * Do UI set up tasks.
@@ -40,6 +48,49 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    std::ifstream robotConfigFile{"./RobotConfig.json"};
+    if(robotConfigFile)
+    {
+        std::stringstream configData;
+        while(robotConfigFile)
+        {
+            std::string tmp;
+            robotConfigFile >> tmp;
+            configData << tmp << " ";
+        }
+        QJsonDocument doc = QJsonDocument::fromJson(QString::fromStdString(configData.str()).toUtf8());
+        if(!doc.isNull())
+        {
+            QJsonArray arr = doc.array();
+            for(auto item : arr)
+            {
+                if(!item.isObject())
+                    continue;
+
+                auto obj = item.toObject();
+                if(!obj.keys().contains("aruco_id") || !obj.keys().contains("robot_id"))
+                    continue;
+
+                int arucoId = obj["aruco_id"].toDouble();
+                QString robotId = obj["robot_id"].toString();
+
+                arucoNameMapping[arucoId] = robotId;
+
+                std::cout<<"Aruco ID "<<arucoId<<" is now mapped to Robot ID "<<robotId.toStdString()<<std::endl;
+            }
+        }
+    }
+
+
+#ifdef CVB_CAMERA_PRESENT
+    cameraThread = new CVBCameraThread;
+#else
+    cameraThread = new USBCameraThread;
+#endif
+
+    arucoTracker = new ArUco{&arucoNameMapping, cameraThread};
+
+
     ui->setupUi(this);
 
     // Show a message
@@ -95,7 +146,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     // Intantiate the visualiser
-    visualiser = new Visualiser(dataModel);
+    visualiser = new Visualiser{dataModel, cameraThread};
     visualiser->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
     connect(dataModel, SIGNAL(modelChanged(bool)), visualiser, SLOT(refreshVisualisation()));
@@ -112,8 +163,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->angleCorrectionEdit->setValidator(new QIntValidator(-180, 180, this));
 
     // Set up the custom data table
-    ui->customDataTable->setColumnCount(2);
-    ui->customDataTable->setHorizontalHeaderLabels(QStringList("Key") << QString("Value"));
+    ui->customDataTable->setColumnCount(3);
+    ui->customDataTable->setHorizontalHeaderLabels(QStringList("Key") << QString("Value") << QString{"Display In Visualiser"});
+    ui->customDataTable->setColumnWidth(1, ui->customDataTab->width()*0.8);
     ui->customDataTable->horizontalHeader()->setStretchLastSection(true);
 
     //set up the chart view
@@ -141,20 +193,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     qRegisterMetaType<cv::Mat>("cv::Mat&");
 
-    for(int i = 0; i < 50; ++i)
-    {
-        std::stringstream sstream;
-        sstream<<"robot_"<<i;
-        arucoNameMapping[i] = QString::fromStdString(sstream.str());
-    }
+    connect(arucoTracker, SIGNAL(newRobotPosition(QString, Pose)), dataModel, SLOT(newRobotPosition(QString, Pose)));
 
-    connect(&arucoTracker, SIGNAL(newRobotPosition(QString, Pose)), dataModel, SLOT(newRobotPosition(QString, Pose)));
-
-    connect(&cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), visualiser, SLOT(newVideoFrame(cv::Mat&)), Qt::BlockingQueuedConnection);
-    connect(&cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), &arucoTracker, SLOT(newImageReceived(cv::Mat&)), Qt::BlockingQueuedConnection);
-    connect(this, SIGNAL(stopReadingCamera()), &cameraThread, SLOT(endThread()));
-
-    cameraThread.start();
+    cameraThread->start();
 
     // Start the camera reading immediately
     startReadingCamera();    
@@ -168,8 +209,24 @@ MainWindow::~MainWindow()
     // Send a packet to signal the network socket to close
     sendClosePacket(8888);
 
+    std::cout<<"xitinging"<<std::endl;
+
+
     // Stop the camera controller
-    emit stopReadingCamera();
+//    emit stopReadingCamera();
+
+
+    // Stop the network thread
+    networkThread.quit();
+    networkThread.wait();
+
+    // Stop the network thread
+    bluetoothThread.quit();
+    bluetoothThread.wait();
+
+    // Stop the camera thread
+    cameraThread->quit();
+    cameraThread->wait();
 
     // Release all memory
     delete ui;
@@ -182,6 +239,7 @@ MainWindow::~MainWindow()
         delete addIDMappingDialog;
     }
 
+
     /*if (chartDialog != NULL) {
         delete chartDialog;
 
@@ -190,18 +248,6 @@ MainWindow::~MainWindow()
         delete bluetoothConfigDialog;
 
     }
-
-    // Stop the network thread
-    networkThread.quit();
-    networkThread.wait();
-
-    // Stop the network thread
-    bluetoothThread.quit();
-    bluetoothThread.wait();
-
-    // Stop the camera thread
-    cameraThread.quit();
-    cameraThread.wait();
 
     // Delete the singletons
     Settings::deleteInstance();
@@ -259,24 +305,156 @@ void MainWindow::setVideo(bool enabled) {
  */
 void MainWindow::robotListSelectionChanged(const QItemSelection &selection) {
     // Get the data of the robot selected
+
     int idx = selection.indexes().at(0).row();
-    if (idx >= 0 || idx < dataModel->getRobotCount()) {
-        // Update the selected robot id
-        RobotData* robot = dataModel->setSelectedRobot(idx);
+    if (idx >= 0 || idx < dataModel->getRobotCount())
+        dataModel->setSelectedRobot(idx);
 
-        // Show a status bar message
-        ui->statusBar->showMessage(robot->getID(), 3000);
+    updateCustomData();
+}
 
-        ui->customDataTable->clear();
-        ui->customDataTable->setRowCount(0);
+void MainWindow::updateCustomData()
+{
+    auto id = dataModel->selectedRobotID;
+    if(dataModel->getRobotByID(id))
+    {
+        RobotData* robot = dataModel->getRobotByID(id);
 
-        // @EXTEND: Add other data types
-        for(const auto& key : robot->getKeys(ValueType::String))
+        std::vector<std::pair<int, int>> selected;
+        auto selectedItems = ui->customDataTable->selectedItems();
+        for(auto& item : selectedItems)
+            selected.push_back({item->row(), item->column()});
+
+        std::stringstream ss;
+
+        const auto& keys = robot->getKeys();
+
+        if(keys.size() != ui->customDataTable->rowCount())
         {
+            ui->customDataTable->clear();
+            ui->customDataTable->setHorizontalHeaderLabels(QStringList("Key") << QString("Value") << QString{"Display In Visualiser"});
+        }
+
+        int i;
+        for(i = 0; i < std::min(keys.size(), ui->customDataTable->rowCount()); ++i)
+        {
+            auto& key = keys[i];
+            ui->customDataTable->item(i, 0)->setText(key);
+
+            ss.str("");
+            auto type = robot->getValueType(key);
+
+            if(type == String)
+                ss<<robot->getStringValue(key).toStdString();
+
+            if(type == Double)
+                ss<<robot->getDoubleValue(key);
+
+            if(type == Bool)
+                ss<<(robot->getBoolValue(key) ? "True" : "False");
+
+            if(type == Array)
+            {
+                auto arr = robot->getArrayValue(key);
+                ss<<"[ ";
+                for(int i = 0; i < arr.size(); ++i)
+                {
+                    if(i > 0) ss<<"   ";
+                    auto item = arr[i];
+                    if(item.type == String) ss<<'"'<<item.stringValue.toStdString()<<'"';
+                    else if(item.type == Double) ss<<item.doubleValue;
+                    else if(item.type == Bool) ss<<(item.boolValue ? "True" : "False");
+                    else ss<<"Unsupported";
+                }
+                ss<<" ]";
+            }
+
+            if(type == Object)
+            {
+                auto obj = robot->getObjectValue(key);
+                ss<<"{ ";
+                for(auto& key : obj.keys())
+                {
+                    ss<<key.toStdString()<<": ";
+                    auto& item = obj[key];
+                    if(item.type == String) ss<<'"'<<item.stringValue.toStdString()<<'"';
+                    else if(item.type == Double) ss<<item.doubleValue;
+                    else if(item.type == Bool) ss<<(item.boolValue ? "True" : "False");
+                    else ss<<"Unsupported";
+                    ss<<"   ";
+                }
+                ss<<" }";
+            }
+            ui->customDataTable->item(i, 1)->setText(QString::fromStdString(ss.str()));
+
+            QCheckBox* cb = static_cast<QCheckBox*>(ui->customDataTable->cellWidget(i, 2));
+            cb->disconnect();
+            cb->setChecked(robot->valueShouldBeDisplayed(key));
+            connect(cb, &QCheckBox::stateChanged, [=](int sig){ robot->setValueDisplayed(key, sig == 2); });
+        }
+
+        for(; i < keys.size(); ++i)
+        {
+            auto& key = keys[i];
             int newRowIndex = ui->customDataTable->rowCount();
             ui->customDataTable->insertRow(newRowIndex);
             ui->customDataTable->setItem(newRowIndex, 0, new QTableWidgetItem{key});
-            ui->customDataTable->setItem(newRowIndex, 1, new QTableWidgetItem{robot->getStringValue(key)});
+
+            ss.str("");
+            auto type = robot->getValueType(key);
+
+            if(type == String)
+                ss<<robot->getStringValue(key).toStdString();
+
+            if(type == Double)
+                ss<<robot->getDoubleValue(key);
+
+            if(type == Bool)
+                ss<<(robot->getBoolValue(key) ? "True" : "False");
+
+            if(type == Array)
+            {
+                auto arr = robot->getArrayValue(key);
+                ss<<"[ ";
+                for(int i = 0; i < arr.size(); ++i)
+                {
+                    if(i > 0) ss<<"   ";
+                    auto item = arr[i];
+                    if(item.type == String) ss<<'"'<<item.stringValue.toStdString()<<'"';
+                    else if(item.type == Double) ss<<item.doubleValue;
+                    else if(item.type == Bool) ss<<(item.boolValue ? "True" : "False");
+                    else ss<<"Unsupported";
+                }
+                ss<<" ]";
+            }
+
+            if(type == Object)
+            {
+                auto obj = robot->getObjectValue(key);
+                ss<<"{ ";
+                for(auto& key : obj.keys())
+                {
+                    ss<<key.toStdString()<<": ";
+                    auto& item = obj[key];
+                    if(item.type == String) ss<<'"'<<item.stringValue.toStdString()<<'"';
+                    else if(item.type == Double) ss<<item.doubleValue;
+                    else if(item.type == Bool) ss<<(item.boolValue ? "True" : "False");
+                    else ss<<"Unsupported";
+                    ss<<"   ";
+                }
+                ss<<" }";
+            }
+            ui->customDataTable->setItem(newRowIndex, 1, new QTableWidgetItem{QString::fromStdString(ss.str())});
+
+            QCheckBox* cb = new QCheckBox;
+            cb->setChecked(robot->valueShouldBeDisplayed(key));
+            connect(cb, &QCheckBox::stateChanged, [=](int sig){ std::cout<<"Checkbox state changed to "<<sig<<std::endl; });
+            ui->customDataTable->setCellWidget(newRowIndex, 2, cb);
+        }
+
+        for(auto& item : selected)
+        {
+            ui->customDataTable->item(item.first, item.second)->setSelected(true);
         }
     } else {
         dataModel->selectedRobotID = -1;
@@ -320,7 +498,7 @@ void MainWindow::robotSelectedInVisualiser(QString id) {
     for (int i = 0; i < stringList.size(); i++) {
         QString str = stringList.at(i);
 
-        if (str.startsWith(id + ":")) {
+        if (str == id) {
             // Update selection
             ui->robotList->setCurrentIndex(ui->robotList->model()->index(i, 0));
         }
@@ -348,18 +526,21 @@ void MainWindow::dataModelUpdate(bool listChanged)
 {
     // Update the robot list
     if (listChanged) {
-        ui->robotList->setModel(dataModel->getRobotList());
+        auto model = dataModel->getRobotList();
+        ui->robotList->setModel(model);
 
-//        int idx = dataModel->getRobotIndex(dataModel->selectedRobotID, false);
-
-//        if (idx != -1) {
-//            QModelIndex qidx = ui->robotList->model()->index(idx, 0);
-//            ui->robotList->setCurrentIndex(qidx);
-//        }
+        auto stringList = model->stringList();
+        auto found = std::find_if(stringList.begin(), stringList.end(), [&](const QString& item){ return item == dataModel->selectedRobotID; });
+        if(found != stringList.end())
+        {
+            QModelIndex qidx = ui->robotList->model()->index(found - stringList.begin(), 0);
+            ui->robotList->setCurrentIndex(qidx);
+        }
     }
 
     // Update the necessary data tabs
     updateOverviewTab();
+    updateCustomData();
 }
 
 /* updateOverviewTab

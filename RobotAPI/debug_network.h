@@ -39,22 +39,11 @@ public:
     DebugNetwork(void);
     ~DebugNetwork(void);
 
-    void init(int port, std::string default_server_ip, int default_robot_id);
+    void init(int port, std::string default_server_ip, std::string default_robot_id);
     void destroy(void);
-
-    // Raw packet function
+    
     void sendData(std::string data);
-
-    // Specific packet functions
-    void sendWatchdogPacket(std::string name);
-    void sendStatePacket(std::string state);
-    void sendIRDataPacket(int* data, int count, bool background);
-    void sendLogMessage(std::string message);
-    void sendCustomData(std::string key, std::string value);
-
-    // Robot ID functions
-    int getRobotID(void);
-    void setRobotID(int id);
+    std::string getRobotID(void);
 
 private:
     // Network variables
@@ -63,7 +52,7 @@ private:
     int sockfd;
 
     // Robot id within the ARDebug system
-    int robot_id;
+    std::string robot_id;
 };
 
 #endif /* DEBUG_NETWORK_H */

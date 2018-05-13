@@ -2,11 +2,15 @@
 #include "Application/Core/util.h"
 #include <QtMath>
 
-ArUco::ArUco(std::map<int, QString>* idMapping)
+#include <iostream>
+
+ArUco::ArUco(std::map<int, QString>* idMapping, ARCameraThread* cameraThread)
 {
     possibleTags = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_6X6_50);
     detectorParameters = cv::aruco::DetectorParameters::create();
     arucoToStringIdMapping = idMapping;
+    this->cameraThread = cameraThread;
+    connect(cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), this, SLOT(newImageReceived(cv::Mat&)));
 }
 
 void ArUco::newImageReceived(cv::Mat& image)
@@ -45,4 +49,8 @@ void ArUco::newImageReceived(cv::Mat& image)
 
         emit newRobotPosition(idString, p);
     }
+
+    cameraThread->addPreEmitCall([&](){
+        connect(cameraThread, SIGNAL(newVideoFrame(cv::Mat&)), this, SLOT(newImageReceived(cv::Mat&)));
+    });
 }

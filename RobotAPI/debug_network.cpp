@@ -12,6 +12,7 @@
 #include <fstream>
 #include <string>
 #include <cstdlib>
+#include <iostream>
 
 DebugNetwork::DebugNetwork(void) { }
 DebugNetwork::~DebugNetwork(void) { }
@@ -21,20 +22,16 @@ DebugNetwork::~DebugNetwork(void) { }
  * Must provide a port number, and fallback server IP and robot ID,
  * in case ardebug_config.txt cannot be found.
  */
-void DebugNetwork::init(int port, std::string default_server_ip, int default_robot_id) {
+void DebugNetwork::init(int port, std::string default_server_ip, std::string default_robot_id) {
     // Open config file
     std::ifstream file ("ar_debug_config.txt");
 
-    // String for reading from config file
-    std::string config_string;
-
     if (file.is_open()) {
         // Config file open, acquire ID
-        getline(file,config_string);
-        this->robot_id = atoi(config_string.c_str());
+        getline(file, this->robot_id);
 
         // Acquire IP
-        getline(file,default_server_ip);
+        getline(file, default_server_ip);
 
         file.close();
     } else {
@@ -62,6 +59,8 @@ void DebugNetwork::init(int port, std::string default_server_ip, int default_rob
     }
 
     socket_ready = true;
+
+    std::cout << "Connected to: " << default_server_ip << std::endl;
 }
 
 /* destroy
@@ -85,80 +84,9 @@ void DebugNetwork::sendData(std::string data) {
     }
 }
 
-/* sendWatchdogPacket
- * Send a watchdog data packet to the debugging application.
- */
-void DebugNetwork::sendWatchdogPacket(std::string name) {
-    std::ostringstream packet;
-
-    packet << robot_id << PACKET_TYPE_STR_WATCHDOG << name;
-
-    sendData(packet.str());
-}
-
-/* sendStatePacket
- * Send a state data packet to the debugging application.
- */
-void DebugNetwork::sendStatePacket(std::string state) {
-    std::ostringstream packet;
-
-    packet << robot_id << PACKET_TYPE_STR_STATE << state;
-
-    sendData(packet.str());
-}
-
-/* sendIRDataPacket
- * Send an IR data packet to the debugging application. Can be active or
- * background readings.
- */
-void DebugNetwork::sendIRDataPacket(int* data, int count, bool background) {
-    std::ostringstream packet;
-
-    if (background) {
-        packet << robot_id << PACKET_TYPE_STR_BACKGROUND_IR;
-    } else {
-        packet << robot_id << PACKET_TYPE_STR_PROXIMITY;
-    }   
-
-    for (int i = 0; i < count; i++) {
-        packet << " " << data[i];
-    }
-
-    sendData(packet.str());
-}
-
-/* sendLogMessage
- * Send a log message packet to the debugging application.
- */
-void DebugNetwork::sendLogMessage(std::string message) {
-    std::ostringstream packet;
-
-    packet << robot_id << PACKET_TYPE_STR_MSG << message;
-
-    sendData(packet.str());
-}
-
-/* sendCustomData
- * Send a custom data packet to the debugging application.
- */
-void DebugNetwork::sendCustomData(std::string key, std::string value) {
-    std::ostringstream packet;
-
-    packet << robot_id << PACKET_TYPE_STR_CUSTOM << key << " " << value;
-
-    sendData(packet.str());
-}
-
 /* getRobotID
  * Get the current robot ID value used when sending packets.
  */
-int DebugNetwork::getRobotID(void) {
+std::string DebugNetwork::getRobotID(void) {
     return robot_id;
-}
-
-/* setRobotID
- * Change the current robot ID value used when sending packets.
- */
-void DebugNetwork::setRobotID(int id) {
-    this->robot_id = id;
 }

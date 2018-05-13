@@ -2,7 +2,6 @@
  *
  * This class encapsulates the visualisation of robot poition.
  *
- * (C) Alistair Jewers Feb 2017
  */
 
 #include "visposition.h"
@@ -49,14 +48,18 @@ void VisPosition::render(QWidget* widget, QPainter* painter, RobotData *robot, b
     double sideDy = cos(orientation) * indicatorSize * 0.5;
 
     auto pen = painter->pen();
+    auto circlePen = pen;
+    auto borderPen = pen;
 
     if(selected)
-    {
-        auto newPen = QPen{pen};
-        newPen.setWidth(pen.widthF() * 2);
-        painter->setPen(newPen);
-    }
+      circlePen.setWidth(pen.widthF() * 2);
 
+    borderPen.setWidth(circlePen.width()+2);
+    borderPen.setColor(QColor{0, 0, 0, 100});
+    painter->setPen(borderPen);
+    painter->drawEllipse(centre, indicatorSize, indicatorSize);
+
+    painter->setPen(circlePen);
     painter->drawEllipse(centre, indicatorSize, indicatorSize);
 
     painter->setPen(pen);

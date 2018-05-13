@@ -279,6 +279,12 @@ void populateObjectFromJson(QMap<QString,RobotStateValue>& obj, QJsonObject json
 void DataModel::newData(const QString &dataString) {
     // Parse the received data as a JSON string
     QJsonDocument j = QJsonDocument::fromJson(dataString.toUtf8());
+    if(j.isNull())
+    {
+        Log::instance()->logMessage("Received invalid JSON packet", true);
+        return;
+    }
+
     QJsonObject message = j.object();
 
     // Check that
@@ -334,6 +340,7 @@ void DataModel::newData(const QString &dataString) {
         case Array:
         {
             auto& v = robot->getArrayValue(key);
+            v.clear();
             populateListFromJson(v, val.toArray());
             break;
         }

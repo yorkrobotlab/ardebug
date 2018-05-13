@@ -47,12 +47,10 @@ CVBCameraThread::CVBCameraThread()
 
     if(!success)
     {
-//        Log::instance()->logMessage("Error loading " + QString(driverPath) + " driver!", true);
         cout << "Error loading " << driverPath << " driver!" << endl;
         exit(0);
     }
 
-//    Log::instance()->logMessage("Load " + QString(driverPath) + " successful.", true);
     cout << "Load " << driverPath << " successful." << endl;
 
     // Start grab with ring buffer
@@ -60,7 +58,6 @@ CVBCameraThread::CVBCameraThread()
 
     if(result < 0)
     {
-//        Log::instance()->logMessage("Error grabbing camera with ring buffer.", true);
         cout << "Error grabbing camera with ring buffer." << endl;
         exit(0);
     }
@@ -77,35 +74,23 @@ void CVBCameraThread::run()
         cvbres_t camResult = G2Wait(hCamera);
 
         if(camResult < 0) {
-//            Log::instance()->logMessage("Error with G2Wait: " + QString::number(CVC_ERROR_FROM_HRES(camResult)), true);
             cout << setw(3) << "Error with G2Wait: " << CVC_ERROR_FROM_HRES(camResult) << endl;
-//            image = Mat(size.x, size.y, CV_8UC3);
         } else {
             // Create an attached OpenCV image
             Mat originalImage = cvb_to_ocv_nocopy(hCamera);
+            originalImage.convertTo(originalImage, -1, 2, 0);
 
-	    //Mat unflippedImage;
-            originalImage.convertTo(originalImage, -1, 2, 40);
-
-            // Swap blue and red channels
-            //vector<Mat> channels(3);
-            //split(originalImage, channels);
-            //merge(vector<Mat>{channels[2], channels[1], channels[0]}, originalImage);
-
-//            if (Settings::instance()->isImageFlipped()) {
-//                flip(unflippedImage, image, -1);
-//            } else {
-	    //image = unflippedImage;
-	    emit newVideoFrame(originalImage);
-//            }
+            if(shouldRun)
+            {
+                executePreEmitCalls();
+                emit newVideoFrame(originalImage);
+                disconnect(this, SIGNAL(newVideoFrame(cv::Mat&)), nullptr, 0);
+            }
         }
-
     }
-}
 
-void CVBCameraThread::endThread()
-{
-    shouldRun = false;
+    G2Freeze(hCamera, true);
+    ReleaseObject(hCamera);
 }
 
 #endif // CVB_CAMERA_PRESENT
