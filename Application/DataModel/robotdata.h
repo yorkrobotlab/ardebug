@@ -4,6 +4,7 @@
 #include <QString>
 #include <QStringListModel>
 #include <QTableWidget>
+#include <QColor>
 
 #include "../Core/util.h"
 
@@ -49,7 +50,10 @@ class RobotData
     int posHistoryIndex;
     int posHistoryFrameCount;
 
+
+
 public:
+    QColor colour;
     RobotData(QString id);
     ~RobotData(void);
 

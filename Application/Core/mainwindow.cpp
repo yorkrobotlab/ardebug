@@ -39,6 +39,7 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QPieSeries>
 #include <QtCharts/QPieSlice>
+#include <QColor>
 
 
 /* Constructor.
@@ -862,6 +863,10 @@ void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
 
 
      QMap<QString, int> entryList;
+     QMap<QString, QColor> colourList;
+
+     int colourCounter = 0;
+     QColor startColour(0,60,100);
 
      chart->removeAllSeries();
      QtCharts::QPieSeries *series = new QtCharts::QPieSeries();
@@ -880,11 +885,16 @@ void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
          if (entryList.contains(value))
          {
             entryList[value] = entryList[value] + 1;
+            robot->colour = colourList[value];
+
 
          }
          else
          {
             entryList[value] = 1;
+            colourList[value]= startColour.lighter(100+(colourCounter%10)*40);
+            robot->colour= colourList[value];
+            colourCounter ++;
 
          }
          qDebug()<<"robot: " <<i <<  " value: "<< value;
@@ -900,9 +910,10 @@ void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
          series->append(label, entryList[key]);
          QtCharts::QPieSlice *slice = series->slices().at(counter );
          slice->setLabelFont(font);
+         slice->setColor(colourList[key]);
          //slice->setLabelVisible();
 
-         qDebug()<<"data in dialog: " <<key;
+         qDebug()<<"data in dialog: " <<key << slice->brush().color().green();
          counter ++;
 
      }
