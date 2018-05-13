@@ -3,8 +3,8 @@
 import json
 
 class Robot:
-    def __init__(self):
-        self.id = 'robot_5'
+    def __init__(self, id = 'robot_5'):
+        self.id = id
         self.pose = { 'x': 0.1, 'y': 0.2, 'orientation': 10 }
         self.state = 'Wandering'
         self.batteryLevel = 12.6
@@ -19,9 +19,8 @@ class Robot:
             'someString' : 'Some new String'
                })
 
-testRobot = Robot()
-print(testRobot.toJson())
-
+robots = [Robot('robot_%d' % (i,)) for i in range(10)]
+    
 import socket
 from math import cos, sin
 from time import sleep
@@ -33,19 +32,13 @@ s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect((hostName, hostPort))
 
 while True:
-    
-    testRobot.pose['orientation'] += 1
-    if testRobot.pose['orientation'] > 360:
-        testRobot.pose['orientation'] -= 360
-    testRobot.pose['x'] = 0.5 + 0.4*sin(testRobot.pose['orientation']*(3.14159/180))
-    testRobot.pose['y'] = 0.5 - 0.4*cos(testRobot.pose['orientation']*(3.14159/180))
-
-    try:
-        s.send(testRobot.toJson())
-    except:
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect((hostName, hostPort))
-        s.send(testRobot.toJson())
+    for r in robots:
+        try:
+            s.send(r.toJson())
+        except:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect((hostName, hostPort))
+            s.send(r.toJson())
 
     sleep(0.1)
         
