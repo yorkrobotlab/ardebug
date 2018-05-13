@@ -172,7 +172,7 @@ MainWindow::MainWindow(QWidget *parent) :
     chart = new QtCharts::QChart();
 
     //chart->setTitle("robot data");
-    //chart->legend()->hide();
+    chart->legend()->hide();
 
     QtCharts::QChartView *chartView = new QtCharts::QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
@@ -865,7 +865,7 @@ void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
 
      chart->removeAllSeries();
      QtCharts::QPieSeries *series = new QtCharts::QPieSeries();
-     //series->setLabelsVisible(true);
+
 
 
 
@@ -893,11 +893,13 @@ void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
      }
      int counter = 0;
      //create chart from data
+     QFont font("Arial", 8);
      for(const auto& key : entryList.keys())
      {
-         series->append(key, entryList[key]);
-         //QtCharts::QPieSlice *slice = series->slices().at(counter );
-
+         QString label = QString("%1 %2").arg(entryList[key]).arg(key);
+         series->append(label, entryList[key]);
+         QtCharts::QPieSlice *slice = series->slices().at(counter );
+         slice->setLabelFont(font);
          //slice->setLabelVisible();
 
          qDebug()<<"data in dialog: " <<key;
@@ -905,7 +907,7 @@ void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
 
      }
 
-
+    series->setLabelsVisible(true);
      chart->addSeries(series);
 
 
