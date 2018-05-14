@@ -48,6 +48,7 @@ class MainWindow : public QMainWindow
     QDialog* chartDialog;
 
     QtCharts::QChart *chart;
+    QString chartEntry="";
 
     int sockfd;
 
@@ -65,7 +66,7 @@ signals:
 
     void startReadingCamera(void);
     void stopReadingCamera(void);
-    void chartDataSelected(QString dataset);
+    void updateChart(void);
 
 public slots:
     void robotDeleted(void);
@@ -81,6 +82,8 @@ public slots:
     void socketOpened(const int &sockfd) { this->sockfd = sockfd; }
 
     void idMappingUpdate(void);
+
+    void redrawChart(void);
 
     //void socketConnected(const int);
 
@@ -134,6 +137,8 @@ private slots:
     void on_bluetoothConfigButton_clicked();
 
     void on_customDataTable_itemDoubleClicked(QTableWidgetItem *item);
+
+
 
 private:
     Ui::MainWindow *ui;

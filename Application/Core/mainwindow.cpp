@@ -151,6 +151,8 @@ MainWindow::MainWindow(QWidget *parent) :
     visualiser->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
     connect(dataModel, SIGNAL(modelChanged(bool)), visualiser, SLOT(refreshVisualisation()));
+    connect(dataModel, SIGNAL(modelChanged(bool)), this, SLOT(redrawChart()));
+    QObject::connect(this, SIGNAL(updateChart()),this ,SLOT(redrawChart()));
 
     // Embed the visualiser in the tab
     QHBoxLayout* horizLayout = new QHBoxLayout();
@@ -881,9 +883,18 @@ void MainWindow::on_bluetoothConfigButton_clicked()
 
 void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
 {
-     qDebug()<<"doubleClicked";
-      QString  dataset =  ui->customDataTable->item(item->row(), 0)->text();
 
+      chartEntry =  ui->customDataTable->item(item->row(), 0)->text();
+      emit updateChart();
+
+
+
+
+
+}
+
+ void MainWindow::redrawChart()
+ {
 
      QMap<QString, int> entryList;
      QMap<QString, QColor> colourList;
@@ -895,17 +906,14 @@ void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
      QtCharts::QPieSeries *series = new QtCharts::QPieSeries();
 
 
-
-
-
     //get data for chart
      for(int i = 0; i<dataModel->getRobotCount(); i++)
      {
          RobotData* robot = dataModel->getRobotByIndex(i);
           QString value ;
 
-         if (robot->getValueType(dataset)!=ValueType::Unknown)
-             value = robot->getStringValue(dataset);
+         if (robot->getValueType(chartEntry)!=ValueType::Unknown)
+             value = robot->getStringValue(chartEntry);
          else
              value = "empty";
 
@@ -922,7 +930,6 @@ void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
             colourCounter ++;
 
          }
-         qDebug()<<"robot: " <<i <<  " value: "<< value;
 
 
      }
@@ -938,7 +945,7 @@ void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
          slice->setColor(colourList[key]);
          //slice->setLabelVisible();
 
-         qDebug()<<"data in dialog: " <<key << slice->brush().color().green();
+
          counter ++;
 
      }
@@ -947,22 +954,6 @@ void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
      chart->addSeries(series);
 
 
-    /* QString  dataset =  ui->customDataTable->item(item->row(), 0)->text();
-    qDebug()<<dataset;
-    if (chartDialog != NULL) {
-        delete chartDialog;
-        chartDialog = NULL;
-        qDebug()<<"deleted chart Dialog";
-    }
 
-    chartDialog = new Chartdialog(dataModel);
-
-    if (chartDialog != NULL) {
-        QObject::connect(this, SIGNAL(chartDataSelected(QString )), chartDialog, SLOT(newDataSelected(const QString &)));
-        emit chartDataSelected(dataset);
-
-        chartDialog->show();
-
-    }*/
-}
+ }
 
