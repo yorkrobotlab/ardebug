@@ -39,6 +39,7 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QPieSeries>
 #include <QtCharts/QPieSlice>
+#include <QColor>
 
 
 /* Constructor.
@@ -150,6 +151,8 @@ MainWindow::MainWindow(QWidget *parent) :
     visualiser->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
     connect(dataModel, SIGNAL(modelChanged(bool)), visualiser, SLOT(refreshVisualisation()));
+    connect(dataModel, SIGNAL(modelChanged(bool)), this, SLOT(redrawChart()));
+    QObject::connect(this, SIGNAL(updateChart()),this ,SLOT(redrawChart()));
 
     // Embed the visualiser in the tab
     QHBoxLayout* horizLayout = new QHBoxLayout();
@@ -167,12 +170,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->customDataTable->setHorizontalHeaderLabels(QStringList("Key") << QString("Value") << QString{"Display In Visualiser"});
     ui->customDataTable->setColumnWidth(1, ui->customDataTab->width()*0.8);
     ui->customDataTable->horizontalHeader()->setStretchLastSection(true);
+    ui->customDataTable->setEditTriggers(QTableWidget::NoEditTriggers);
 
     //set up the chart view
     chart = new QtCharts::QChart();
 
     //chart->setTitle("robot data");
-    //chart->legend()->hide();
+    chart->legend()->hide();
 
     QtCharts::QChartView *chartView = new QtCharts::QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
@@ -336,10 +340,16 @@ void MainWindow::updateCustomData()
         }
 
         int i;
+        qDebug()<<std::min(keys.size(), ui->customDataTable->rowCount());
         for(i = 0; i < std::min(keys.size(), ui->customDataTable->rowCount()); ++i)
         {
             auto& key = keys[i];
-            ui->customDataTable->item(i, 0)->setText(key);
+            qDebug()<<key;
+            if (ui->customDataTable->item(i, 0))
+                ui->customDataTable->item(i, 0)->setText(key);
+            else
+                ui->customDataTable->setItem(i, 0, new QTableWidgetItem{key});
+
 
             ss.str("");
             auto type = robot->getValueType(key);
@@ -385,12 +395,27 @@ void MainWindow::updateCustomData()
                 }
                 ss<<" }";
             }
-            ui->customDataTable->item(i, 1)->setText(QString::fromStdString(ss.str()));
+            if(ui->customDataTable->item(i, 1))
+                 ui->customDataTable->item(i, 1)->setText(QString::fromStdString(ss.str()));
+            else
+                ui->customDataTable->setItem(i, 1, new QTableWidgetItem{QString::fromStdString(ss.str())});
 
             QCheckBox* cb = static_cast<QCheckBox*>(ui->customDataTable->cellWidget(i, 2));
-            cb->disconnect();
-            cb->setChecked(robot->valueShouldBeDisplayed(key));
-            connect(cb, &QCheckBox::stateChanged, [=](int sig){ robot->setValueDisplayed(key, sig == 2); });
+            if(cb)
+            {
+                cb->disconnect();
+                cb->setChecked(robot->valueShouldBeDisplayed(key));
+                connect(cb, &QCheckBox::stateChanged, [=](int sig){ robot->setValueDisplayed(key, sig == 2); });
+            }
+            else
+            {
+
+                QCheckBox* cb = new QCheckBox;
+                cb->setChecked(robot->valueShouldBeDisplayed(key));
+                connect(cb, &QCheckBox::stateChanged, [=](int sig){ std::cout<<"Checkbox state changed to "<<sig<<std::endl; });
+                ui->customDataTable->setCellWidget(i, 2, cb);
+
+            }
         }
 
         for(; i < keys.size(); ++i)
@@ -454,7 +479,8 @@ void MainWindow::updateCustomData()
 
         for(auto& item : selected)
         {
-            ui->customDataTable->item(item.first, item.second)->setSelected(true);
+            if(ui->customDataTable->item(item.first, item.second))
+                ui->customDataTable->item(item.first, item.second)->setSelected(true);
         }
     } else {
         dataModel->selectedRobotID = -1;
@@ -857,73 +883,77 @@ void MainWindow::on_bluetoothConfigButton_clicked()
 
 void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
 {
-     qDebug()<<"doubleClicked";
-      QString  dataset =  ui->customDataTable->item(item->row(), 0)->text();
 
+      chartEntry =  ui->customDataTable->item(item->row(), 0)->text();
+      emit updateChart();
+
+
+
+
+
+}
+
+ void MainWindow::redrawChart()
+ {
 
      QMap<QString, int> entryList;
+     QMap<QString, QColor> colourList;
+
+     int colourCounter = 0;
+     QColor startColour(0,60,100);
 
      chart->removeAllSeries();
      QtCharts::QPieSeries *series = new QtCharts::QPieSeries();
-     //series->setLabelsVisible(true);
-
-
 
 
     //get data for chart
      for(int i = 0; i<dataModel->getRobotCount(); i++)
      {
          RobotData* robot = dataModel->getRobotByIndex(i);
+          QString value ;
 
-         QString value = robot->getStringValue(dataset);
+         if (robot->getValueType(chartEntry)!=ValueType::Unknown)
+             value = robot->getStringValue(chartEntry);
+         else
+             value = "empty";
 
          if (entryList.contains(value))
          {
             entryList[value] = entryList[value] + 1;
-
+            robot->colour = colourList[value];
          }
          else
          {
             entryList[value] = 1;
+            colourList[value]= startColour.lighter(100+(colourCounter%10)*40);
+            robot->colour= colourList[value];
+            colourCounter ++;
 
          }
-         qDebug()<<"robot: " <<i <<  " value: "<< value;
 
 
      }
      int counter = 0;
      //create chart from data
+     QFont font("Arial", 8);
      for(const auto& key : entryList.keys())
      {
-         series->append(key, entryList[key]);
-         //QtCharts::QPieSlice *slice = series->slices().at(counter );
-
+         QString label = QString("%1 %2").arg(entryList[key]).arg(key);
+         series->append(label, entryList[key]);
+         QtCharts::QPieSlice *slice = series->slices().at(counter );
+         slice->setLabelFont(font);
+         slice->setColor(colourList[key]);
          //slice->setLabelVisible();
 
-         qDebug()<<"data in dialog: " <<key;
+
          counter ++;
 
      }
 
-
+    series->setLabelsVisible(true);
      chart->addSeries(series);
 
 
-    /* QString  dataset =  ui->customDataTable->item(item->row(), 0)->text();
-    qDebug()<<dataset;
-    if (chartDialog != NULL) {
-        delete chartDialog;
-        chartDialog = NULL;
-        qDebug()<<"deleted chart Dialog";
-    }
 
-    chartDialog = new Chartdialog(dataModel);
+ }
 
-    if (chartDialog != NULL) {
-        QObject::connect(this, SIGNAL(chartDataSelected(QString )), chartDialog, SLOT(newDataSelected(const QString &)));
-        emit chartDataSelected(dataset);
-
-        chartDialog->show();
-
-    }*/
-}

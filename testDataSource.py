@@ -4,6 +4,8 @@ import json
 from random import randint
 
 class Robot:
+
+
     def __init__(self, id = 'robot_5'):
         self.id = id
         self.pose = { 'x': randint(20, 500)*0.002, 'y': randint(20, 400)*0.0025, 'orientation': 10 }
@@ -14,7 +16,7 @@ class Robot:
     def toJson(self):
         return json.dumps({
                     'id': self.id,
-                    'state': 'Wandering',
+                    'state': self.state,
                     'batteryLevel': self.batteryLevel,
                     'internalState': self.internalState,
             'someString' : 'Some new String',

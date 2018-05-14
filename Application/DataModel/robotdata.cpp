@@ -24,6 +24,8 @@ RobotData::RobotData(QString id) {
     this->posHistoryIndex = 0;
     this->posHistoryFrameCount = 0;
 
+    colour.setRgb(255,255,255);
+
     // Initialise odometry
     setPos(0.0f, 0.0f);
     setAngle(0);
