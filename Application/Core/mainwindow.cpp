@@ -109,17 +109,17 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->robotList->setEditTriggers(QListView::NoEditTriggers);
 
     // Set up the network thread
-    DataThread *dataHandler = new DataThread;
-    dataHandler->moveToThread(&networkThread);
-    connect(&networkThread, SIGNAL(finished()), dataHandler, SLOT(deleteLater()));
+    dataThread = new DataThread;
+    dataThread->start();
 
     // Connect signals and sockets for starting and stopping the networking
-    connect(this, SIGNAL(openUDPSocket(int)), dataHandler, SLOT(openUDPSocket(int)));    
+    connect(this, SIGNAL(openUDPSocket(int)), dataThread, SLOT(openUDPSocket(int)));
 
     // Connect signals and sockets for transferring the incoming data
-    connect(dataHandler, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
+    connect(dataThread, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
 
     //Set up the bluetoothcommunication
+    bluetoothThread.start();
     btConfig = new Bluetoothconfig();
     BluetoothDataThread *bluetoothHandler = new BluetoothDataThread(btConfig);
     bluetoothConfigDialog = NULL;
@@ -141,8 +141,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     connect(dataModel, SIGNAL(modelChanged(bool)), this, SLOT(dataModelUpdate(bool)));
-    networkThread.start();
-    bluetoothThread.start();
 
 
 
@@ -198,6 +196,7 @@ MainWindow::MainWindow(QWidget *parent) :
     qRegisterMetaType<cv::Mat>("cv::Mat&");
 
     connect(arucoTracker, SIGNAL(newRobotPosition(QString, Pose)), dataModel, SLOT(newRobotPosition(QString, Pose)));
+    connect(visualiser, SIGNAL(robotSelectedInVisualiser(QString)), this, SLOT(robotSelectedInVisualiser(QString)));
 
     cameraThread->start();
 
@@ -221,8 +220,8 @@ MainWindow::~MainWindow()
 
 
     // Stop the network thread
-    networkThread.quit();
-    networkThread.wait();
+    dataThread->quit();
+    dataThread->wait();
 
     // Stop the network thread
     bluetoothThread.quit();
@@ -513,6 +512,7 @@ void MainWindow::on_robotList_doubleClicked(const QModelIndex &)
  * the relevent model data and changes the selected item in the list.
  */
 void MainWindow::robotSelectedInVisualiser(QString id) {
+    std::cout<<"Robot selected in visualiser"<<std::endl;
     // Update selected ID
     dataModel->selectedRobotID = id;
 

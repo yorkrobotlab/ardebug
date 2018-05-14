@@ -14,6 +14,7 @@
 #include <QtCharts/QChartView>
 
 #include "Application/Tracking/aruco.h"
+#include "Application/Networking/Wifi/datathread.h"
 
 #ifdef CVB_CAMERA_PRESENT
 #include "Application/Tracking/cvbcamerathread.h"
@@ -28,10 +29,10 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    QThread networkThread;
     QThread bluetoothThread;
     Visualiser* visualiser;
     DataModel* dataModel;
+    DataThread* dataThread;
 
    // IRDataView* irDataView;
     Bluetoothconfig * btConfig;

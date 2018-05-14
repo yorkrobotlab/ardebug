@@ -52,6 +52,7 @@ Visualiser::Visualiser(DataModel *dataModelRef, ARCameraThread* cameraThread) {
 void Visualiser::refreshVisualisation()
 {
 //    repaint();
+
 }
 
 /* paintEvent
@@ -183,9 +184,12 @@ void Visualiser::resizeEvent(QResizeEvent*) {
  * Captures mouse presses when the mouse is within the visualiser bounds.
  */
 void Visualiser::mousePressEvent(QMouseEvent* event) {
+    double xOffset = 0.5*(this->width() - backgroundImage.width());
+    double yOffset = 0.5*(this->height() - backgroundImage.height());
+
     // Calculate x and y values as proportions of the image
-    click.x = (1.0 * event->x()) / this->size().width();
-    click.y = (1.0 * event->y()) / this->size().height();
+    click.x = (1.0 * event->x() - xOffset) / backgroundImage.width();
+    click.y = (1.0 * event->y() - yOffset) / backgroundImage.height();
 
     // Loop over the robots looking for any within a threshold of the click
     for (int i = 0; i < dataModelRef->getRobotCount(); i++) {
@@ -193,7 +197,7 @@ void Visualiser::mousePressEvent(QMouseEvent* event) {
 
         float dx = std::abs(robot->getPos().position.x - click.x);
         float dy = std::abs(robot->getPos().position.y - click.y);
-
+std::cout<<robot->getPos().position.x<<" "<<click.x<<" "<<dx<<std::endl;
         if (dx < 0.02 && dy < 0.02) {
             // Signal that a robot has been selected
             emit robotSelectedInVisualiser(robot->getID());

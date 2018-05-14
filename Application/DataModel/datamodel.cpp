@@ -38,6 +38,15 @@ DataModel::DataModel(QObject *parent) : QObject(parent)
     // Initialise the average position
     averageRobotPos.x = 0.0f;
     averageRobotPos.y = 0.0f;
+
+    newDataTimer.setInterval(33);
+    connect(&newDataTimer, SIGNAL(timeout()), this, SLOT(emitModelChangedSignal()));
+    newDataTimer.start();
+}
+
+void DataModel::emitModelChangedSignal()
+{
+    emit modelChanged(true);
 }
 
 /* Destructor
@@ -356,9 +365,6 @@ void DataModel::newData(const QString &dataString) {
         }
         }
     }
-
-    // Signal to the UI that new data is available
-    emit modelChanged(true);
 }
 
 void DataModel::newRobotPosition(QString id, Pose p)
@@ -367,7 +373,6 @@ void DataModel::newRobotPosition(QString id, Pose p)
     RobotData* robot = getRobotByID(id);
     robot->setPos(p.position.x, p.position.y);
     robot->setAngle(p.orientation);
-    emit modelChanged(true);
 }
 
 void DataModel::addRobotIfNotExist(QString id)

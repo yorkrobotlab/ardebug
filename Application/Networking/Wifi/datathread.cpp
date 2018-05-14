@@ -53,45 +53,26 @@ void DataThread::openUDPSocket(int port) {
 
     // Signal that the socket was opened successfully
     emit socketOpened(sockfd);
-
-    // Start the data read timer
-    readTimer = new QTimer(this);
-    connect(readTimer, SIGNAL(timeout()), this, SLOT(listenForPacket()));
-    readTimer->start(1);
 }
 
 /* listenForPacket
  * Listens for data on the UDP socket. Blocking.
  */
-void DataThread::listenForPacket(void) {
+void DataThread::run(void) {
     struct sockaddr_in si_other;
     int slen = sizeof(si_other), recv_len;
-    char buffer[256];
+    char buffer[1024];
 
-    // Pause the timer
-    readTimer->stop();
+    while(shouldRun)
+    {
+        // Receive a packet (blocking)
+        recv_len = recvfrom(sockfd, buffer, 255, 0, (struct sockaddr*)&si_other, (socklen_t *)&slen);
+        if (recv_len < 0) {
+            continue;
+        }
 
-    // Clear the buffer
-    bzero(buffer, 256);
-
-    // Receive a packet (blocking)
-    recv_len = recvfrom(sockfd, buffer, 255, 0, (struct sockaddr*)&si_other, (socklen_t *)&slen);
-    if (recv_len < 0) {
-        fprintf(stderr, "Error reading data\n");
-        return;
-    }
-
-    // Check if close packet received
-    if (strcmp(buffer, "close") == 0) {
-        close(sockfd);
-        delete readTimer;
-    } else {
         // Emit received data through signal
-        QString str;
-        str.sprintf("%s", buffer);
+        QString str{buffer};
         emit dataFromThread(str);
-
-        // Restart the timer
-        readTimer->start(1);
-    }
+   }
 }
