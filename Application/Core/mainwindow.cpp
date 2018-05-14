@@ -168,6 +168,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->customDataTable->setHorizontalHeaderLabels(QStringList("Key") << QString("Value") << QString{"Display In Visualiser"});
     ui->customDataTable->setColumnWidth(1, ui->customDataTab->width()*0.8);
     ui->customDataTable->horizontalHeader()->setStretchLastSection(true);
+    ui->customDataTable->setEditTriggers(QTableWidget::NoEditTriggers);
 
     //set up the chart view
     chart = new QtCharts::QChart();
@@ -901,15 +902,17 @@ void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
      for(int i = 0; i<dataModel->getRobotCount(); i++)
      {
          RobotData* robot = dataModel->getRobotByIndex(i);
+          QString value ;
 
-         QString value = robot->getStringValue(dataset);
+         if (robot->getValueType(dataset)!=ValueType::Unknown)
+             value = robot->getStringValue(dataset);
+         else
+             value = "empty";
 
          if (entryList.contains(value))
          {
             entryList[value] = entryList[value] + 1;
             robot->colour = colourList[value];
-
-
          }
          else
          {
@@ -962,3 +965,4 @@ void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
 
     }*/
 }
+
