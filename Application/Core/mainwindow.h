@@ -21,6 +21,7 @@
 #include "Application/Tracking/usbcamerathread.h"
 #endif
 
+#define NR_OF_COLOURS 10
 namespace Ui {
 class MainWindow;
 }
@@ -49,6 +50,9 @@ class MainWindow : public QMainWindow
 
     QtCharts::QChart *chart;
     QString chartEntry="";
+    ValueType chartType = ValueType::Unknown;
+
+    QColor colourmap[NR_OF_COLOURS];
 
     int sockfd;
 

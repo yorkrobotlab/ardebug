@@ -38,8 +38,11 @@
 
 #include <QtCharts/QChartView>
 #include <QtCharts/QPieSeries>
+#include <QtCharts/QBarSeries>
+#include <QtCharts/QBarSet>
 #include <QtCharts/QPieSlice>
 #include <QColor>
+
 
 
 /* Constructor.
@@ -180,6 +183,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QtCharts::QChartView *chartView = new QtCharts::QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
+    colourmap[0].setRgb(230,25,75);//red
+    colourmap[1].setRgb(60,180,75);//green
+    colourmap[2].setRgb(255,225,25);//yellow
+    colourmap[3].setRgb(0,130,200);//blue
+    colourmap[4].setRgb(245,130,48);//orange
+    colourmap[5].setRgb(140,30,180);//purple
+    colourmap[6].setRgb(70,240,240);//cyan
+    colourmap[7].setRgb(240,30,230);//magenta
+    colourmap[8].setRgb(170,110,40);//brown
+    colourmap[9].setRgb(0,0,128);//navy
+
 
 
     // Arrange the rows vertically
@@ -340,11 +354,11 @@ void MainWindow::updateCustomData()
         }
 
         int i;
-        qDebug()<<std::min(keys.size(), ui->customDataTable->rowCount());
+
         for(i = 0; i < std::min(keys.size(), ui->customDataTable->rowCount()); ++i)
         {
             auto& key = keys[i];
-            qDebug()<<key;
+
             if (ui->customDataTable->item(i, 0))
                 ui->customDataTable->item(i, 0)->setText(key);
             else
@@ -885,6 +899,11 @@ void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
 {
 
       chartEntry =  ui->customDataTable->item(item->row(), 0)->text();
+      RobotData* robot = dataModel->getRobotByID(dataModel->selectedRobotID);
+
+
+      chartType =robot->getValueType(chartEntry);
+
       emit updateChart();
 
 
@@ -900,58 +919,112 @@ void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
      QMap<QString, QColor> colourList;
 
      int colourCounter = 0;
-     QColor startColour(0,60,100);
+
 
      chart->removeAllSeries();
-     QtCharts::QPieSeries *series = new QtCharts::QPieSeries();
 
-
-    //get data for chart
-     for(int i = 0; i<dataModel->getRobotCount(); i++)
+     if (chartType==ValueType::String)
      {
-         RobotData* robot = dataModel->getRobotByIndex(i);
-          QString value ;
-
-         if (robot->getValueType(chartEntry)!=ValueType::Unknown)
-             value = robot->getStringValue(chartEntry);
-         else
-             value = "empty";
-
-         if (entryList.contains(value))
+        QtCharts::QPieSeries *series = new QtCharts::QPieSeries();
+        //get data for chart
+         for(int i = 0; i<dataModel->getRobotCount(); i++)
          {
-            entryList[value] = entryList[value] + 1;
-            robot->colour = colourList[value];
+             RobotData* robot = dataModel->getRobotByIndex(i);
+              QString value ;
+
+             if (robot->getValueType(chartEntry)==ValueType::String)
+                 value = robot->getStringValue(chartEntry);
+             else
+                 value = "empty";
+
+             if (entryList.contains(value))
+             {
+                entryList[value] = entryList[value] + 1;
+                robot->colour = colourList[value];
+             }
+             else
+             {
+                entryList[value] = 1;
+                colourList[value]= colourmap[colourCounter%NR_OF_COLOURS];
+                robot->colour= colourList[value];
+                colourCounter ++;
+
+             }
+
+
          }
-         else
+         int counter = 0;
+         //create chart from data
+         QFont font("Arial", 8);
+         for(const auto& key : entryList.keys())
          {
-            entryList[value] = 1;
-            colourList[value]= startColour.lighter(100+(colourCounter%10)*40);
-            robot->colour= colourList[value];
-            colourCounter ++;
+             QString label = QString("%1 %2").arg(entryList[key]).arg(key);
+             series->append(label, entryList[key]);
+             QtCharts::QPieSlice *slice = series->slices().at(counter );
+             slice->setLabelFont(font);
+             slice->setColor(colourList[key]);
+             //slice->setLabelVisible();
+
+
+             counter ++;
 
          }
 
+        series->setLabelsVisible(true);
+         chart->addSeries(series);
+    }
+    else {
+         if (chartType==ValueType::Array)
+         {
 
-     }
-     int counter = 0;
-     //create chart from data
-     QFont font("Arial", 8);
-     for(const auto& key : entryList.keys())
-     {
-         QString label = QString("%1 %2").arg(entryList[key]).arg(key);
-         series->append(label, entryList[key]);
-         QtCharts::QPieSlice *slice = series->slices().at(counter );
-         slice->setLabelFont(font);
-         slice->setColor(colourList[key]);
-         //slice->setLabelVisible();
+              for(int i = 0; i<dataModel->getRobotCount(); i++)
+              {
+                  dataModel->getRobotByIndex(i)->colour= QColor(255,255,255);
 
 
-         counter ++;
+              }
 
-     }
 
-    series->setLabelsVisible(true);
-     chart->addSeries(series);
+            QtCharts::QBarSeries *series = new QtCharts::QBarSeries();
+            QtCharts::QBarSet *set = new QtCharts::QBarSet(chartEntry) ;
+
+            series->append(set);
+
+            RobotData* robot = dataModel->getRobotByID(dataModel->selectedRobotID);
+            if (robot->getValueType(chartEntry)==ValueType::Array)
+            {
+
+                auto arr = robot->getArrayValue(chartEntry);
+
+                for(int i = 0; i < arr.size(); ++i)
+                {
+
+                    auto item = arr[i];
+                    if(item.type == Double) *set<<item.doubleValue;
+
+                }
+                series->setLabelsVisible(true);
+                chart->addSeries(series);
+                chart->createDefaultAxes();
+                chart->axisY()->setMax(200);
+            }
+
+         }
+
+         else
+            {
+             for(int i = 0; i<dataModel->getRobotCount(); i++)
+             {
+                 dataModel->getRobotByIndex(i)->colour= QColor(255,255,255);
+
+
+             }
+         }
+
+
+
+    }
+
 
 
 
