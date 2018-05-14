@@ -52,6 +52,12 @@ DataModel::~DataModel(void) {
     robotDataList.clear();
 }
 
+
+void DataModel::sort(std::function<int(RobotData*,RobotData*)> sortFunc)
+{
+    std::sort(robotDataList.begin(), robotDataList.end(), sortFunc);
+}
+
 /* getRobotByID
  * Return a pointer to the data of the robot with the given ID. Returns null
  * if ID cannot be found.

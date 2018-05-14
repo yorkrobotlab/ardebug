@@ -2,6 +2,7 @@
 #define DATAMODEL_H
 
 #include <vector>
+#include <functional>
 
 #include <QObject>
 #include <QString>
@@ -40,6 +41,8 @@ public:
 
     int getRobotCount(void);
     RobotData* setSelectedRobot(int idx);
+
+    void sort(std::function<int(RobotData*,RobotData*)> sortFunc);
 
 private:
     void parsePositionPacket(RobotData* robot, QString xString, QString yString, QString aString);

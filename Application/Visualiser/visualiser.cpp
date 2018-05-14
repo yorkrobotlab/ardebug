@@ -83,75 +83,92 @@ void Visualiser::paintEvent(QPaintEvent*) {
 
     painter.setPen(pen);
 
+    const auto& selectedId = dataModelRef->selectedRobotID;
+
+    std::vector<RobotData*> selectedRobots;
+    std::vector<RobotData*> unselectedRobots;
+
     for (int i = 0; i < dataModelRef->getRobotCount(); i++) {
         // Get data
         RobotData* robot = dataModelRef->getRobotByIndex(i);
-        bool selected = dataModelRef->selectedRobotID == robot->getID();
 
-        // @EXTEND: Add other data types
-        textVis->resetText();
-        textVis->addLine("ID:   " + robot->getID());
-        for(auto& key : robot->getKeys())
-        {
-            if(!robot->valueShouldBeDisplayed(key))
-                continue;
-
-            std::stringstream ss;
-            ss<<key.toStdString();
-            ss<<": ";
-
-            auto type = robot->getValueType(key);
-
-            if(type == String) ss<<robot->getStringValue(key).toStdString();
-
-            if(type == Double) ss<<robot->getDoubleValue(key);
-
-            if(type == Bool) ss<<(robot->getBoolValue(key) ? "True" : "False");
-
-            if(type == Array)
-            {
-                auto arr = robot->getArrayValue(key);
-                ss<<"[ ";
-                for(int i = 0; i < arr.size(); ++i)
-                {
-                    if(i > 0) ss<<"   ";
-                    auto item = arr[i];
-                    if(item.type == String) ss<<'"'<<item.stringValue.toStdString()<<'"';
-                    else if(item.type == Double) ss<<item.doubleValue;
-                    else if(item.type == Bool) ss<<(item.boolValue ? "True" : "False");
-                    else ss<<"Unsupported";
-                }
-                ss<<" ]";
-            }
-
-            if(type == Object)
-            {
-                auto obj = robot->getObjectValue(key);
-                ss<<"{ ";
-                for(auto& key : obj.keys())
-                {
-                    ss<<key.toStdString()<<": ";
-                    auto& item = obj[key];
-                    if(item.type == String) ss<<'"'<<item.stringValue.toStdString()<<'"';
-                    else if(item.type == Double) ss<<item.doubleValue;
-                    else if(item.type == Bool) ss<<(item.boolValue ? "True" : "False");
-                    else ss<<"Unsupported";
-                    ss<<"   ";
-                }
-                ss<<" }";
-            }
-
-            textVis->addLine(QString::fromStdString(ss.str()));
-        }
-
-        // Render the visualisations
-        for (size_t j = 0; j < this->config.elements.size(); j++) {
-            VisElement* element = this->config.elements.at(j);
-            element->render(this, &painter, robot, selected, QRectF{xOffset, yOffset, width, height});
-        }
+        if(robot->getID() == selectedId)
+            selectedRobots.push_back(robot);
+        else
+            unselectedRobots.push_back(robot);
     }
 
+    for(auto robot : unselectedRobots)
+        renderSingleRobot(robot, false, painter, xOffset, yOffset, width, height);
+
+    for(auto robot : selectedRobots)
+        renderSingleRobot(robot, true, painter, xOffset, yOffset, width, height);
+
     painter.end();
+}
+
+void Visualiser::renderSingleRobot(RobotData* robot, bool selected, QPainter& painter, double xOffset, double yOffset, double width, double height){
+    // @EXTEND: Add other data types
+    textVis->resetText();
+    textVis->addLine("ID:   " + robot->getID());
+    for(auto& key : robot->getKeys())
+    {
+        if(!robot->valueShouldBeDisplayed(key))
+            continue;
+
+        std::stringstream ss;
+        ss<<key.toStdString();
+        ss<<": ";
+
+        auto type = robot->getValueType(key);
+
+        if(type == String) ss<<robot->getStringValue(key).toStdString();
+
+        if(type == Double) ss<<robot->getDoubleValue(key);
+
+        if(type == Bool) ss<<(robot->getBoolValue(key) ? "True" : "False");
+
+        if(type == Array)
+        {
+            auto arr = robot->getArrayValue(key);
+            ss<<"[ ";
+            for(int i = 0; i < arr.size(); ++i)
+            {
+                if(i > 0) ss<<"   ";
+                auto item = arr[i];
+                if(item.type == String) ss<<'"'<<item.stringValue.toStdString()<<'"';
+                else if(item.type == Double) ss<<item.doubleValue;
+                else if(item.type == Bool) ss<<(item.boolValue ? "True" : "False");
+                else ss<<"Unsupported";
+            }
+            ss<<" ]";
+        }
+
+        if(type == Object)
+        {
+            auto obj = robot->getObjectValue(key);
+            ss<<"{ ";
+            for(auto& key : obj.keys())
+            {
+                ss<<key.toStdString()<<": ";
+                auto& item = obj[key];
+                if(item.type == String) ss<<'"'<<item.stringValue.toStdString()<<'"';
+                else if(item.type == Double) ss<<item.doubleValue;
+                else if(item.type == Bool) ss<<(item.boolValue ? "True" : "False");
+                else ss<<"Unsupported";
+                ss<<"   ";
+            }
+            ss<<" }";
+        }
+
+        textVis->addLine(QString::fromStdString(ss.str()));
+    }
+
+    // Render the visualisations
+    for (size_t j = 0; j < this->config.elements.size(); j++) {
+        VisElement* element = this->config.elements.at(j);
+        element->render(this, &painter, robot, selected, QRectF{xOffset, yOffset, width, height});
+    }
 }
 
 /* resizeEvent

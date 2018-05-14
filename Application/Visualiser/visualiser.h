@@ -43,6 +43,7 @@ protected:
 
     void mousePressEvent(QMouseEvent*);
 
+    void renderSingleRobot(RobotData* robot, bool selected, QPainter& painter, double xOffset, double yOffset, double width, double height);
     DataModel* dataModelRef;
 
     Vector2D click;
