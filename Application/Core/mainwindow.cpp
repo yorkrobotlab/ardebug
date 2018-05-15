@@ -9,6 +9,7 @@
 #include "ui_mainwindow.h"
 #include "util.h"
 #include "settings.h"
+#include "defer.h"
 #include "log.h"
 #include "../Networking/Wifi/datathread.h"
 #include "../Networking/Bluetooth/bluetoothdatathread.h"
@@ -160,7 +161,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(bluetoothHandler, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
 
 
-    connect(dataModel, SIGNAL(modelChanged(bool, QString, std::vector<QString>)), this, SLOT(dataModelUpdate(bool)));
+    connect(dataModel, SIGNAL(modelChanged(bool, QString, std::vector<QString>)), this, SLOT(dataModelUpdate(bool,QString,std::vector<QString>)));
 
 
 
@@ -509,7 +510,7 @@ void MainWindow::robotSelectedInVisualiser(QString id) {
  * Called when a robot is deleted to update the UI.
  */
 void MainWindow::robotDeleted(void) {
-    dataModelUpdate(true);
+    dataModelUpdate(true, dataModel->selectedRobotID, {});
 }
 
 /* dataModelUpdate
@@ -519,7 +520,7 @@ void MainWindow::robotDeleted(void) {
  * params: listChanged - Indicates whether the contents of the robot list have
  *         potentially changed.
  */
-void MainWindow::dataModelUpdate(bool listChanged)
+void MainWindow::dataModelUpdate(bool listChanged, QString robotId, std::vector<QString> changedData)
 {
     // Update the robot list
     if (listChanged) {
@@ -534,6 +535,9 @@ void MainWindow::dataModelUpdate(bool listChanged)
             ui->robotList->setCurrentIndex(qidx);
         }
     }
+
+    if (robotId!=dataModel->selectedRobotID)
+        return;
 
     // Update the necessary data tabs
     updateCustomData();
@@ -656,13 +660,18 @@ void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
 
 void MainWindow::updateChart(bool listChanged, QString robotId, std::vector<QString> changedData)
 {
+    disconnect(dataModel, SIGNAL(modelChanged(bool, QString, std::vector<QString>)), this, SLOT(updateChart(bool, QString, std::vector<QString>)));
+    Defer({
+        connect(dataModel, SIGNAL(modelChanged(bool, QString, std::vector<QString>)), this, SLOT(updateChart(bool, QString, std::vector<QString>)));
+          });
+
     if (robotId!=dataModel->selectedRobotID)
         return;
 
-    if(std::find(changedData.begin(), changedData.end(),chartEntry ) !=changedData.end() )
-    {
-        redrawChart();
-    }
+    if(std::find(changedData.begin(), changedData.end(),chartEntry ) == changedData.end())
+        return;
+
+    redrawChart();
 }
 
 
@@ -791,7 +800,7 @@ void MainWindow::redrawChart()
             if(chart->series().isEmpty())
             {
                 QtCharts::QLineSeries *series = new QtCharts::QLineSeries();
-
+                series->setUseOpenGL(true);
 
                 if (robot->getValueType(chartEntry)==ValueType::Double)
                 {
@@ -807,7 +816,6 @@ void MainWindow::redrawChart()
                 {
                     double value = robot->getDoubleValue(chartEntry);
                     auto lineSeries = (QtCharts::QLineSeries*)chart->series().at(0);
-                    lineSeries->setUseOpenGL(true);
 
                     const int maxValueCount = 150;
                     int setSize = lineSeries->count();
@@ -818,10 +826,7 @@ void MainWindow::redrawChart()
                         setSize = lineSeries->count();
                     }
 
-                    if(setSize > 0)
-                        lineSeries->append(lineSeries->at(setSize-1).x()+1, value);
-                    else
-                        lineSeries->append(0, value);
+                    lineSeries->append(lineSeries->at(setSize-1).x()+1, value);
 
                     ChartMaxX = lineSeries->at(setSize).x();
                     if(ChartMaxX > maxValueCount)

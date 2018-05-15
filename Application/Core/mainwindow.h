@@ -76,7 +76,7 @@ signals:
 public slots:
     void robotDeleted(void);
 
-    void dataModelUpdate(bool listChanged);
+    void dataModelUpdate(bool listChanged, QString robotId, std::vector<QString> changedData);
 
     void robotListSelectionChanged(const QItemSelection &selection);
 
