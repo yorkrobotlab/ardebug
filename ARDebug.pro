@@ -65,7 +65,9 @@ HEADERS  += Application/Core/mainwindow.h \
     Application/Visualiser/vistext.h \
     Application/UI/bluetoothconfigdialog.h \
     Application/Tracking/cvbcamerathread.h \
-    Application/Tracking/camerathread.h
+    Application/Tracking/camerathread.h \
+    Application/Core/defer.h \
+    Application/Core/logging.h
 
 
 

@@ -20,6 +20,8 @@
 
 #include <iostream>
 
+#include "logging.h"
+
 #include "QString"
 
 DataThread::DataThread(QObject *parent)
@@ -76,5 +78,5 @@ void DataThread::run(void) {
         }
    }
 
-    if(socket) socket->close();
+    socket->deleteLater();
 }

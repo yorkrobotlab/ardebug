@@ -11,6 +11,7 @@
 #include "settings.h"
 #include "defer.h"
 #include "log.h"
+#include "logging.h"
 #include "../Networking/Wifi/datathread.h"
 #include "../Networking/Bluetooth/bluetoothdatathread.h"
 
@@ -549,6 +550,9 @@ void MainWindow::on_networkListenButton_clicked()
 {
     // If not currently listening
     if (!dataThread) {
+
+        DEBUG_LOG("Starting network thread");
+
         // Parse port number
         bool ok = false;
         int port = ui->networkPortBox->text().toInt(&ok);
@@ -556,6 +560,7 @@ void MainWindow::on_networkListenButton_clicked()
         if (ok)
         {
             dataThread = new DataThread{this};
+            dataThread->start();
 
             // Connect signals and sockets for starting and stopping the networking
             connect(this, SIGNAL(openUDPSocket(int)), dataThread, SLOT(openUDPSocket(int)));
@@ -563,7 +568,6 @@ void MainWindow::on_networkListenButton_clicked()
             // Connect signals and sockets for transferring the incoming data
             connect(dataThread, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
 
-            dataThread->start();
             emit openUDPSocket(port);
 
             ui->networkListenButton->setText("Stop Listening");
@@ -572,18 +576,32 @@ void MainWindow::on_networkListenButton_clicked()
             Log::instance()->logMessage(QString("Listening for robot data on port ") + QString::number(port) + QString("...\n"), true);
         }
     } else {
+        DEBUG_LOG("Disconnecting signals");
+
         disconnect(this, SIGNAL(openUDPSocket(int)), dataThread, SLOT(openUDPSocket(int)));
         disconnect(dataThread, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
 
+        DEBUG_LOG("Quitting thread");
+
         dataThread->quit();
+
+        DEBUG_LOG("Waiting for thread");
+
         dataThread->wait();
+
+        DEBUG_LOG("Deleting thread and clearing pointer");
         delete dataThread;
         dataThread = nullptr;
 
+        DEBUG_LOG("Updating GUI: %p %p", ui->networkListenButton, ui->networkPortBox);
         ui->networkListenButton->setText("Start Listening");
         ui->networkPortBox->setDisabled(false);
 
+        DEBUG_LOG("GUI updated");
+
         Log::instance()->logMessage("Closing data socket.\n", true);
+
+        DEBUG_LOG("Log message printed");
     }
 }
 
