@@ -15,7 +15,6 @@
 
 // Allocate and initialise the singleton pointers
 Settings *Settings::s_instance = 0;
-Log *Log::s_instance = 0;
 
 /* main
  * Entry point for the whole application.

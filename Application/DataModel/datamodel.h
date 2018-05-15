@@ -11,7 +11,6 @@
 
 #include <QMutex>
 #include <QMutexLocker>
-#include <QTimer>
 
 #include "robotdata.h"
 
@@ -29,7 +28,6 @@ class DataModel : public QObject
     Q_OBJECT
     QStringListModel* robotListModel;
     std::vector<RobotData*> robotDataList;
-    QTimer newDataTimer{this};
 
 public:
     QString selectedRobotID;
@@ -56,13 +54,12 @@ private:
     void addRobotIfNotExist(QString id);
 
 signals:
-    void modelChanged(bool listChanged);
+    void modelChanged(bool listChanged, QString robotId, std::vector<QString> changedData);
 
 public slots:
     void newData(const QString &);
     void deleteRobot(QString ID);
     void newRobotPosition(QString, Pose);
-    void emitModelChangedSignal();
 };
 
 #endif // DATAMODEL_H

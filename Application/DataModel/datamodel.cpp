@@ -38,15 +38,6 @@ DataModel::DataModel(QObject *parent) : QObject(parent)
     // Initialise the average position
     averageRobotPos.x = 0.0f;
     averageRobotPos.y = 0.0f;
-
-    newDataTimer.setInterval(33);
-    connect(&newDataTimer, SIGNAL(timeout()), this, SLOT(emitModelChangedSignal()));
-    newDataTimer.start();
-}
-
-void DataModel::emitModelChangedSignal()
-{
-    emit modelChanged(true);
 }
 
 /* Destructor
@@ -313,6 +304,7 @@ void DataModel::newData(const QString &dataString) {
     message.remove("id");
     addRobotIfNotExist(robotId);
     RobotData* robot = getRobotByID(robotId);
+    std::vector<QString> receivedKeys;
 
     Log::instance()->logMessage("Message from robot " + robotId, true);
 
@@ -327,11 +319,13 @@ void DataModel::newData(const QString &dataString) {
         robot->setAngle(p.orientation);
 
         message.remove("pose");
+        receivedKeys.push_back("pose");
     }
 
     for(QString key : message.keys())
     {
         auto val = message[key];
+        receivedKeys.push_back(key);
         switch(typeOfJsonValue(val))
         {
         case Bool:
@@ -368,6 +362,9 @@ void DataModel::newData(const QString &dataString) {
         }
         }
     }
+
+    // Signal to the UI that new data is available
+    emit modelChanged(true, robotId, receivedKeys);
 }
 
 void DataModel::newRobotPosition(QString id, Pose p)
@@ -376,6 +373,7 @@ void DataModel::newRobotPosition(QString id, Pose p)
     RobotData* robot = getRobotByID(id);
     robot->setPos(p.position.x, p.position.y);
     robot->setAngle(p.orientation);
+    emit modelChanged(true, id, {"pose"});
 }
 
 void DataModel::addRobotIfNotExist(QString id)

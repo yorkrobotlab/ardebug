@@ -15,7 +15,6 @@
  */
 BluetoothConfigDialog::BluetoothConfigDialog(Bluetoothconfig* btConfig)
 {
-    qDebug()<<"dialog constructor";
     this->setModal(true);
     this->setGeometry(200, 200, 600, 400);
     this->setWindowTitle("Bluetooth configuration");
@@ -188,11 +187,8 @@ void BluetoothConfigDialog::deleteEntry()
  */
 void BluetoothConfigDialog::accept()
 {
-    qDebug()<<"accepted";
     btConfig->setDeviceList(*deviceList);
     QDialog::accept();
-
-
 }
 
 /* reject

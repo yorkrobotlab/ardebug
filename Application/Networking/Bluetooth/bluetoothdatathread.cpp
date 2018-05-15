@@ -40,13 +40,12 @@ BluetoothDataThread::BluetoothDataThread(Bluetoothconfig * btConfig){
     for (size_t i = 0; i < activeDeviceList.size(); i++) {
 
         //update sockets somehow
-        openSocket(QBluetoothAddress(activeDeviceList[i]->getBTAddress()));
-        //qDebug() << "open socket "<<activeDeviceList[i]->getBTAddress();
+        openSocket(QBluetoothAddress(activeDeviceList[i]->getBTAddress()));       
         delete activeDeviceList[i];
 
     }
     activeDeviceList.clear();
-     qDebug() << "btDatathread constructed";
+
 }
 
 /*  stop
@@ -54,14 +53,14 @@ BluetoothDataThread::BluetoothDataThread(Bluetoothconfig * btConfig){
  */
 void BluetoothDataThread::stop(){
 
-    qDebug() << "Delete sockets";
+
     for (int i = 0; i< NUMBER_OF_BT_SOCKET; i++)
     {
         if(btSocket[i] != 0)
         {
             delete btSocket[i];
             btSocket[i] = 0;
-            qDebug() << "socket " <<i <<" deleted";
+
         }
     }
 }
@@ -74,7 +73,7 @@ void BluetoothDataThread::readSocket(int index)
 {
 
     while (btSocket[index]->canReadLine()) {
-        //qDebug() << "readline from socket";
+
         QByteArray line = btSocket[index]->readLine();
         emit dataFromThread(QString::fromUtf8(line.constData(), line.length()));
     }
@@ -94,14 +93,10 @@ int BluetoothDataThread::openSocket(QBluetoothAddress addr)
             connect(btSocket[i], SIGNAL(readyRead_indexed(int)), this, SLOT(readSocket(int)));
             connect(btSocket[i], SIGNAL(socketConnected(int)), this, SLOT(SocketConnected(int)));
             connect(btSocket[i], SIGNAL(socketDisconnected(int)), this, SLOT(SocketDisconnected(int)));
-            //qDebug() << "opened dangerous socket";
-            //connect(btSocket[i], SIGNAL(error(QBluetoothSocket::SocketError)), this, SLOT(SocketError(QBluetoothSocket::SocketError)));
+
             return 1;
         }
-        else
-        {
-            //qDebug() << "socket already in use";
-        }
+
     }
     return 0;
 
@@ -116,9 +111,6 @@ void BluetoothDataThread::changeSocket(int index)
     if (btSocket[index] != 0)
     {
         btSocket[index]->changeState();
-
-        qDebug() << "socket "<< index<< " connected";
-
     }
 }
 
@@ -203,7 +195,6 @@ void BluetoothDataThread::resetAllSockets()
         {
             delete btSocket[i];
             btSocket[i] = 0;
-            qDebug() << "socket " <<i <<" deleted";
         }
     }
 

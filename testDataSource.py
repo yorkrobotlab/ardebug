@@ -15,7 +15,7 @@ class Robot:
                     'id': self.id,
                     'state': self.state,
                     'ir': self.ir,
-                    'battery_voltage': "%.2f" % self.battery_voltage,
+                    'battery_voltage': self.battery_voltage,
                })
 
 robots = [Robot('robot_%d' % (i,)) for i in range(8)]
@@ -47,4 +47,4 @@ while True:
             s.connect((hostName, hostPort))
             s.send(r.toJson())
 
-    sleep(0.1)
+    sleep(0.5)

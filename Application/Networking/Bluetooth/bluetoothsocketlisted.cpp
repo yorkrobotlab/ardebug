@@ -16,7 +16,6 @@ BluetoothSocketListed::BluetoothSocketListed(QBluetoothAddress addr, int index, 
    this->index = index;
    socket = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
    this->addr = addr;
-   qDebug() << "new socket" <<this->addr;
 }
 
 /* socketReadyRead
@@ -94,7 +93,6 @@ bool BluetoothSocketListed::canReadLine()
 void BluetoothSocketListed::internalSocketConnector()
 {
     socket->connectToService(addr,0x0001,QIODevice::ReadWrite);
-    qDebug() << "socket connected";
 }
 
 /* internalSocketConnector
@@ -103,7 +101,6 @@ void BluetoothSocketListed::internalSocketConnector()
 void BluetoothSocketListed::internalSocketDisconnector()
 {
     socket->disconnectFromService();
-    qDebug() << "socket disconnected";
 }
 
 
