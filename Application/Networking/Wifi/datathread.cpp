@@ -53,6 +53,8 @@ void DataThread::openUDPSocket(int port) {
  */
 void DataThread::run(void) {
     while(!socket && shouldRun) usleep(10);
+    if(!socket) return; // We have broken out of the above loop without a valid socket so we should end here
+
     while(socket->state() != QAbstractSocket::BoundState && shouldRun) usleep(10);
 
     std::cout<<"Listening on data thread"<<std::endl;
