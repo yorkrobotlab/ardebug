@@ -30,32 +30,30 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     QThread bluetoothThread;
-    Visualiser* visualiser;
-    DataModel* dataModel;
-    DataThread* dataThread;
+    Visualiser* visualiser = nullptr;
+    DataModel* dataModel = nullptr;
+    DataThread* dataThread = nullptr;
 
    // IRDataView* irDataView;
-    Bluetoothconfig * btConfig;
+    Bluetoothconfig * btConfig = nullptr;
 
 
     std::map<int, QString> arucoNameMapping;
 
-    ARCameraThread* cameraThread;
+    ARCameraThread* cameraThread = nullptr;
 
-    ArUco* arucoTracker;
+    ArUco* arucoTracker = nullptr;
 
-    QDialog* addIDMappingDialog;
-    QDialog* bluetoothConfigDialog;
-    QDialog* chartDialog;
+    QDialog* addIDMappingDialog = nullptr;
+    QDialog* bluetoothConfigDialog = nullptr;
+    QDialog* chartDialog = nullptr;
     bool chartReset = false;
 
-    QtCharts::QChart *chart;
+    QtCharts::QChart* chart = nullptr;
     QString chartEntry="";
     ValueType chartType = ValueType::Unknown;
 
     QColor colourmap[NR_OF_COLOURS];
-
-    int sockfd;
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -82,8 +80,6 @@ public slots:
 
     void robotSelectedInVisualiser(QString id);
 
-    void socketOpened(const int &sockfd) { this->sockfd = sockfd; }
-
     void resettingChart();
 
     void updateChart(bool listChanged, QString robotId, std::vector<QString> changedData);
@@ -108,7 +104,7 @@ private slots:
     void on_customDataTable_itemDoubleClicked(QTableWidgetItem *item);
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow* ui = nullptr;
 
     void setVideo(bool enabled);
     void updateCustomData();

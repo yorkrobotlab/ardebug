@@ -129,16 +129,6 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(robotListSelectionChanged(QItemSelection)));
     ui->robotList->setEditTriggers(QListView::NoEditTriggers);
 
-    // Set up the network thread
-    dataThread = new DataThread{this};
-    dataThread->start();
-
-    // Connect signals and sockets for starting and stopping the networking
-    connect(this, SIGNAL(openUDPSocket(int)), dataThread, SLOT(openUDPSocket(int)));
-
-    // Connect signals and sockets for transferring the incoming data
-    connect(dataThread, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
-
     //Set up the bluetoothcommunication
     bluetoothThread.start();
     btConfig = new Bluetoothconfig();
@@ -247,8 +237,11 @@ MainWindow::~MainWindow()
 
 
     // Stop the network thread
-    dataThread->quit();
-    dataThread->wait();
+    if(dataThread)
+    {
+        dataThread->quit();
+        dataThread->wait();
+    }
 
     // Stop the network thread
     bluetoothThread.quit();
@@ -554,37 +547,43 @@ void MainWindow::dataModelUpdate(bool listChanged, QString robotId, std::vector<
  */
 void MainWindow::on_networkListenButton_clicked()
 {
-    // Statics to monitor listening state and port
-    static bool listening = false;
-    static int openPort = -1;
-
     // If not currently listening
-    if (!listening) {
+    if (!dataThread) {
         // Parse port number
         bool ok = false;
         int port = ui->networkPortBox->text().toInt(&ok);
 
-        if (ok) {
-            // Start listening
-            listening = true;
-            openUDPSocket(port);
-            openPort = port;
+        if (ok)
+        {
+            dataThread = new DataThread{this};
+
+            // Connect signals and sockets for starting and stopping the networking
+            connect(this, SIGNAL(openUDPSocket(int)), dataThread, SLOT(openUDPSocket(int)));
+
+            // Connect signals and sockets for transferring the incoming data
+            connect(dataThread, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
+
+            dataThread->start();
+            emit openUDPSocket(port);
+
             ui->networkListenButton->setText("Stop Listening");
             ui->networkPortBox->setDisabled(true);
 
             Log::instance()->logMessage(QString("Listening for robot data on port ") + QString::number(port) + QString("...\n"), true);
         }
     } else {
-        if (openPort >= 0) {
-            // Stop listening
-            listening = false;
-            sendClosePacket(openPort);
-            openPort = -1;
-            ui->networkListenButton->setText("Start Listening");
-            ui->networkPortBox->setDisabled(false);
+        disconnect(this, SIGNAL(openUDPSocket(int)), dataThread, SLOT(openUDPSocket(int)));
+        disconnect(dataThread, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
 
-            Log::instance()->logMessage("Closing data socket.\n", true);
-        }
+        dataThread->quit();
+        dataThread->wait();
+        delete dataThread;
+        dataThread = nullptr;
+
+        ui->networkListenButton->setText("Start Listening");
+        ui->networkPortBox->setDisabled(false);
+
+        Log::instance()->logMessage("Closing data socket.\n", true);
     }
 }
 

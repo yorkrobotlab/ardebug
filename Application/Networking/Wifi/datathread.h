@@ -11,10 +11,11 @@ class DataThread : public QThread
     QUdpSocket* socket = nullptr;
     volatile bool shouldRun = true;
 
-    ~DataThread();
 
 public:
     DataThread(QObject* parent = nullptr);
+    ~DataThread();
+
     virtual void quit() { this->blockSignals(true); shouldRun = false; }
     virtual void run() override;
 

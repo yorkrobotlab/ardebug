@@ -61,7 +61,9 @@ void DataThread::run(void) {
 
     while(shouldRun && socket->state() == QAbstractSocket::BoundState)
     {
-        while(!socket->hasPendingDatagrams()) usleep(1);
+        while(!socket->hasPendingDatagrams() && shouldRun) usleep(1);
+        if(!shouldRun) break; // We should stop running here
+
         int maxSize = socket->pendingDatagramSize()+20;
         char buffer[maxSize];
 
@@ -73,4 +75,6 @@ void DataThread::run(void) {
             emit dataFromThread(str);
         }
    }
+
+    if(socket) socket->close();
 }
