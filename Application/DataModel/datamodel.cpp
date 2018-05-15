@@ -379,7 +379,10 @@ void DataModel::addRobotIfNotExist(QString id)
 {
     RobotData* r = getRobotByID(id);
     if(r == nullptr)
+    {
         robotDataList.push_back(new RobotData{id});
+        std::sort(robotDataList.begin(), robotDataList.end());
+    }
 }
 
 /* parsePositionPacket
