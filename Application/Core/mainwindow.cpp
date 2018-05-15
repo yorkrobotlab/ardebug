@@ -19,14 +19,13 @@
 
 #include "../DataModel/datamodel.h"
 #include "../DataModel/robotdata.h"
-#include "../UI/addidmappingdialog.h"
-#include "../UI/robotinfodialog.h"
 #include "../UI/bluetoothconfigdialog.h"
 
 #include <sys/socket.h>
 
 #include <QLayout>
 #include <QStandardItemModel>
+#include <QCheckBox>
 
 #include <QJsonDocument>
 #include <QJsonArray>

@@ -16,19 +16,14 @@
  * Initialise all setttings
  */
 VisText::VisText(void) {
-    setType(VisType::ID);
     setEnabled(true);
 //    setSelectedOnly(false);
-    settingsDialog = NULL;
 }
 
 /* Destructor
  * Release all memory
  */
 VisText::~VisText() {
-    if (settingsDialog != NULL) {
-        delete settingsDialog;
-    }
 }
 
 /* render
@@ -51,18 +46,6 @@ void VisText::render(QWidget* , QPainter* painter, RobotData *robot, bool select
     painter->setFont(font);
     painter->setPen(pen);
     painter->drawText(QRectF{x, y, std::numeric_limits<float>::max(), std::numeric_limits<float>::max()}, Qt::TextWordWrap, text);
-}
-
-/* getSettingsDialog
- * Return a pointer to the settings dialog for this visualisation.
- */
-QDialog* VisText::getSettingsDialog(void) {
-    if (settingsDialog != NULL) {
-        delete settingsDialog;
-    }
-
-    settingsDialog = new IDSettingsDialog(this);
-    return settingsDialog;
 }
 
 void VisText::setText(QString newText)

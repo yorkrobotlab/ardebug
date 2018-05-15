@@ -38,13 +38,6 @@ SOURCES += Application/Core/main.cpp\
     Application/Visualiser/visualiser.cpp \
     Application/Visualiser/visconfig.cpp \
     Application/Visualiser/visposition.cpp \
-    Application/Visualiser/visname.cpp \
-    Application/Visualiser/vispath.cpp \
-    Application/UI/pathsettingsdialog.cpp \
-    Application/UI/idsettingsdialog.cpp \
-    Application/UI/namesettingsdialog.cpp \
-    Application/UI/addidmappingdialog.cpp \
-    Application/UI/robotinfodialog.cpp \
     Application/Tracking/aruco.cpp \
     Application/Tracking/usbcamerathread.cpp \
     Application/Visualiser/vistext.cpp \
@@ -67,13 +60,6 @@ HEADERS  += Application/Core/mainwindow.h \
     Application/Visualiser/visconfig.h \
     Application/Visualiser/viselement.h \
     Application/Visualiser/visposition.h \
-    Application/Visualiser/visname.h \
-    Application/Visualiser/vispath.h \
-    Application/UI/pathsettingsdialog.h \
-    Application/UI/idsettingsdialog.h \
-    Application/UI/namesettingsdialog.h \
-    Application/UI/addidmappingdialog.h \
-    Application/UI/robotinfodialog.h \
     Application/Tracking/aruco.h \
     Application/Tracking/usbcamerathread.h \
     Application/Visualiser/vistext.h \
