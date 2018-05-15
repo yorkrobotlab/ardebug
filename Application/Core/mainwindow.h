@@ -86,8 +86,6 @@ public slots:
     void redrawChart(void);
 
 private slots:
-    void on_actionExit_triggered();
-
     void on_networkListenButton_clicked();
 
     void on_networkPortBox_textChanged(const QString &arg1);

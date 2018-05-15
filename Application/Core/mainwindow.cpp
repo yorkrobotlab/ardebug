@@ -51,7 +51,27 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    std::ifstream robotConfigFile{"./RobotConfig.json"};
+    const auto robotConfigFilePath = "./RobotConfig.json";
+    std::ifstream robotConfigFile{robotConfigFilePath};
+
+    if(!robotConfigFile)
+    {
+        std::ofstream sampleConfig{robotConfigFilePath};
+        sampleConfig<<"["<<std::endl;
+        for(int i = 0; i < 50; ++i)
+        {
+            sampleConfig<<"{\"aruco_id\":"<<i<<", \"robot_id\":\"robot_"<<i<<"\"}";
+            if(i<49)
+                sampleConfig<<",";
+            sampleConfig<<std::endl;
+        }
+        sampleConfig<<"]"<<std::endl;
+        sampleConfig.flush();
+        sampleConfig.close();
+
+        robotConfigFile.open(robotConfigFilePath);
+    }
+
     if(robotConfigFile)
     {
         std::stringstream configData;
@@ -255,14 +275,6 @@ MainWindow::~MainWindow()
     // Delete the singletons
     Settings::deleteInstance();
     Log::deleteInstance();
-}
-
-/* on_actionExit_triggered
- * The exit menu action was triggered, end the application.
- */
-void MainWindow::on_actionExit_triggered()
-{
-    QCoreApplication::exit();
 }
 
 /* on_robotList_selectionChanged

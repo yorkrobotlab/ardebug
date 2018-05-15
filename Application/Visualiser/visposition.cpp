@@ -55,6 +55,8 @@ void VisPosition::render(QWidget* widget, QPainter* painter, RobotData *robot, b
 
     painter->setPen(circlePen);
     painter->drawEllipse(centre, indicatorSize, indicatorSize);
+    QPointF endOfLine = QPointF{centre.x() + sin(orientation) * indicatorSize, centre.y() - cos(orientation) * indicatorSize};
+    painter->drawLine(centre, endOfLine);
 
     painter->setPen(pen);
 }
