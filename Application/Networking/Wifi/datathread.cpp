@@ -52,8 +52,8 @@ void DataThread::openUDPSocket(int port) {
  * Listens for data on the UDP socket. Blocking.
  */
 void DataThread::run(void) {
-    while(!socket) usleep(10);
-    while(socket->state() != QAbstractSocket::BoundState) usleep(10);
+    while(!socket && shouldRun) usleep(10);
+    while(socket->state() != QAbstractSocket::BoundState && shouldRun) usleep(10);
 
     std::cout<<"Listening on data thread"<<std::endl;
 
