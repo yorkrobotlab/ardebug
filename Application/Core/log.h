@@ -9,8 +9,6 @@
 
 class Log
 {
-    static Log* s_instance;
-
     QPlainTextEdit* console;
 
     bool loggingEnabled;
@@ -21,18 +19,8 @@ class Log
 
 public:
     static Log* instance() {
-        if (s_instance == NULL) {
-            s_instance = new Log;
-        }
-
-        return s_instance;
-    }
-
-    static void deleteInstance() {
-        if (s_instance != NULL) {
-            delete s_instance;
-            s_instance = 0;
-        }
+        static Log instance;
+        return &instance;
     }
 
     void setup(QPlainTextEdit* console, QLabel* dirLabel);

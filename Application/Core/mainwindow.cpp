@@ -96,6 +96,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     // Show some console text
+    Log::instance()->setup(ui->consoleText, nullptr);
     Log::instance()->logMessage("ARDebug started successfully\n", true);
 
     // Set up the data model
@@ -254,15 +255,6 @@ MainWindow::~MainWindow()
 
     // Delete the singletons
     Settings::deleteInstance();
-    Log::deleteInstance();
-}
-
-/* on_actionExit_triggered
- * The exit menu action was triggered, end the application.
- */
-void MainWindow::on_actionExit_triggered()
-{
-    QCoreApplication::exit();
 }
 
 /* on_robotList_selectionChanged

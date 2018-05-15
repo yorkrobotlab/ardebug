@@ -86,7 +86,6 @@ public slots:
     void redrawChart(void);
 
 private slots:
-    void on_actionExit_triggered();
 
     void on_networkListenButton_clicked();
 
