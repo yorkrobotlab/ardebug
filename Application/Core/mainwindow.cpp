@@ -19,14 +19,13 @@
 
 #include "../DataModel/datamodel.h"
 #include "../DataModel/robotdata.h"
-#include "../UI/addidmappingdialog.h"
-#include "../UI/robotinfodialog.h"
 #include "../UI/bluetoothconfigdialog.h"
 
 #include <sys/socket.h>
 
 #include <QLayout>
 #include <QStandardItemModel>
+#include <QCheckBox>
 
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -94,15 +93,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     arucoTracker = new ArUco{&arucoNameMapping, cameraThread};
 
-
     ui->setupUi(this);
-
-    // Show a message
-    ui->statusBar->showMessage("ARDebug v1.1", 3000);
 
     // Show some console text
     Log::instance()->setup(ui->consoleText, ui->loggingFileLabel);
-    Log::instance()->logMessage("Application Started Succesfully.\n", true);
+    Log::instance()->logMessage("ARDebug started successfully\n", true);
 
     // Set up the data model
     dataModel = new DataModel;
@@ -497,9 +492,6 @@ void MainWindow::robotSelectedInVisualiser(QString id) {
             ui->robotList->setCurrentIndex(ui->robotList->model()->index(i, 0));
         }
     }
-
-    // Update the overview tab
-    updateOverviewTab();
 }
 
 /* robotDeleted
@@ -533,26 +525,7 @@ void MainWindow::dataModelUpdate(bool listChanged)
     }
 
     // Update the necessary data tabs
-    updateOverviewTab();
     updateCustomData();
-}
-
-/* updateOverviewTab
- * Updates the contents of the overview tab in response to new data.
- */
-void MainWindow::updateOverviewTab(void) {
-    // Get the selected robot
-    RobotData* robot = dataModel->getRobotByID(dataModel->selectedRobotID);
-    if (robot) {
-        // Update the overview text
-        ui->robotIDLabel->setText(robot->getID());
-        ui->robotPosLabel->setText("X: " + QString::number(robot->getPos().position.x) + ", Y: " + QString::number(robot->getPos().position.y) + ", A: " + QString::number(robot->getAngle()));
-    } else {
-        ui->robotIDLabel->setText("-");
-        ui->robotNameLabel->setText("-");
-        ui->robotStateLabel->setText("-");
-        ui->robotPosLabel->setText("-");
-    }
 }
 
 /* on_networkListenButton_clicked

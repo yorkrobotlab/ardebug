@@ -15,7 +15,6 @@
  * Initialise all setttings
  */
 VisPosition::VisPosition(void) {
-    setType(VisType::POSITION);
     setEnabled(true);
 }
 
@@ -40,12 +39,6 @@ void VisPosition::render(QWidget* widget, QPainter* painter, RobotData *robot, b
     double x = rect.x() + (rect.width() * robot->getPos().position.x);
     double y = rect.y() + (rect.height() * robot->getPos().position.y);
     QPointF centre = QPointF{x, y};
-
-    double frontDx = cos(orientation) * indicatorSize * 0.5;
-    double frontDy = sin(orientation) * indicatorSize * 0.5;
-
-    double sideDx = -sin(orientation) * indicatorSize * 0.5;
-    double sideDy = cos(orientation) * indicatorSize * 0.5;
 
     auto pen = painter->pen();
     auto circlePen = pen;

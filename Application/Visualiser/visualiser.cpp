@@ -16,9 +16,7 @@
 #include <QLayout>
 
 #include "vistext.h"
-#include "visname.h"
 #include "visposition.h"
-#include "vispath.h"
 
 #include <iostream>
 
@@ -38,7 +36,6 @@ Visualiser::Visualiser(DataModel *dataModelRef, ARCameraThread* cameraThread) {
     textVis = new VisText;
     this->config.elements.push_back(textVis);
     this->config.elements.push_back(new VisPosition);
-    this->config.elements.push_back(new VisPath);
 
     this->click.x = 0.0;
     this->click.y = 0.0;

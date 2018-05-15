@@ -112,7 +112,6 @@ private:
     Ui::MainWindow *ui;
 
     void setVideo(bool enabled);
-    void updateOverviewTab(void);
     void updateCustomData();
 };
 
