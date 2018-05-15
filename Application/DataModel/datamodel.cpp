@@ -38,15 +38,6 @@ DataModel::DataModel(QObject *parent) : QObject(parent)
     // Initialise the average position
     averageRobotPos.x = 0.0f;
     averageRobotPos.y = 0.0f;
-
-    newDataTimer.setInterval(33);
-    connect(&newDataTimer, SIGNAL(timeout()), this, SLOT(emitModelChangedSignal()));
-    newDataTimer.start();
-}
-
-void DataModel::emitModelChangedSignal()
-{
-    emit modelChanged(true);
 }
 
 /* Destructor

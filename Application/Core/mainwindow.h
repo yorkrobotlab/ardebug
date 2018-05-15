@@ -78,8 +78,6 @@ public slots:
 
     void dataModelUpdate(bool listChanged);
 
-    void visConfigUpdate(void);
-
     void robotListSelectionChanged(const QItemSelection &selection);
 
     void robotSelectedInVisualiser(QString id);
