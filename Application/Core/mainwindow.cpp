@@ -781,7 +781,7 @@ void MainWindow::updateChart(bool listChanged, QString robotId, std::vector<QStr
                 }
             }
                 }
-                series->setLabelsVisible(true);
+//                series->setLabelsVisible(true);
                 chart->addSeries(series);
                 chart->createDefaultAxes();
         chart->axisY()->setMax(ChartMaxY*1.05);
