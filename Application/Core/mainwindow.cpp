@@ -170,8 +170,13 @@ MainWindow::MainWindow(QWidget *parent) :
     visualiser->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
     connect(dataModel, SIGNAL(modelChanged(bool, QString, std::vector<QString>)), visualiser, SLOT(refreshVisualisation()));
-    connect(dataModel, SIGNAL(modelChanged(bool, QString, std::vector<QString>)), this, SLOT(updateChart(bool, QString, std::vector<QString>)));
+    //connect(dataModel, SIGNAL(modelChanged(bool, QString, std::vector<QString>)), this, SLOT(updateChart(bool, QString, std::vector<QString>)));
     connect(ui->robotList->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(resettingChart()));
+
+    QTimer* tmr = new QTimer{this};
+    connect(tmr, SIGNAL(timeout()), this, SLOT(redrawChart()));
+    tmr->setInterval(100);
+    tmr->start();
 
     // Embed the visualiser in the tab
     QHBoxLayout* horizLayout = new QHBoxLayout();
@@ -660,8 +665,10 @@ void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
 
 void MainWindow::updateChart(bool listChanged, QString robotId, std::vector<QString> changedData)
 {
+  static int count = 0;
     disconnect(dataModel, SIGNAL(modelChanged(bool, QString, std::vector<QString>)), this, SLOT(updateChart(bool, QString, std::vector<QString>)));
     Defer({
+	std::cout<<"Defer called "<<count++<<std::endl;
         connect(dataModel, SIGNAL(modelChanged(bool, QString, std::vector<QString>)), this, SLOT(updateChart(bool, QString, std::vector<QString>)));
           });
 

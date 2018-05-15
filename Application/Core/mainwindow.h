@@ -90,6 +90,7 @@ public slots:
 
 private slots:
 
+  void redrawChart();
     void on_networkListenButton_clicked();
 
     void on_networkPortBox_textChanged(const QString &arg1);
@@ -111,7 +112,7 @@ private:
 
     void setVideo(bool enabled);
     void updateCustomData();
-    void redrawChart();
+    //void redrawChart();
     void idMappingTableSetup(void);
 };
 
