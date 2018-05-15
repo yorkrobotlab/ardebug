@@ -160,12 +160,6 @@ MainWindow::MainWindow(QWidget *parent) :
     horizLayout->addWidget(visualiser);
     ui->visualiserTab->setLayout(horizLayout);
 
-    visualiser->config.populateSettingsList(ui->visSettingsList);
-
-    ui->imageXDimEdit->setValidator(new QIntValidator(1, 10000, this));
-    ui->imageYDimEdit->setValidator(new QIntValidator(1, 10000, this));
-    ui->angleCorrectionEdit->setValidator(new QIntValidator(-180, 180, this));
-
     // Set up the custom data table
     ui->customDataTable->setColumnCount(3);
     ui->customDataTable->setHorizontalHeaderLabels(QStringList("Key") << QString("Value") << QString{"Display In Visualiser"});
@@ -205,7 +199,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Set up the ID mapping table
     addIDMappingDialog = NULL;
-    idMappingTableSetup();
 
     qRegisterMetaType<cv::Mat>("cv::Mat&");
 
@@ -277,44 +270,6 @@ MainWindow::~MainWindow()
 void MainWindow::on_actionExit_triggered()
 {
     QCoreApplication::exit();
-}
-
-/* on_actionEnableVideo_changed
- * The menu item 'Enable Video' changed state.
- */
-void MainWindow::on_actionEnable_Video_changed()
-{
-    // Update the video enabled state
-    setVideo(ui->actionEnable_Video->isChecked());
-}
-
-/* on_videoEnChbx_stateChanged
- * The video enabled checkbox on the visualiser settings tab changed state.
- */
-void MainWindow::on_videoEnChbx_stateChanged()
-{
-    // Update the video enabled state.
-    setVideo(ui->videoEnChbx->isChecked());
-}
-
-/* setVideo
- * Video can be enabled/disabled from multiple places. This function keeps
- * the related controls in sync, and performs the actual enable/disable.
- */
-void MainWindow::setVideo(bool enabled) {
-    // Update setting
-    Settings::instance()->setVideoEnabled(enabled);
-
-    // Update UI controls to new state
-    ui->actionEnable_Video->setChecked(enabled);
-    ui->videoEnChbx->setChecked(enabled);
-
-    // Display a message
-    if(enabled) {
-        ui->statusBar->showMessage("Video Enabled.", 3000);
-    } else {
-        ui->statusBar->showMessage("Video Disabled.", 3000);
-    }
 }
 
 /* on_robotList_selectionChanged
@@ -601,14 +556,6 @@ void MainWindow::updateOverviewTab(void) {
     }
 }
 
-/* visConfigUpdate
- * Called when the settings of a visualisation have changed, and the
- * visualiser config list should be updated.
- */
-void MainWindow::visConfigUpdate(void) {
-    visualiser->config.populateSettingsList(ui->visSettingsList);
-}
-
 /* on_networkListenButton_clicked
  * Slot. Called when the listen for data button is clicked. Toggles between
  * start and stop listening. Opens and closes the UDP socket respectively.
@@ -666,71 +613,6 @@ void MainWindow::on_networkPortBox_textChanged(const QString &text)
     ui->networkPortBox->setText(newString);
 }
 
-/* on_imageXDimEdit_textChanged
- * Called when the user types in the image x dimension box on the
- * camera settings tab. Only allow numerical digits, no characters.
- */
-void MainWindow::on_imageXDimEdit_textChanged(const QString &arg1)
-{
-    bool ok = false;
-    int w = arg1.toInt(&ok);
-
-    if (ok) {
-        Settings::instance()->setCameraImageWidth(w);
-    }
-}
-
-/* on_imageYDimEdit_textChanged
- * Called when the user types in the image y dimension box on the
- * camera settings tab. Only allow numerical digits, no characters.
- */
-void MainWindow::on_imageYDimEdit_textChanged(const QString &arg1)
-{
-    bool ok = false;
-    int h = arg1.toInt(&ok);
-
-    if (ok) {
-        Settings::instance()->setCameraImageHeight(h);
-    }
-}
-
-/* on_visSettingsList_itemClicked
- * Called when an item within the visualiser settings list is clicked.
- * Checks that the visualisation is in the correct enable state.
- */
-void MainWindow::on_visSettingsList_itemClicked(QListWidgetItem *item)
-{
-    QVariant v = item->data(Qt::UserRole);
-    VisElement* e = v.value<VisElement *>();
-
-    e->setEnabled(item->checkState() == Qt::Checked);
-}
-
-/* on_visSettingsList_itemDoubleClicked
- * Called when an item in the visualiser settings list is double clicked.
- * Displays the detailed visualisation settings if they exist.
- */
-void MainWindow::on_visSettingsList_itemDoubleClicked(QListWidgetItem *item)
-{
-    QVariant v = item->data(Qt::UserRole);
-    VisElement* e = v.value<VisElement *>();
-
-    QDialog* settingsDialog = e->getSettingsDialog();
-
-    if (settingsDialog != NULL) {
-        QObject::connect(settingsDialog, SIGNAL(accepted()), this, SLOT(visConfigUpdate(void)));
-        settingsDialog->show();
-    }
-}
-
-/* on_robotColoursCheckBox_stateChanged
- * Called when the user changes the robot colour enabled setting.
- */
-void MainWindow::on_robotColoursCheckBox_stateChanged()
-{
-    Settings::instance()->setRobotColourEnabled(ui->robotColoursCheckBox->isChecked());
-}
-
 /* on_logFileButton_clicked
  * Called when the user pressed the log file directory change button
  */
@@ -747,97 +629,6 @@ void MainWindow::on_loggingButton_clicked()
     Log::instance()->setLoggingEnabled(!Log::instance()->isLoggingEnabled());
 
     ui->loggingButton->setText(Log::instance()->isLoggingEnabled() ? "Stop Logging" : "Start Logging");
-}
-
-/* idMappingTableSetup
- * Initilises the ID mapping table
- */
-void MainWindow::idMappingTableSetup(void) {
-    ui->tagMappingTable->setColumnCount(2);
-
-    QStringList headerList;
-    headerList.append("ARuCo ID");
-    headerList.append("Robot ID");
-    ui->tagMappingTable->setHorizontalHeaderLabels(headerList);
-    ui->tagMappingTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-
-    idMappingUpdate();
-}
-
-/* idMappingUpdate
- * Called when the ID mapping has been updated. Udates the table to match.
- */
-void MainWindow::idMappingUpdate(void) {
-    // Clear the table
-    ui->tagMappingTable->clearContents();
-
-    // Set the new row count
-    ui->tagMappingTable->setRowCount(Settings::instance()->idMapping.size());
-
-    // For each mapping fill a row
-    for (size_t i = 0; i < Settings::instance()->idMapping.size(); i++) {
-        ArucoIDPair* p = Settings::instance()->idMapping.at(i);
-
-        QTableWidgetItem* arucoID = new QTableWidgetItem(QString::number(p->arucoID));
-        QTableWidgetItem* robotID = new QTableWidgetItem(QString::number(p->robotID));
-
-        arucoID->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
-        robotID->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
-
-        ui->tagMappingTable->setItem(i, 0, arucoID);
-        ui->tagMappingTable->setItem(i, 1, robotID);
-    }
-}
-
-/* on_tagMappingDeleteButton_clicked
- * Called when the user presses the button to delete an ID mapping
- */
-void MainWindow::on_tagMappingDeleteButton_clicked() {
-    if (ui->tagMappingTable->selectionModel()->hasSelection()) {
-        // Get the selected row
-        QModelIndexList selection = ui->tagMappingTable->selectionModel()->selectedIndexes();
-
-        for (int i = 0; i < selection.count(); i++) {
-            // Erase the mapping for that row
-            Settings::instance()->idMapping.erase(Settings::instance()->idMapping.begin() + selection.at(i).row());
-        }
-
-        // Update the table
-        idMappingUpdate();
-    }
-}
-
-/* on_tagMappingAddButton_clicked
- * Called when the user presses the button to delete an ID mapping
- */
-void MainWindow::on_tagMappingAddButton_clicked()
-{
-    if (addIDMappingDialog != NULL) {
-        delete addIDMappingDialog;
-    }
-
-    addIDMappingDialog = new AddIDMAppingDialog();
-
-    if (addIDMappingDialog != NULL) {
-        QObject::connect(addIDMappingDialog, SIGNAL(accepted()), this, SLOT(idMappingUpdate(void)));
-        addIDMappingDialog->show();
-    }
-}
-
-/* on_flipImageCheckBox_stateChanged
- * Called when the user changes the image flip setting
- */
-void MainWindow::on_flipImageCheckBox_stateChanged(int checked)
-{
-    Settings::instance()->setImageFlipEnabled(checked == Qt::Checked);
-}
-
-/* on_averagePositionCheckBox_stateChanged
- * Called when the user changes the show average position setting
- */
-void MainWindow::on_averagePositionCheckBox_stateChanged(int checked)
-{
-    Settings::instance()->setShowAveragePos(checked == Qt::Checked);
 }
 
 /* on_bluetoothListenButton_clicked
@@ -865,16 +656,6 @@ void MainWindow::on_bluetoothlist_doubleClicked(const QModelIndex &index)
 {
 
     emit changeStateBluetoothDevice(index.row());
-}
-
-void MainWindow::on_angleCorrectionEdit_textChanged(const QString &arg1)
-{
-    bool ok = false;
-    int a = arg1.toInt(&ok);
-
-    if (ok) {
-        Settings::instance()->setTrackingAngleCorrection(a);
-    }
 }
 
 void MainWindow::on_bluetoothConfigButton_clicked()
