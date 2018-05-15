@@ -74,15 +74,6 @@ int Bluetoothconfig::readFile()
 {
 
     QFile btfile("bluetooth.config");
-    if (btfile.exists())
-    {
-       qDebug() << "config file present";
-    }
-    else
-    {
-        qDebug() << "NO config file present";
-
-    }
     btfile.open(QIODevice::ReadWrite);
 
     while(!btfile.atEnd())
@@ -130,7 +121,6 @@ void Bluetoothconfig::getActiveDevices( std::vector<BluetoothDeviceListItem*> * 
         if(deviceList[i]->getState() == true)
         {
              activedeviceList->push_back(new BluetoothDeviceListItem(deviceList[i]->getBTAddress(), deviceList[i]->getName(), true));
-             qDebug() << "active device" <<deviceList[i]->getBTAddress();
         }
     }
 }
@@ -165,7 +155,7 @@ QStandardItemModel* Bluetoothconfig::getActiveDeviceList(void) {
  * sets the colour of a model item
  */
  void Bluetoothconfig::setItemColour(int index,  Qt::GlobalColor colour){
-    qDebug()<<"item colour called";
+
 
     //QModelIndex vindex = deviceListModel->index(index,0);
     //deviceListModel->setData(vindex, QBrush(colour), Qt::BackgroundRole);

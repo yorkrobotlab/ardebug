@@ -47,6 +47,7 @@ class MainWindow : public QMainWindow
     QDialog* addIDMappingDialog;
     QDialog* bluetoothConfigDialog;
     QDialog* chartDialog;
+    bool chartReset = false;
 
     QtCharts::QChart *chart;
     QString chartEntry="";
@@ -70,12 +71,14 @@ signals:
 
     void startReadingCamera(void);
     void stopReadingCamera(void);
-    void updateChart(void);
+    void resetChart();
 
 public slots:
     void robotDeleted(void);
 
     void dataModelUpdate(bool listChanged);
+
+    void visConfigUpdate(void);
 
     void robotListSelectionChanged(const QItemSelection &selection);
 
@@ -83,7 +86,9 @@ public slots:
 
     void socketOpened(const int &sockfd) { this->sockfd = sockfd; }
 
-    void redrawChart(void);
+    void resettingChart();
+
+    void updateChart(bool listChanged, QString robotId, std::vector<QString> changedData);
 
 private slots:
 
@@ -108,6 +113,8 @@ private:
 
     void setVideo(bool enabled);
     void updateCustomData();
+    void redrawChart();
+    void idMappingTableSetup(void);
 };
 
 #endif // MAINWINDOW_H

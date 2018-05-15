@@ -56,7 +56,7 @@ private:
     void addRobotIfNotExist(QString id);
 
 signals:
-    void modelChanged(bool listChanged);
+    void modelChanged(bool listChanged, QString robotId, std::vector<QString> changedData);
 
 public slots:
     void newData(const QString &);

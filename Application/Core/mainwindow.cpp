@@ -37,9 +37,10 @@
 
 #include <QtCharts/QChartView>
 #include <QtCharts/QPieSeries>
+#include <QtCharts/QPieSlice>
+#include <QtCharts/QLineSeries>
 #include <QtCharts/QBarSeries>
 #include <QtCharts/QBarSet>
-#include <QtCharts/QPieSlice>
 #include <QColor>
 
 
@@ -138,7 +139,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(bluetoothHandler, SIGNAL(dataFromThread(QString)), dataModel, SLOT(newData(QString)));
 
 
-    connect(dataModel, SIGNAL(modelChanged(bool)), this, SLOT(dataModelUpdate(bool)));
+    connect(dataModel, SIGNAL(modelChanged(bool, QString, std::vector<QString>)), this, SLOT(dataModelUpdate(bool)));
 
 
 
@@ -146,9 +147,9 @@ MainWindow::MainWindow(QWidget *parent) :
     visualiser = new Visualiser{dataModel, cameraThread};
     visualiser->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
-    connect(dataModel, SIGNAL(modelChanged(bool)), visualiser, SLOT(refreshVisualisation()));
-    connect(dataModel, SIGNAL(modelChanged(bool)), this, SLOT(redrawChart()));
-    QObject::connect(this, SIGNAL(updateChart()),this ,SLOT(redrawChart()));
+    connect(dataModel, SIGNAL(modelChanged(bool, QString, std::vector<QString>)), visualiser, SLOT(refreshVisualisation()));
+    connect(dataModel, SIGNAL(modelChanged(bool, QString, std::vector<QString>)), this, SLOT(updateChart(bool, QString, std::vector<QString>)));
+    connect(ui->robotList->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(resettingChart()));
 
     // Embed the visualiser in the tab
     QHBoxLayout* horizLayout = new QHBoxLayout();
@@ -608,7 +609,7 @@ void MainWindow::on_bluetoothConfigButton_clicked()
     if (bluetoothConfigDialog != NULL) {
         delete bluetoothConfigDialog;
         bluetoothConfigDialog = NULL;
-        qDebug()<<"deleted Dialog";
+
     }
 
     bluetoothConfigDialog = new BluetoothConfigDialog(btConfig);
@@ -627,30 +628,52 @@ void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
       chartEntry =  ui->customDataTable->item(item->row(), 0)->text();
       RobotData* robot = dataModel->getRobotByID(dataModel->selectedRobotID);
 
-
       chartType =robot->getValueType(chartEntry);
+      chartReset = true;
 
-      emit updateChart();
-
-
-
-
-
+      redrawChart();
 }
+
+void MainWindow::updateChart(bool listChanged, QString robotId, std::vector<QString> changedData)
+{
+    if (chartType==ValueType::Double && robotId!=dataModel->selectedRobotID)
+        return;
+
+    if(std::find(changedData.begin(), changedData.end(),chartEntry ) !=changedData.end() )
+    {
+        redrawChart();
+    }
+}
+
 
  void MainWindow::redrawChart()
  {
 
      QMap<QString, int> entryList;
      QMap<QString, QColor> colourList;
+     static double ChartMaxX = 0;
+     static double ChartMaxY = 0;
 
      int colourCounter = 0;
+     if (chartReset)
+     {
+         chart->removeAllSeries();
+         ChartMaxX = 0;
+         ChartMaxY = 0;
+         for(int i = 0; i<dataModel->getRobotCount(); i++)
+         {
+             dataModel->getRobotByIndex(i)->colour= QColor(255,255,255);
+         }
+
+         chartReset=false;
+
+     }
 
 
-     chart->removeAllSeries();
 
      if (chartType==ValueType::String)
      {
+        chart->removeAllSeries();
         QtCharts::QPieSeries *series = new QtCharts::QPieSeries();
         //get data for chart
          for(int i = 0; i<dataModel->getRobotCount(); i++)
@@ -689,25 +712,21 @@ void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
              QtCharts::QPieSlice *slice = series->slices().at(counter );
              slice->setLabelFont(font);
              slice->setColor(colourList[key]);
-             //slice->setLabelVisible();
-
 
              counter ++;
-
          }
 
         series->setLabelsVisible(true);
          chart->addSeries(series);
+         chart->createDefaultAxes();
     }
-    else {
-         if (chartType==ValueType::Array)
+    else { if (chartType==ValueType::Array)
          {
+        chart->removeAllSeries();
 
               for(int i = 0; i<dataModel->getRobotCount(); i++)
               {
                   dataModel->getRobotByIndex(i)->colour= QColor(255,255,255);
-
-
               }
 
 
@@ -726,33 +745,69 @@ void MainWindow::on_customDataTable_itemDoubleClicked(QTableWidgetItem *item)
                 {
 
                     auto item = arr[i];
-                    if(item.type == Double) *set<<item.doubleValue;
-
+            if(item.type == Double)
+            {
+                *set<<item.doubleValue;
+                if (ChartMaxY< item.doubleValue)
+                {
+                    ChartMaxY=item.doubleValue;
+                }
+            }
                 }
                 series->setLabelsVisible(true);
                 chart->addSeries(series);
                 chart->createDefaultAxes();
-                chart->axisY()->setMax(200);
+        chart->axisY()->setMax(ChartMaxY*1.05);
             }
 
          }
+     else if (chartType==ValueType::Double)
+     {
+         RobotData* robot = dataModel->getRobotByID(dataModel->selectedRobotID);
+        if(chart->series().isEmpty())
+        {
 
+          QtCharts::QLineSeries *series = new QtCharts::QLineSeries();
+
+
+          if (robot->getValueType(chartEntry)==ValueType::Double)
+          {
+              double value = robot->getDoubleValue(chartEntry);
+               series->append(1,value);
+          }
+          chart->addSeries(series);
+          chart->createDefaultAxes();
+        }
          else
+        {
+            if (robot->getValueType(chartEntry)==ValueType::Double)
             {
-             for(int i = 0; i<dataModel->getRobotCount(); i++)
+                double value = robot->getDoubleValue(chartEntry);
+                ((QtCharts::QLineSeries*) chart->series().at(0))->append(((QtCharts::QLineSeries*) chart->series().at(0))->count(),value);
+                ChartMaxX = ((QtCharts::QLineSeries*) chart->series().at(0))->count();
+                if (ChartMaxY< value)
              {
-                 dataModel->getRobotByIndex(i)->colour= QColor(255,255,255);
+                    ChartMaxY=value;
+                }
+                chart->axisX()->setMax(ChartMaxX);
+                chart->axisY()->setMax(ChartMaxY*1.05);
 
+            }
 
+        }
+ }
              }
          }
 
-
+void MainWindow::resettingChart()
+{
+    static QString oldID = "";
+    if (oldID !=dataModel->selectedRobotID)
+    {
+        chartReset = true;
+        redrawChart();
 
     }
-
-
-
-
+    oldID =dataModel->selectedRobotID;
  }
 
