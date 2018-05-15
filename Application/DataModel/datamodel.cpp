@@ -64,7 +64,10 @@ DataModel::~DataModel(void) {
 
 void DataModel::sort(std::function<int(RobotData*,RobotData*)> sortFunc)
 {
-    std::sort(robotDataList.begin(), robotDataList.end(), sortFunc);
+    if(sortFunc)
+        std::sort(robotDataList.begin(), robotDataList.end(), sortFunc);
+    else
+        std::sort(robotDataList.begin(), robotDataList.end());
 }
 
 /* getRobotByID
@@ -381,7 +384,7 @@ void DataModel::addRobotIfNotExist(QString id)
     if(r == nullptr)
     {
         robotDataList.push_back(new RobotData{id});
-        std::sort(robotDataList.begin(), robotDataList.end());
+        sort();
     }
 }
 

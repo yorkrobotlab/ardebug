@@ -47,7 +47,7 @@ public:
     int getRobotCount(void);
     RobotData* setSelectedRobot(int idx);
 
-    void sort(std::function<int(RobotData*,RobotData*)> sortFunc);
+    void sort(std::function<int(RobotData*,RobotData*)> sortFunc = nullptr);
 
 private:
     void parsePositionPacket(RobotData* robot, QString xString, QString yString, QString aString);

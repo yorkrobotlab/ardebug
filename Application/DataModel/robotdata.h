@@ -151,6 +151,11 @@ public:
             values[key].isDisplayed = displayed;
     }
 
+    bool operator<(const RobotData& other)
+    {
+        return this->id < other.id;
+    }
+
 private:
     void updatePositionHistory(void);
 };
