@@ -2,17 +2,19 @@
 #define DATATHREAD_H
 
 #include "QThread"
+#include "QUdpSocket"
 //#include "QTimer"
 
 class DataThread : public QThread
 {
     Q_OBJECT
-    int sockfd = 0;
+    QUdpSocket* socket = nullptr;
     volatile bool shouldRun = true;
 
     ~DataThread();
 
 public:
+    DataThread(QObject* parent = nullptr);
     virtual void quit() { this->blockSignals(true); shouldRun = false; }
     virtual void run() override;
 

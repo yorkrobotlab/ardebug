@@ -112,7 +112,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->robotList->setEditTriggers(QListView::NoEditTriggers);
 
     // Set up the network thread
-    dataThread = new DataThread;
+    dataThread = new DataThread{this};
     dataThread->start();
 
     // Connect signals and sockets for starting and stopping the networking
@@ -220,7 +220,6 @@ MainWindow::~MainWindow()
     sendClosePacket(8888);
 
     std::cout<<"xitinging"<<std::endl;
-
 
     // Stop the camera controller
 //    emit stopReadingCamera();

@@ -18,7 +18,15 @@
 #include <netinet/in.h>
 #include <netdb.h>
 
+#include <iostream>
+
 #include "QString"
+
+DataThread::DataThread(QObject *parent)
+    : QThread(parent)
+{
+
+}
 
 /* Destructor
  * Delete necessary data.
@@ -29,50 +37,38 @@ DataThread::~DataThread(void) { }
  * Opens a UDP socket on the given port, and begins listening for data.
  */
 void DataThread::openUDPSocket(int port) {
-    struct sockaddr_in sock_in;
-
-    // Create the socket
-    if ((sockfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
-        fprintf(stderr, "Error creating socket\n");
-        return;
-    }
-
-    // Zero the structure
-    bzero(&sock_in, sizeof(sock_in));
-
-    // Set up the socket structure
-    sock_in.sin_addr.s_addr = htonl(INADDR_ANY);
-    sock_in.sin_port = htons(port);
-    sock_in.sin_family = AF_INET;
+    socket = new QUdpSocket;
 
     // Bind the socket
-    if (bind(sockfd, (struct sockaddr*)&sock_in, sizeof(sock_in)) < 0) {
-        fprintf(stderr, "Error binding socket\n");
+    if (!socket->bind(port)) {
+        std::cerr<<"Error binding socket\n"<<std::endl;
         return;
     }
 
-    // Signal that the socket was opened successfully
-    emit socketOpened(sockfd);
+    emit socketOpened(port);
 }
 
 /* listenForPacket
  * Listens for data on the UDP socket. Blocking.
  */
 void DataThread::run(void) {
-    struct sockaddr_in si_other;
-    int slen = sizeof(si_other), recv_len;
-    char buffer[1024];
+    while(!socket) usleep(10);
+    while(socket->state() != QAbstractSocket::BoundState) usleep(10);
 
-    while(shouldRun)
+    std::cout<<"Listening on data thread"<<std::endl;
+
+    while(shouldRun && socket->state() == QAbstractSocket::BoundState)
     {
-        // Receive a packet (blocking)
-        recv_len = recvfrom(sockfd, buffer, 255, 0, (struct sockaddr*)&si_other, (socklen_t *)&slen);
-        if (recv_len < 0) {
-            continue;
-        }
+        while(!socket->hasPendingDatagrams()) usleep(1);
+        int maxSize = socket->pendingDatagramSize()+20;
+        char buffer[maxSize];
 
-        // Emit received data through signal
-        QString str{buffer};
-        emit dataFromThread(str);
+        // Receive a packet (blocking)
+        int size;
+        if((size = socket->readDatagram(buffer, maxSize)) > 0)
+        {
+            QString str = QString::fromLocal8Bit(buffer, size);
+            emit dataFromThread(str);
+        }
    }
 }
