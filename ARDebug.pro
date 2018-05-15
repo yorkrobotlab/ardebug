@@ -56,7 +56,6 @@ HEADERS  += Application/Core/mainwindow.h \
     Application/Core/util.h \
     Application/Core/settings.h \
     Application/Core/log.h \
-    Application/Core/appconfig.h \
     Application/DataModel/datamodel.h \
     Application/DataModel/robotdata.h \
     Application/Networking/Wifi/datathread.h \
@@ -91,9 +90,13 @@ CONFIG += link_pkgconfig \
 
 PKGCONFIG += opencv
 
-LIBS += -L/opt/cvb/lib/ -lCVCImg
-LIBS += -L/opt/cvb/lib/ -lCVCDriver
-LIBS += -L/opt/cvb/lib/ -lCVCUtilities
+exists("/opt/cvb/") {
+    DEFINES += CVB_CAMERA_PRESENT
 
-INCLUDEPATH += /opt/cvb/include
-DEPENDPATH += /opt/cvb/include
+    LIBS += -L/opt/cvb/lib/ -lCVCImg
+    LIBS += -L/opt/cvb/lib/ -lCVCDriver
+    LIBS += -L/opt/cvb/lib/ -lCVCUtilities
+
+    INCLUDEPATH += /opt/cvb/include
+    DEPENDPATH += /opt/cvb/include
+}

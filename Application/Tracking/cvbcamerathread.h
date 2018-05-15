@@ -1,8 +1,6 @@
 #ifndef CVBCAMERATHREAD_H
 #define CVBCAMERATHREAD_H
 
-#include "../Core/appconfig.h"
-
 #ifdef CVB_CAMERA_PRESENT
 
 #include <opencv2/opencv.hpp>

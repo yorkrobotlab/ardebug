@@ -9,7 +9,6 @@
 #include "../Networking/Bluetooth/bluetoothconfig.h"
 #include "../Visualiser/visualiser.h"
 #include "../DataModel/datamodel.h"
-#include "../Core/appconfig.h"
 
 #include <QtCharts/QChartView>
 
