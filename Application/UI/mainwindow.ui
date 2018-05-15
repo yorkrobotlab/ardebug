@@ -255,7 +255,7 @@
        </widget>
        <widget class="QWidget" name="customDataTab">
         <attribute name="title">
-         <string>Custom Data</string>
+         <string>Data Visualisation</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_7">
          <item>
@@ -267,30 +267,6 @@
      </widget>
     </item>
    </layout>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1058</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>Options</string>
-    </property>
-    <addaction name="actionExit"/>
-   </widget>
-   <widget class="QMenu" name="menuVisualiser">
-    <property name="title">
-     <string>Visualiser</string>
-    </property>
-    <addaction name="actionEnable_Video"/>
-   </widget>
-   <addaction name="menuFile"/>
-   <addaction name="menuVisualiser"/>
   </widget>
   <action name="actionExit">
    <property name="text">
