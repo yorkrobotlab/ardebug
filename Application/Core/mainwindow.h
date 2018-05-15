@@ -92,10 +92,6 @@ private slots:
 
     void on_networkPortBox_textChanged(const QString &arg1);
 
-    void on_logFileButton_clicked();
-
-    void on_loggingButton_clicked();
-
     void on_robotList_doubleClicked(const QModelIndex &index);
 
     void on_bluetoothListenButton_clicked();

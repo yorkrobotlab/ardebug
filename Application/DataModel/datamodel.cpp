@@ -384,7 +384,7 @@ void DataModel::addRobotIfNotExist(QString id)
     if(r == nullptr)
     {
         robotDataList.push_back(new RobotData{id});
-        sort();
+        sort([](RobotData* a, RobotData* b) { return a->getID() < b->getID(); });
     }
 }
 

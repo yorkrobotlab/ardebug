@@ -96,7 +96,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     // Show some console text
-    Log::instance()->setup(ui->consoleText, ui->loggingFileLabel);
     Log::instance()->logMessage("ARDebug started successfully\n", true);
 
     // Set up the data model
@@ -583,24 +582,6 @@ void MainWindow::on_networkPortBox_textChanged(const QString &text)
     }
 
     ui->networkPortBox->setText(newString);
-}
-
-/* on_logFileButton_clicked
- * Called when the user pressed the log file directory change button
- */
-void MainWindow::on_logFileButton_clicked()
-{
-    Log::instance()->setDirectory(this);
-}
-
-/* on_loggingButton_clicked
- * Called when the user clicks the start/stop logging button
- */
-void MainWindow::on_loggingButton_clicked()
-{
-    Log::instance()->setLoggingEnabled(!Log::instance()->isLoggingEnabled());
-
-    ui->loggingButton->setText(Log::instance()->isLoggingEnabled() ? "Stop Logging" : "Start Logging");
 }
 
 /* on_bluetoothListenButton_clicked
