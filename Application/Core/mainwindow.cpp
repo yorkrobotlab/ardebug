@@ -236,8 +236,6 @@ MainWindow::~MainWindow()
     // Send a packet to signal the network socket to close
     sendClosePacket(8888);
 
-    std::cout<<"xitinging"<<std::endl;
-
     // Stop the camera controller
 //    emit stopReadingCamera();
 

@@ -306,8 +306,6 @@ void DataModel::newData(const QString &dataString) {
     RobotData* robot = getRobotByID(robotId);
     std::vector<QString> receivedKeys;
 
-    Log::instance()->logMessage("Message from robot " + robotId, true);
-
     if(message.contains("pose"))
     {
         QJsonObject jsonPose = message["pose"].toObject();
