@@ -153,7 +153,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Embed the visualiser in the tab
     QHBoxLayout* horizLayout = new QHBoxLayout();
     horizLayout->addWidget(visualiser);
-    ui->visualiserTab->setLayout(horizLayout);
+    ui->visualiserTabWidget->setLayout(horizLayout);
 
     // Set up the custom data table
     ui->customDataTable->setColumnCount(3);
