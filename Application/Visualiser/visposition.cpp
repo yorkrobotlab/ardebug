@@ -28,7 +28,7 @@ QString VisPosition::toString(void) {
 /* render
  * Render this visualisation for one robot.
  */
-void VisPosition::render(QWidget* widget, QPainter* painter, RobotData *robot, bool selected, QRectF rect) {
+void VisPosition::render(QWidget*, QPainter* painter, RobotData *robot, bool selected, QRectF rect) {
     if (!isEnabled()) {
         return;
     }

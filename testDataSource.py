@@ -47,4 +47,4 @@ while True:
             s.connect((hostName, hostPort))
             s.send(r.toJson())
 
-    sleep(0.5)
+    sleep(0.05)
