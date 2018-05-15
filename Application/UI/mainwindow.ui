@@ -68,7 +68,7 @@
           </size>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="robotTab">
           <attribute name="title">
@@ -151,14 +151,14 @@
              <item>
               <widget class="QPushButton" name="bluetoothDisconnectAllButton">
                <property name="text">
-                <string>disconnect all</string>
+                <string>Disconnect all</string>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QPushButton" name="bluetoothConfigButton">
                <property name="text">
-                <string>devices ...</string>
+                <string>Device Management</string>
                </property>
               </widget>
              </item>
