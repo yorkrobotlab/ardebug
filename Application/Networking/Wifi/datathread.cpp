@@ -20,7 +20,7 @@
 
 #include <iostream>
 
-#include "logging.h"
+#include "Application/Core/logging.h"
 
 #include "QString"
 
