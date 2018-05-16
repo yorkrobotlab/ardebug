@@ -486,7 +486,7 @@ void MainWindow::on_robotList_doubleClicked(const QModelIndex &)
  * the relevent model data and changes the selected item in the list.
  */
 void MainWindow::robotSelectedInVisualiser(QString id) {
-    std::cout<<"Robot selected in visualiser"<<std::endl;
+
     // Update selected ID
     dataModel->selectedRobotID = id;
 
@@ -685,7 +685,6 @@ void MainWindow::updateChart(bool listChanged, QString robotId, std::vector<QStr
   static int count = 0;
     disconnect(dataModel, SIGNAL(modelChanged(bool, QString, std::vector<QString>)), this, SLOT(updateChart(bool, QString, std::vector<QString>)));
     Defer({
-	std::cout<<"Defer called "<<count++<<std::endl;
         connect(dataModel, SIGNAL(modelChanged(bool, QString, std::vector<QString>)), this, SLOT(updateChart(bool, QString, std::vector<QString>)));
           });
 

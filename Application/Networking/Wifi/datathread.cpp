@@ -59,8 +59,6 @@ void DataThread::run(void) {
 
     while(socket->state() != QAbstractSocket::BoundState && shouldRun) usleep(10);
 
-    std::cout<<"Listening on data thread"<<std::endl;
-
     while(shouldRun && socket->state() == QAbstractSocket::BoundState)
     {
         while(!socket->hasPendingDatagrams() && shouldRun) usleep(1);
