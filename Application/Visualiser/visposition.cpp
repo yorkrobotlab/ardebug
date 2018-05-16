@@ -33,7 +33,7 @@ void VisPosition::render(QWidget*, QPainter* painter, RobotData *robot, bool sel
         return;
     }
 
-    double indicatorSize = 7;
+    double indicatorSize = 10;
 
     double orientation = qDegreesToRadians(robot->getAngle()*1.0);
     double x = rect.x() + (rect.width() * robot->getPos().position.x);
@@ -46,14 +46,14 @@ void VisPosition::render(QWidget*, QPainter* painter, RobotData *robot, bool sel
     auto borderPen = pen;
 
     if(selected)
-      circlePen.setWidth(pen.widthF() * 1.5);
+      circlePen.setWidth(pen.widthF() * 1.75);
 
     borderPen.setWidth(circlePen.width()+3);
     borderPen.setColor(QColor{0, 0, 0, 255});
     circlePen.setColor(robot->colour);
     painter->setPen(borderPen);
     painter->drawEllipse(centre, indicatorSize, indicatorSize);
-    borderPen.setWidth(3);
+    borderPen.setWidth(5);
     painter->setPen(borderPen);
     painter->drawLine(centre, endOfLine);
 
