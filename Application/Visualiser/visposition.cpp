@@ -59,7 +59,7 @@ void VisPosition::render(QWidget*, QPainter* painter, RobotData *robot, bool sel
 
     painter->setPen(circlePen);
     painter->drawEllipse(centre, indicatorSize, indicatorSize);
-    circlePen.setWidth(borderPen.width()-1);
+    circlePen.setWidth(3);
     painter->setPen(circlePen);
     painter->drawLine(centre, endOfLine);
 
