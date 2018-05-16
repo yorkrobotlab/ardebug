@@ -46,17 +46,21 @@ void VisPosition::render(QWidget*, QPainter* painter, RobotData *robot, bool sel
     auto borderPen = pen;
 
     if(selected)
-      circlePen.setWidth(pen.widthF() * 2);
+      circlePen.setWidth(pen.widthF() * 1.5);
 
-    borderPen.setWidth(circlePen.width()+2);
-    borderPen.setColor(QColor{0, 0, 0, 100});
+    borderPen.setWidth(circlePen.width()+3);
+    borderPen.setColor(QColor{0, 0, 0, 255});
     circlePen.setColor(robot->colour);
     painter->setPen(borderPen);
     painter->drawEllipse(centre, indicatorSize, indicatorSize);
+    borderPen.setWidth(3);
+    painter->setPen(borderPen);
     painter->drawLine(centre, endOfLine);
 
     painter->setPen(circlePen);
     painter->drawEllipse(centre, indicatorSize, indicatorSize);
+    circlePen.setWidth(borderPen.width()-1);
+    painter->setPen(circlePen);
     painter->drawLine(centre, endOfLine);
 
     painter->setPen(pen);
