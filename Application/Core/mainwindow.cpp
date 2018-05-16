@@ -103,7 +103,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
                 arucoNameMapping[arucoId] = robotId;
 
-                std::cout<<"Aruco ID "<<arucoId<<" is now mapped to Robot ID "<<robotId.toStdString()<<std::endl;
+                std::cout << "ArUco ID " << arucoId << " is now mapped to Robot ID " << robotId.toStdString() << std::endl;
             }
         }
     }

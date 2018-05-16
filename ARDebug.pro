@@ -1,14 +1,8 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2017-01-23T11:12:57
-#
-#-------------------------------------------------
-
-QT       += core gui bluetooth opengl charts network
+QT += core gui bluetooth opengl charts network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = ARDebug
+TARGET = ardebug
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -21,7 +15,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
-
 
 SOURCES += Application/Core/main.cpp\
     Application/Core/mainwindow.cpp \
@@ -43,7 +36,6 @@ SOURCES += Application/Core/main.cpp\
     Application/Visualiser/vistext.cpp \
     Application/UI/bluetoothconfigdialog.cpp \
     Application/Tracking/cvbcamerathread.cpp
-
 
 HEADERS  += Application/Core/mainwindow.h \
     Application/Core/util.h \
@@ -69,9 +61,7 @@ HEADERS  += Application/Core/mainwindow.h \
     Application/Core/defer.h \
     Application/Core/logging.h
 
-
-
-FORMS    += Application/UI/mainwindow.ui
+FORMS += Application/UI/mainwindow.ui
 
 CONFIG += link_pkgconfig \
     c++11
