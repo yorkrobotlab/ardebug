@@ -39,10 +39,10 @@ void ARDebug_sendMessage(string message);
 void ARDebug_sendCostumDataString(string key, string value);
 void ARDebug_sendCostumDataDouble(string key, double value);
 
-enum state {FORWARD, AVOID};
+enum state {WALKING, AVOIDING};
 
-int currentState = FORWARD;
-int previousState = FORWARD;
+int currentState = WALKING;
+int previousState = WALKING;
 
 
 ///User code loop:  This is where user code should go; it is run as an infinite loop
@@ -55,25 +55,25 @@ void user_code_loop()
     ARDebug_sendWatchdog();
     
     
-    if (currentState == FORWARD)
+    if (currentState == WALKING)
     {
    
         if (irfront >350)
         {
             previousState = currentState;
-            currentState = AVOID;          
+            currentState = AVOIDING;          
         }
         
     
     }
     else
     {
-       if (currentState == AVOID)
+       if (currentState == AVOIDING)
         {
             if (irfront <300)
             {
                 previousState = currentState;
-                currentState = FORWARD;        
+                currentState = WALKING;        
             } 
         }
           
@@ -82,21 +82,21 @@ void user_code_loop()
     //Debug: turn on and off movement
     if (1){
         
-        if (currentState == FORWARD)
+        if (currentState == WALKING)
         {
             if (currentState != previousState)
             {
                 previousState = currentState ;
-                ARDebug_sendState("FORWARD");
+                ARDebug_sendState("WALKING");
             }
             motors.forward(0.3);
             
         }
-        if (currentState == AVOID)
+        if (currentState == AVOIDING)
         {
              if (currentState != previousState)
              {
-                ARDebug_sendState("AVOID");
+                ARDebug_sendState("AVOIDING");
                 previousState = currentState ;
             }
              motors.set_left_motor_speed(-0.3);
@@ -221,7 +221,7 @@ void attime()
 {
     sensors.store_ir_values(); 
     sensors.store_background_raw_ir_values();
-    ARDebug_sendCostumDataDouble("BatteryVoltage", sensors.get_battery_voltage());
+    ARDebug_sendCostumDataDouble("battery_voltage", sensors.get_battery_voltage());
     ARDebug_sendIR();
     ARDebug_sendBackgroundIR(); 
 }
@@ -233,7 +233,7 @@ void ARDebug_sendWatchdog()
 {
      
      char str[100];
-     sprintf(str, "{  \"id\": \"robot_%i\"}\n", (int) robot_id );
+     sprintf(str, "{  \"id\": \"psi_swarm_%i\"}\n", (int) robot_id );
      bt.printf(str);
 }
 
@@ -243,7 +243,7 @@ void ARDebug_sendIR()
     char str[100];
     
    
-     sprintf(str, "{  \"id\": \"robot_%i\", \"ir\": [%i, %i, %i, %i, %i, %i, %i, %i] }\n", (int) robot_id ,
+     sprintf(str, "{  \"id\": \"psi_swarm_%i\", \"reflected_ir\": [%i, %i, %i, %i, %i, %i, %i, %i] }\n", (int) robot_id ,
             sensors.get_illuminated_raw_ir_value(0),            
             sensors.get_illuminated_raw_ir_value(1),
             sensors.get_illuminated_raw_ir_value(2),
@@ -259,7 +259,7 @@ void ARDebug_sendBackgroundIR()
 {
     char str[100];   
     
-     sprintf(str, "{  \"id\": \"robot_%i\", \"background ir\": [%i, %i, %i, %i, %i, %i, %i, %i] }\n", (int) robot_id ,
+     sprintf(str, "{  \"id\": \"psi_swarm_%i\", \"ambient_ir\": [%i, %i, %i, %i, %i, %i, %i, %i] }\n", (int) robot_id ,
             sensors.get_background_raw_ir_value(0),            
             sensors.get_background_raw_ir_value(1),
             sensors.get_background_raw_ir_value(2),
@@ -274,7 +274,7 @@ void ARDebug_sendBackgroundIR()
 void ARDebug_sendState(string statename)
 {
     char str[100];    
-    sprintf(str, "{  \"id\": \"robot_%i\", \"state\": \"%s\"}\n", (int) robot_id , statename.c_str() );
+    sprintf(str, "{  \"id\": \"psi_swarm_%i\", \"state\": \"%s\"}\n", (int) robot_id , statename.c_str() );
     bt.printf(str);
     
 }
@@ -283,14 +283,14 @@ void ARDebug_sendState(string statename)
 void ARDebug_sendCostumDataString(string key, string value)
 {
     char str[100];
-     sprintf(str, "{  \"id\": \"robot_%i\", \"%s\": \"%s\"}\n", (int) robot_id , key.c_str(), value.c_str() );
+     sprintf(str, "{  \"id\": \"psi_swarm_%i\", \"%s\": \"%s\"}\n", (int) robot_id , key.c_str(), value.c_str() );
     bt.printf(str);   
 }
 
 void ARDebug_sendCostumDataDouble(string key, double value)
 {
     char str[100];
-     sprintf(str, "{  \"id\": \"robot_%i\", \"%s\": %lf}\n", (int) robot_id , key.c_str(), value );
+     sprintf(str, "{  \"id\": \"psi_swarm_%i\", \"%s\": %lf}\n", (int) robot_id , key.c_str(), value );
     bt.printf(str);   
 }
 
