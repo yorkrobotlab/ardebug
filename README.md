@@ -139,3 +139,38 @@ To the right of the application is a second tabbed section, where the list of kn
 The type of chart displayed will depend upon the type of value selected - pie charts for string values (useful for displaying state distributions across the swarm), line graphs for numerical values (useful for tracking values over time), and bar charts for arrays of numeric values (useful for visualising IR sensor readings for example).
 
 To display one of these charts simply select a robot from the "Robots" tab. The "Data Visualisation" tab will now display the data known about the selected robot. A chart can be drawn by double clicking on any value in the table. If the selected value is in a format which can currently be graphed by the application then the appropriate graph will appear in the chart display region.
+
+# Adding camera sources
+It s possible to add new camera sources to the application by writing a C++ interface to it. For a simple example of how this works see Application/Tracking/usbcamerathread.{h,cpp}
+
+The USB camera thread extends the ARCameraThread class, which acts as a common base class for all possible camera sources. As most consumers of camera frames are likely to be doing complex computation they may not be able to process frames as quickly as they are available. To prevent frames from building up in the Qt event queue camera threads should disconnect all consumers after a frame is emitted. Consumers are then responsible for reregistering when they have finished processing and are ready for the next frame. To ensure that consumers are reconnected in such a way that they are not immediately disconnected without receiving an emitted signal (possible if the connect is issued from a consumer thread after the camera thread emits a frame but before the disconnect call) the ARCameraThread class maintains a list of "pre-emit calls". This is a vector of function calls that will be executed before each frame is emitted and can be used to reregister a consumer. A typical consumer slot may therefore look like:
+
+```
+void processFrame(cv::Mat& image)
+{
+	// Process the frame here
+	// This is likely to take longer than the time between frames
+
+	cameraThread->addPreEmitCall([&](){ connect(cameraThread, SIGNAL(newFrame(cv::Mat&)), this, SLOT(processFrame(cv::Mat&))); });
+}
+```
+
+This makes use of C++11 lambda functions to provide the reconnect call to the camera thread. The camera thread's main loop may then contain a loop similar to:
+
+```
+while(shouldRun)							// shouldRun will be cleared by the ARCameraThread class when quit() is called on the thread
+{
+	/* Capture image */
+	executePreEmitCalls();						// Loop through and execute all submitted pre-emit calls, then clear them from the list
+	emit newVideoFrame(image);					// Emit the new frame
+	disconnect(this, SIGNAL(newVideoFrame(cv::Mat&)), nullptr, 0);	// Disconnect all connected slots
+}
+```
+
+The `shouldRun` variable and the `executePreEmitCalls()` function are provided by the ARCameraThread base class.
+
+The newly implemented class can then be instansiated in Application/Core/mainwindow.cpp by replacing the line:
+
+```
+cameraThread = new USBCameraThread;
+```
