@@ -4,17 +4,17 @@ ARDebug is a tool for monitoring and debugging swarm robotics and multi-robot ex
 ## Installation
 Currently ARDebug requires compiling from source, and may require minor modifications to work with your tracking set up. Luckily compiling and building the application is made easy by the Qt toolchain.
 
-###Ubuntu 18.04
+### Ubuntu 18.04
 Installation under Ubuntu 18.04 is made easy by the up to date versions of libraries available in the default repositories. To install all required libraries and tools simply run:
 
 ```
-sudo apt-get install libopencv-dev libopencv-contrib-dev qt5-default qtconnectivity5-dev libqt5charts5-dev \
-git python
+sudo apt-get install libopencv-dev libopencv-contrib-dev qt5-default qtconnectivity5-dev \
+libqt5charts5-dev git python
 ```
 
 Once this install process has finished you should be able to compile the application using the steps below.
 
-###Ubuntu pre-18.04
+### Ubuntu pre-18.04
 Installation on older versions of Ubuntu is marginally more involved but is not overly complex.
 
 ARDebug depends on the presence of further software packages, including OpenCV 3.X.X and opencv_contrib to handle ARuCo-tags.
@@ -26,8 +26,8 @@ sudo apt-get update
 sudo apt-get upgrade
 
 sudo apt-get install build-essential cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev \
-libswscale-dev python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev \
-libdc1394-22-dev git qt5-default qtconnectivity5-dev libqt5charts5-dev
+libswscale-dev python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev \
+libjasper-dev libdc1394-22-dev git qt5-default qtconnectivity5-dev libqt5charts5-dev
 
 git clone https://github.com/Itseez/opencv.git
 git clone https://github.com/Itseez/opencv_contrib.git
@@ -128,14 +128,14 @@ When using the ArUco interface a configuration file is used to map the numeric I
 Robot position is described using a simple 'proportional' coordinate system, where both the X and Y coordinate of the robot are stored as a value between 0 and 1, describing the robots position on that axis as a proportion of the length of the camera viewport in that direction. Orientation is simply an angle in degrees, measured clockwise from zero pointing straight up along the Y axis.
 
 # Using ARDebug
-##UI Layout
+## UI Layout
 When the application is first launched the user is presented with a video feed which will be drawn from the first USB camera feed as found by OpenCV.
 
 At the bottom of the application is a tabbed region which contains both a "Console" tab, where useful information will be reported, and a "Data Visualisation" tab, where robot data can be viewed and where you can select which values are displayed in the visualiser.
 
 To the right of the application is a second tabbed section, where the list of known robots can be seen by default. There are also extra tabs to open a network port to received JSON data, and to configure which robots are connected via bluetooth. Below this second tabbed area is a chart display region, in which graphs can be drawn relating to various types of data received by the application.
 
-##Charts
+## Charts
 The type of chart displayed will depend upon the type of value selected - pie charts for string values (useful for displaying state distributions across the swarm), line graphs for numerical values (useful for tracking values over time), and bar charts for arrays of numeric values (useful for visualising IR sensor readings for example).
 
 To display one of these charts simply select a robot from the "Robots" tab. The "Data Visualisation" tab will now display the data known about the selected robot. A chart can be drawn by double clicking on any value in the table. If the selected value is in a format which can currently be graphed by the application then the appropriate graph will appear in the chart display region.
