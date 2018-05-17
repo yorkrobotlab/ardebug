@@ -12,6 +12,7 @@ class Robot:
         self.ir = [random.randint(0, 4095) for _ in range(8)]
         self.battery_voltage = random.uniform(4.0, 4.2)
         self.last_state_change = time.time() + random.uniform(0, 3)
+        self.pose = {'x': random.uniform(0.05, 0.95), 'y': random.uniform(0.05, 0.95), 'orientation': random.uniform(0, 360)}
 
     def toJson(self):
         return json.dumps({
@@ -19,6 +20,7 @@ class Robot:
                     'state': self.state,
                     'ir': self.ir,
                     'battery_voltage': self.battery_voltage,
+                    'pose': self.pose
                })
 
 robots = [Robot('robot_%d' % (i,)) for i in range(8)]
