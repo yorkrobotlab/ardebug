@@ -1,11 +1,11 @@
 # ARDebug
-ARDebug is a tool for monitoring and debugging swarm robotics and multi-robot experiments in real time using augmented reality techniques. The software provides a GUI for displaying internal data reported wirelessly by each robot within the swarm or group. This data is used to augment a real-time video feed of the robots and their environment, using textual representations of the data. The software aims to reduce the time taken to develop and debug swarm robotics experiments and behaviours by giving the developer more immediate access to decision making varaibles, sensor readings, and other key data, when compared to standard console or log-based debugging techniques. The software relies on a tracking system to locate the robots within the image in order to correctly overlay the augmented elements, and a modular software architecture is used to allow for easy integration with a variety of tracking systems. The tracking system used in this reference implementation makes use of [ArUco](https://www.uco.es/investiga/grupos/ava/node/26) fiducial markers and the associated [OpenCV](https://opencv.org/) image processing library.
+ARDebug is a tool for monitoring and debugging swarm robotic and multi-robot experiments in real time using augmented reality techniques. The software provides a GUI for displaying internal data reported wirelessly by each robot within the swarm. This data is used to augment a real-time video feed of the robots and their environment, using visual representations of the data. The software aims to reduce the time taken to develop and debug swarm robotics experiments and behaviours by giving the developer more immediate access to decision making varaibles, sensor readings, and other key data, when compared to standard console or log-based debugging techniques. The software relies on a tracking system to locate the robots within the image in order to correctly overlay the augmented elements, and a modular software architecture is used to allow for easy integration with a variety of tracking systems. The tracking system used in this reference implementation makes use of [ArUco](https://www.uco.es/investiga/grupos/ava/node/26) fiducial markers and the associated [OpenCV](https://opencv.org/) image processing library.
 
 ## Installation
 Currently ARDebug must be compiled from source, and may require minor modifications to work with your tracking set up.
 
-### Ubuntu 18.04 (LTS) - Recommended
-Installation under Ubuntu 18.04 is simple thanks to up-to-date versions of library dependencies available in the default repositories. To install all required libraries and tools simply run:
+### Ubuntu 18.04 LTS - Recommended
+Installation under Ubuntu 18.04 is easy thanks to up-to-date versions of library dependencies available in the default repositories. To install all required libraries and tools simply run:
 
 ```
 sudo apt-get install libopencv-dev libopencv-contrib-dev qt5-default qtconnectivity5-dev \
@@ -14,7 +14,7 @@ libqt5charts5-dev libgl1-mesa-dev git python
 
 Once this install process has finished you should be able to compile the application using the steps below.
 
-### Ubuntu pre-18.04
+### Ubuntu 16.04 LTS, 17.04, and 17.10
 Installation on older versions of Ubuntu is slightly more complex. ARDebug depends on further software packages, including OpenCV 3.X.X and `opencv_contrib` to detect ArUco tags.
 
 The following commands can be used to download and build the appropriate source files.
@@ -29,7 +29,7 @@ sudo apt-get upgrade
 
 sudo apt-get install build-essential cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev \
 libswscale-dev python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev \
-libjasper-dev libdc1394-22-dev git qt5-default qtconnectivity5-dev libqt5charts5-dev libgl1-mesa-dev
+libjasper-dev libdc1394-22-dev libgl1-mesa-dev
 
 git clone https://github.com/Itseez/opencv.git
 git clone https://github.com/Itseez/opencv_contrib.git
@@ -83,15 +83,15 @@ cmake \
 make
 
 sudo make install
+
+sudo ldconfig
 ```
 
 At this point all of the required OpenCV libraries should be installed.
 
-To build the main application you will need to download a modern version of Qt. The installer can be found [here](https://www.qt.io/download). Take note of where Qt is installed.
+To build the main application you will need to download a modern version of Qt (5.10.1 is recommended). The installer can be found [here](https://www.qt.io/download). Take note of where Qt is installed.
 
-You now need to download and install the qtcharts package. Download and install instructions can be found [here](https://github.com/qt/qtcharts). When executing qmake you will need to provide the absolute path to the qmake executable inside of your local install ({QT_INSTALL_PATH}/{VERSION}/gcc_64/bin/qmake).
-
-### Building (common)
+### Building ARDebug
 Clone this repository, or download it as a zip file and extract it into a directory. Within this directory run the following commands:
 
 ```
@@ -99,8 +99,9 @@ mkdir build
 cd build
 qmake ..
 ```
+Note that if you have a local installation of Qt that is newer than your system-wide installation (usually Qt 4.x), you will need to specify the path to `qmake` e.g.: `{QT_INSTALL_PATH}/{VERSION}/gcc_64/bin/qmake`.
 
-At this point you should have a Makefile in the build directory. You can now build the application by running:
+You should now have a Makefile in the build directory. You can now build the application by running:
 
 ```
 make
@@ -113,7 +114,7 @@ The application can then be launched by running:
 ```
 
 ## Features
-ARDebug enables the visual display of internal robot data, which can be sent to the application in [JSON](https://www.json.org/) format. The software takes this data and displays it to the user in a number of forms. This includes the augmented video view of the robots, which can be overlaid with all of the data mentioned above, as well as robot's names, IDs, position and orientation. For wireless communication ARDebug supports both Wi-Fi and Bluetooth, as well as a combination of both, which can be useful for heterogeneous swarm experiments.
+ARDebug enables the visual display of internal robot data, which can be sent to the application in [JSON](https://www.json.org/) format. The software takes this data and displays it to the user in a number of forms. This includes the augmented video view of the robots, which can be overlaid data transmitted by each robot, as well a robot's ID, position, and orientation. For wireless communication ARDebug supports both Wi-Fi and Bluetooth, as well as a combination of both, which can be useful for heterogeneous swarm experiments.
 
 ## Interfacing with ARDebug
 ARDebug receives data from the robots as a JSON object, which can either be sent via Bluetooth, or as UDP packets to the network port specified in the GUI. The only requirement is that each submitted JSON object must have an 'id' value that identifies which robot the data pertains to.
@@ -143,10 +144,10 @@ To display one of these charts simply select a robot from the "Robots" tab. The 
 # ArUco
 By default the application uses the built in `DICT_6X6_50` tag dictionary. To generate the appropriate tags refer to [this page](https://docs.opencv.org/3.2.0/d5/dae/tutorial_aruco_detection.html). If you would like to use a different set of tags then the dictionary in use should be specified in `Application/Tracking/aruco.cpp`.
 
-A sample document containing ArUco tags is provided in the repository.
+A sample document containing ArUco tags is provided in this repository.
 
-# Test Script
-A python script is provided in the repository both to test the application and to demonstrate how data could be submitted. The script defines a small set of virtual robots and reports various pieces of data to the application. An initial set of poses are generated and do not change throughout the lifetime of the script. This shows how pose data can be submitted through the network interface if a different tracking system were to be used.
+# Test script
+A python script is provided in this repository both to test the application and to demonstrate how data could be submitted. The script defines a small set of virtual robots and reports various pieces of data to the application. An initial set of poses are generated and do not change throughout the lifetime of the script. This shows how pose data can be submitted through the network interface if a different tracking system were to be used.
 
 To use the test script simply run `testDataSource.py` using a python interpreter.
 
@@ -179,7 +180,7 @@ while(shouldRun)							// shouldRun will be cleared by the ARCameraThread class 
 
 The `shouldRun` variable and the `executePreEmitCalls()` function are provided by the ARCameraThread base class.
 
-The newly implemented class can then be instansiated in Application/Core/mainwindow.cpp by replacing the line:
+The newly implemented class can then be instantiated in Application/Core/mainwindow.cpp by replacing the line:
 
 ```
 cameraThread = new USBCameraThread;
