@@ -87,7 +87,9 @@ sudo make install
 
 At this point all of the required OpenCV libraries should be installed.
 
-You can now download QtCreator from [here](https://www.qt.io/download), choosing the open source option.
+To build the main application you will need to download a modern version of Qt. The installer can be found [here](https://www.qt.io/download). Take note of where Qt is installed.
+
+You now need to download and install the qtcharts package. Download and install instructions can be found [here](https://github.com/qt/qtcharts). When executing qmake you will need to provide the absolute path to the qmake executable inside of your local install ({QT_INSTALL_PATH}/{VERSION}/gcc_64/bin/qmake).
 
 ### Building (common)
 Clone this repository, or download it as a zip file and extract it into a directory. Within this directory run the following commands:
