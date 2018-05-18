@@ -202,8 +202,8 @@ void Visualiser::mousePressEvent(QMouseEvent* event) {
             // Max one selection per click
             return;
         }
-        else
-            emit robotSelectedInVisualiser("none");
+//        else
+//            emit robotSelectedInVisualiser("none");
     }
 }
 
