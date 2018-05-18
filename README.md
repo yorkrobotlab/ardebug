@@ -147,9 +147,11 @@ By default the application uses the built in `DICT_6X6_50` tag dictionary. To ge
 A sample document containing ArUco tags is provided in this repository.
 
 # Test script
-A python script is provided in this repository both to test the application and to demonstrate how data could be submitted. The script defines a small set of virtual robots and reports various pieces of data to the application. An initial set of poses are generated and do not change throughout the lifetime of the script. This shows how pose data can be submitted through the network interface if a different tracking system were to be used.
+A python script is provided in this repository both to test the application and to demonstrate how data could be submitted. The script defines a small set of virtual robots and reports various pieces of data to the application. By default, an initial set of poses are generated and do not change throughout the lifetime of the script. This shows how pose data can be submitted through the network interface if a different tracking system were to be used.
 
-To use the test script simply run `testDataSource.py` using a python interpreter.
+To use the test script run `testDataSource.py` using a python interpreter, then in ARDebug click on the "Network" tab and "Start Listening" on port 8888.
+
+The script can also be used to test simulated robot data in conjunction with ArUco tags. To do so, run the script with the optional `aruco` argument as follows: `testDataSource.py aruco`. In this mode, the test script will no longer output pose data - instead pose data is obtained from ArUco tags detected by the camera. Simply print page one of ArUcoMarkers/allMarker.pdf (tag IDs 0-7) and place the sheet of paper in front of your camera. The simulated robot data from the test script will match up with these tags, and can be visualised in ARDebug.
 
 # Adding camera sources
 It is possible to add new camera sources to the application by writing a C++ interface to it. For a simple example of how this works see `Application/Tracking/usbcamerathread.{h,cpp}`.
