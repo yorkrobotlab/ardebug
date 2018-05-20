@@ -135,7 +135,6 @@ When using the ArUco interface, a configuration file is used to map the numeric 
 
 Robot positions are described using a simple 'proportional' coordinate system, where both the X and Y coordinate of the robot are stored as a value between 0 and 1, describing the robots position on that axis as a proportion of the length of the camera viewport in that direction. Orientation is simply an angle in degrees, measured clockwise from zero pointing straight up along the Y axis.
 
-# Using ARDebug
 ## UI Layout
 When the application is first launched the user is presented with a video feed which will be drawn from the first USB camera feed as found by OpenCV.
 
@@ -194,3 +193,7 @@ The newly implemented class can then be instantiated in Application/Core/mainwin
 ```
 cameraThread = new USBCameraThread;
 ```
+
+## Adding visualisations
+
+To add new visualisations to the software, simply subclass `VisElement` (see `VisPosition` and `VisText` for examples), and draw geometric primitives using Qt's [QPainter](http://doc.qt.io/qt-5/qpainter.html) class. Then, instantiate your subclass in the constructor of the `Visualiser` class (Application/Visualiser/visualiser.cpp), and push the object into the `config.elements` vector so they are rendered by ARDebug.
