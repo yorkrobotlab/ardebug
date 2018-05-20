@@ -2,7 +2,7 @@
 ARDebug is a tool for monitoring and debugging swarm robotic and multi-robot experiments in real time using augmented reality techniques. The software provides a GUI for displaying internal data reported wirelessly by each robot within the swarm. This data is used to augment a real-time video feed of the robots and their environment, using visual representations of the data. The software aims to reduce the time taken to develop and debug swarm robotics experiments and behaviours by giving the developer more immediate access to decision making varaibles, sensor readings, and other key data, when compared to standard console or log-based debugging techniques. The software relies on a tracking system to locate the robots within the image in order to correctly overlay the augmented elements, and a modular software architecture is used to allow for easy integration with a variety of tracking systems. The tracking system used in this reference implementation makes use of [ArUco](https://www.uco.es/investiga/grupos/ava/node/26) fiducial markers and the associated [OpenCV](https://opencv.org/) image processing library.
 
 ## Installation
-Currently ARDebug must be compiled from source, and may require minor modifications to work with your tracking set up.
+Currently ARDebug must be compiled from source, and may require minor modifications to work with your tracking set up. The software is known to work under Ubuntu 16.04 or later, and macOS 10.13.4.
 
 ### Ubuntu 18.04 LTS - Recommended
 Installation under Ubuntu 18.04 is easy thanks to up-to-date versions of library dependencies available in the default repositories. To install all required libraries and tools simply run:
@@ -89,7 +89,14 @@ sudo ldconfig
 
 At this point all of the required OpenCV libraries should be installed.
 
-To build the main application you will need to download a modern version of Qt (5.10.1 is recommended). The installer can be found [here](https://www.qt.io/download). Take note of where Qt is installed.
+To build the main application you must download a modern version of Qt (5.10.1 is recommended). The installer can be found [here](https://www.qt.io/download). Note that you will need to modify the installer's file permissions before you can run it:
+
+```
+chmod +x qt-unified-linux-x64-3.0.4-online.run
+./qt-unified-linux-x64-3.0.4-online.run
+```
+
+Make a note of where Qt is installed, as you will need to specify the path to the new `qmake` binary when building ARDebug.
 
 ### Building ARDebug
 Clone this repository, or download it as a zip file and extract it into a directory. Within this directory run the following commands:
