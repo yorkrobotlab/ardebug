@@ -142,7 +142,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(connectBluetooth()), bluetoothHandler, SLOT(connectAllSockets()));
     connect(this, SIGNAL(disconnectBluetooth()), bluetoothHandler, SLOT(disconnectAllSockets()));
     connect(this, SIGNAL(changeStateBluetoothDevice(int)), bluetoothHandler, SLOT(changeSocket(int)));
-
+    connect(btConfig, SIGNAL(colourChanged()),this,SLOT(updateBluetoothlist()));
 
     ui->bluetoothlist->setModel(btConfig->getActiveDeviceList());
     ui->bluetoothlist->setEditTriggers(QListWidget::NoEditTriggers);
@@ -888,3 +888,6 @@ void MainWindow::resettingChart()
     oldID =dataModel->selectedRobotID;
 }
 
+void MainWindow::updateBluetoothlist(){
+    ui->bluetoothlist->viewport()->update();
+}

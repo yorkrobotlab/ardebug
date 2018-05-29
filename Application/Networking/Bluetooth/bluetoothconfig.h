@@ -31,6 +31,7 @@ public slots:
 
 signals:
     void deviceListChanged(void);
+    void colourChanged();
 };
 
 #endif //BLUETOOTHCONFIG_H

@@ -160,6 +160,7 @@ QStandardItemModel* Bluetoothconfig::getActiveDeviceList(void) {
     //QModelIndex vindex = deviceListModel->index(index,0);
     //deviceListModel->setData(vindex, QBrush(colour), Qt::BackgroundRole);
     deviceListModel->item(index)->setBackground(QBrush(colour));
+    emit colourChanged();
 
  }
 

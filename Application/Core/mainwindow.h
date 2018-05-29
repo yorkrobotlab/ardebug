@@ -86,7 +86,10 @@ public slots:
 
 private slots:
 
-  void redrawChart();
+    void redrawChart();
+
+    void updateBluetoothlist();
+
     void on_networkListenButton_clicked();
 
     void on_networkPortBox_textChanged(const QString &arg1);

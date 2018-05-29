@@ -76,7 +76,16 @@ BluetoothSocketListed::~ BluetoothSocketListed()
  */
 QByteArray BluetoothSocketListed::readLine()
 {
-    return socket->readLine();
+    if(socket->canReadLine())
+    {
+        return socket->readLine();
+    }
+    else
+    {
+        qDebug()<<"reading on socket without data";
+    }
+    return "";
+
 }
 
 /* canReadLine
