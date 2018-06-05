@@ -66,11 +66,12 @@ if __name__=="__main__":
                 if(r.battery_voltage < 0):
                     r.battery_voltage = 0
 
-            v = 0.01
-            a = 10
-            avoidance_radius = 0.1
-
             if reportPose:
+
+                v = 0.01
+                a = 10
+                avoidance_radius = 0.1
+
                 dx = v * math.cos(math.radians(r.pose['orientation']))
                 dy = v * math.sin(math.radians(r.pose['orientation']))
 

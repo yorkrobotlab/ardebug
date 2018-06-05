@@ -200,8 +200,6 @@ MainWindow::MainWindow(QWidget *parent) :
     colourmap[8].setRgb(170,110,40);//brown
     colourmap[9].setRgb(0,0,128);//navy
 
-
-
     // Arrange the rows vertically
     QVBoxLayout* mainbox = new QVBoxLayout();
 
@@ -700,13 +698,10 @@ void MainWindow::updateChart(bool listChanged, QString robotId, std::vector<QStr
 
 void MainWindow::redrawChart()
 {
-
     QMap<QString, int> entryList;
-    QMap<QString, QColor> colourList;
     static double ChartMaxX = 0;
     static double ChartMaxY = 0;
 
-    int colourCounter = 0;
     if (chartReset)
     {
         chart->removeAllSeries();
@@ -718,7 +713,6 @@ void MainWindow::redrawChart()
         }
 
         chartReset=false;
-
     }
 
 
@@ -738,18 +732,18 @@ void MainWindow::redrawChart()
             else
                 value = "empty";
 
-            if (entryList.contains(value))
-            {
+            if(entryList.contains(value))
                 entryList[value] = entryList[value] + 1;
+            else
+                entryList[value] = 1;
+
+            if(colourList.contains(value))
                 robot->colour = colourList[value];
-            }
             else
             {
-                entryList[value] = 1;
-                colourList[value]= colourmap[colourCounter%NR_OF_COLOURS];
-                robot->colour= colourList[value];
-                colourCounter ++;
-
+                colourList[value] = colourmap[colourCounter%NR_OF_COLOURS];
+                robot->colour = colourList[value];
+                colourCounter++;
             }
 
 

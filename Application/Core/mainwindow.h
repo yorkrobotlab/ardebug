@@ -54,6 +54,8 @@ class MainWindow : public QMainWindow
     ValueType chartType = ValueType::Unknown;
 
     QColor colourmap[NR_OF_COLOURS];
+    QMap<QString, QColor> colourList;
+    int colourCounter = 0;
 
 public:
     explicit MainWindow(QWidget *parent = 0);
