@@ -66,7 +66,11 @@ FORMS += Application/UI/mainwindow.ui
 CONFIG += link_pkgconfig \
     c++11
 
-PKGCONFIG += opencv
+mac {
+    PKGCONFIG += opencv4
+} else {
+    PKGCONFIG += opencv
+}
 
 exists("/opt/cvb/") {
     DEFINES += CVB_CAMERA_PRESENT
