@@ -2,7 +2,7 @@
 ARDebug is a tool for monitoring and debugging swarm robotic and multi-robot experiments in real time using augmented reality techniques. The software provides a GUI for displaying internal data reported wirelessly by each robot within the swarm. This data is used to augment a real-time video feed of the robots and their environment, using visual representations of the data. The software aims to reduce the time taken to develop and debug swarm robotics experiments and behaviours by giving the developer more immediate access to decision making varaibles, sensor readings, and other key data, when compared to standard console or log-based debugging techniques. The software relies on a tracking system to locate the robots within the image in order to correctly overlay the augmented elements, and a modular software architecture is used to allow for easy integration with a variety of tracking systems. The tracking system used in this reference implementation makes use of [ArUco](https://www.uco.es/investiga/grupos/ava/node/26) fiducial markers and the associated [OpenCV](https://opencv.org/) image processing library.
 
 ## Installing dependencies
-Currently, ARDebug must be compiled from source and may require minor modifications to work with your tracking set up. The software is known to work under Ubuntu 16.04 or later, and macOS 10.13.5.
+Currently, ARDebug must be compiled from source and may require minor modifications to work with your tracking set up. The software is known to work under Ubuntu 16.04 or later (tested up to 18.04), and macOS 10.13 and later (tested up to 10.15.4).
 
 ### Ubuntu 18.04 LTS - Recommended
 Installation under Ubuntu 18.04 is easy thanks to up-to-date versions of library dependencies available in the default repositories. To install all required libraries and tools simply run:
@@ -98,7 +98,7 @@ chmod +x qt-unified-linux-x64-3.0.4-online.run
 
 Make a note of where Qt is installed, as you will need to specify the path to the new `qmake` binary when building ARDebug.
 
-### macOS 10.3.5
+### macOS
 
 Install [Homebrew](https://brew.sh/), then the following packages:
 
@@ -130,7 +130,7 @@ The application can then be launched in Ubuntu by running:
 ./ardebug
 ```
 
-or in macOS by running:
+or in macOS by launching ardebug.app, or in a terminal running:
 
 ```
 ardebug.app/Contents/MacOS/ardebug
@@ -142,7 +142,7 @@ ARDebug enables the visual display of internal robot data, which can be sent to 
 ## Interfacing with ARDebug
 ARDebug receives data from the robots as a JSON object, which can either be sent via Bluetooth, or as UDP packets to the network port specified in the GUI. The only requirement is that each submitted JSON object must have an 'id' value that identifies which robot the data pertains to.
 
-Code for communicating packets in this format via Wi-Fi from a Linux-based robot is provided in <i>ardebug/RobotAPI</i>, primarily for illustrative purposes. An example of how this can be integrated into an example ARGoS robot controller is provided in <i>ardebug/ExampleRobotController/e-puck</i>. An example controller for Psi Swarm robots using Bluetooth communication is also provided in <i>ardebug/ExampleRobotController/psi-swarm</i>. Note that only the main file is provided here - example projects for the Psi Swarm robot and the associated libraries can be found at the [mbed team page](http://os.mbed.com/teams/Psi-Swarm-Robot).
+Code for communicating packets in this format via Wi-Fi from a Linux-based robot is provided in <i>ardebug/RobotAPI</i>, primarily for illustrative purposes. An example of how this can be integrated into an example ARGoS robot controller is provided in <i>ardebug/ExampleRobotController/e-puck</i>. An example of a Python robot controller for the Pi-puck using Wi-Fi is provided in <i>ardebug/ExampleRobotController/Pi-puck</i>. An example controller for Psi Swarm robots using Bluetooth communication is also provided in <i>ardebug/ExampleRobotController/psi-swarm</i>. Note that only the main file is provided here - example projects for the Psi Swarm robot and the associated libraries can be found at the [mbed team page](http://os.mbed.com/teams/Psi-Swarm-Robot).
 
 ## Tracking System
 Tracking information regarding the position and orientation of each robot is passed through the same interface as the other data, meaning that the code can be extended to support a different tracking system from the one based on ArUco that is included, or even receive tracking data via the network from a seperate machine.
